@@ -26,8 +26,8 @@ This text outlines how to create migratory connectivity networks using the R pac
 You can install the development version of MuSpTest from [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("mgdesaix/MuSpTest", auth_token = "xxx")
+# install.packages("remotes")
+remotes::install_github("mgdesaix/MuSpTest", auth_token = "xxx")
 ```
 
 **Note:** The `auth_token =` specifies my personal access token to allow the download because it is currently a private repository. Replace "xxx" with the token until we make the repository public.

@@ -8,14 +8,14 @@ In the migratory network analyses, the `ebirdst` abundance data is used to delin
 
 Prior to doing anything with eBird Status and Trends data, you will need to download the `ebirdst` package, and then get access to the data. To download the package:
 
-```
+``` r
 # install.packages("remotes")
 remotes::install_github("CornellLabofOrnithology/ebirdst")
 ```
 
 Then, get access to `ebirdst` data at https://ebird.org/st/request. You will receive a key to download `ebirdst` data and you can enter that key in R:
 
-```
+``` r
 ebirdst::set_ebirdst_access_key("XXXXX")
 ```
 
@@ -23,7 +23,7 @@ where `"XXXXX"` is the key.
 
 The primary packages for this vignette are:
 
-```
+``` r
 library(MuSpTest)
 library(sf)
 library(terra)
@@ -40,7 +40,7 @@ Specify the species of interest for `get_ebirdst_abd_season()` with `species`. `
 
 Below is an example for downloading data for the [Common Yellowthroat](https://ebird.org/species/comyel) and creating the seasonal abundance raster stack.
 
-```
+``` r
 # This can take a while depending on the species (5-10 min.)
 abd_season <- get_ebirdst_abd_season(species = "comyel", path = "./comyel/")
 ```
@@ -51,7 +51,7 @@ Using the previously created  seasonal abundance rasters, we will convert them t
 
 We also need land extent data. We will get land data from the `rnaturalearth` package using the following code. Depending on the organism's range, you will need to filter continent to the appropriate region. Here, we want both North and South America.
 
-```
+``` r
 ne_scale <- 50
 # land polygon
 ne_land <- rnaturalearth::ne_countries(scale = ne_scale, returnclass = "sf") %>%
@@ -64,7 +64,7 @@ ne_land_proj <- sf::st_transform(ne_land, crs = sf::st_crs(abd_season))
 
 Now we have all the input data we need to get the polygons of the range. The function `range_smooth()` in the `MuSpTest` package takes care of this. In the process of smoothing the polygon, small regions are dropped and holes in the polygon filled in based on the size ($km^2$) specified with the `smooth_area` parameter. Below it is set at 1000 $km^2$ (e.g. a 31.6 km * 31.6 km square), but you may want to increase or decrease depending on the organism.
 
-```
+``` r
 # this fuction can take a while (~10 min.)
 comyel_range_smooth <- range_smooth(abd_season = abd_season, 
                                   path = "./comyel/shapefiles", 
@@ -77,7 +77,7 @@ comyel_range_smooth <- range_smooth(abd_season = abd_season,
 
 Extracting a single polygon of a portion of the range is simple and quick! Here's an example of getting the *breeding* season range from the `range_smooth()` output.
 
-```
+``` r
 comyel_breed_smooth <- dplyr::filter(comyel_range_smooth,
                                 season == "breeding") %>%
                     sf::st_transform(crs = 4326)
@@ -97,7 +97,7 @@ This is modified from Eric Anderson's [Github project](https://github.com/eriqan
 
 The `comyel_assignment` data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.
 
-```
+``` r
 Q_matrix <- MuSpTest::comyel_assignment %>%
   dplyr::select(CA, Midwest, NewEngland, West, Southwest) %>%
   as.matrix()
@@ -114,7 +114,7 @@ cluster_colors <-  c(
 
 We will use a [modified version](https://github.com/eriqande/TESS3_encho_sen) of the `tess3r` package to create the genoscape rasters.
 
-```
+``` r
 # remotes::install_github("eriqande/TESS3_encho_sen")
 genoscape_brick <- tess3r::tess3Q_map_rasters(
   x = Q_matrix, 
@@ -140,7 +140,7 @@ terra::writeRaster(terra::rast(genoscape_brick), filename = out.files)
 
 Using the genoscape rasters we will convert them to polygons, using the handy `scape_to_shape()` function. The `prob_threshold` parameter specifies the value to determine if a raster cell is included in the polygon for that genoscape. This value should be customized for different species to check for overlap of genoscape polygons, which is not desirable. Setting too high of a threshold will create very small breeding nodes, while too low of a threshold will result in large, overlapping breeding nodes.
 
-```
+``` r
 genoscape_files <- list.files("./comyel/genoscape", 
                                      full.names = T,
                                      pattern = "*.tif")

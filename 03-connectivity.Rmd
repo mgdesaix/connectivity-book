@@ -7,7 +7,7 @@ To create the connectivity model, we will first specify the relative abundance f
 
 For the breeding nodes, we will input the breeding range abundance raster, genoscape polygons, and genoscape cluster names into the `MuSpTest` function `get_abundance_stats()`. The output will be a data frame of the summarized node suitability.
 
-```
+``` r
 abd_season <- terra::rast("./comyel/comyel.abd_season.tif")
 
 ## Breeding
@@ -20,7 +20,7 @@ breeding_abundance_sum <- get_abundance_stats(range_raster = abd_season[["breedi
 
 Similarly for the wintering nodes, we will input the nonbreeding range abundance raster, winter ecoregions, and ecoregion names into the `MuSpTest` function `get_abundance_stats()`.
 
-```
+``` r
 ## Nonbreeding
 comyel_winter_ecoregions <- sf::st_read("./comyel/winter_regions/comyel_winter_ecoregions.shp")
 ecoregion_names <- comyel_winter_ecoregions$Region
