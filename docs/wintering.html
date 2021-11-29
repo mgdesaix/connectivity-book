@@ -188,28 +188,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="subsetting-winter-ecoregions" class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> Subsetting winter ecoregions</h2>
 <p>The ecoregion data is provided by [provide link]. The ecoregions are provided in this this package as <code>ecoregions_simple</code>. We will intersect the ecoregions with the wintering range of the Common Yellowthroat to identify all the ecoregions that overlap with the wintering range.</p>
-<pre><code>comyel_winter &lt;- comyel_range_smooth %&gt;%
-  dplyr::filter(season == &quot;nonbreeding&quot;) %&gt;%
-  sf::st_transform(crs = 4326) %&gt;%
-  sf::st_intersection(MuSpTest::ecoregions_simple) %&gt;%
-  dplyr::select(Region)</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="wintering.html#cb15-1" aria-hidden="true" tabindex="-1"></a>comyel_winter <span class="ot">&lt;-</span> comyel_range_smooth <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="wintering.html#cb15-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(season <span class="sc">==</span> <span class="st">&quot;nonbreeding&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="wintering.html#cb15-3" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-4"><a href="wintering.html#cb15-4" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_intersection</span>(MuSpTest<span class="sc">::</span>ecoregions_simple) <span class="sc">%&gt;%</span></span>
+<span id="cb15-5"><a href="wintering.html#cb15-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Region)</span></code></pre></div>
 </div>
 <div id="snap-points" class="section level2" number="3.2">
 <h2><span class="header-section-number">3.2</span> Snap points</h2>
 <p>Sometimes individuals are not quite within the wintering nodes. Here, we will make sure all sampled individuals get assigned to the nearest ecoregion.</p>
-<pre><code>winter.coords &lt;- MuSpTest::coye.winter.meta %&gt;%
-  st_as_sf(coords=c(&quot;Long&quot;,&quot;Lat&quot;)) %&gt;%
-  st_cast(&quot;MULTIPOINT&quot;) %&gt;%
-  st_set_crs(4326)
-  
-new.winter.coords &lt;- snap_points(winter.coords, comyel_winter, 150000)</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="wintering.html#cb16-1" aria-hidden="true" tabindex="-1"></a>winter.coords <span class="ot">&lt;-</span> MuSpTest<span class="sc">::</span>coye.winter.meta <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="wintering.html#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords=</span><span class="fu">c</span>(<span class="st">&quot;Long&quot;</span>,<span class="st">&quot;Lat&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="wintering.html#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_cast</span>(<span class="st">&quot;MULTIPOINT&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="wintering.html#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_set_crs</span>(<span class="dv">4326</span>)</span>
+<span id="cb16-5"><a href="wintering.html#cb16-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-6"><a href="wintering.html#cb16-6" aria-hidden="true" tabindex="-1"></a>new.winter.coords <span class="ot">&lt;-</span> <span class="fu">snap_points</span>(winter.coords, comyel_winter, <span class="dv">150000</span>)</span></code></pre></div>
 </div>
 <div id="finalize-wintering-nodes" class="section level2" number="3.3">
 <h2><span class="header-section-number">3.3</span> Finalize wintering nodes</h2>
 <p>Now that points have been <em>snapped</em> to the appropriate ecoregions, we can further subset all of the ecoregions in which we have actually sampled individuals from. If we haven’t sampled individuals from a region, we can’t use that region as a node in the migratory connectivity network!</p>
-<pre><code>winter_intersect &lt;- st_intersects(comyel_winter, new.winter.coords, sparse = T)
-poly_id &lt;- which(unlist(lapply(winter_intersect, function(x) length(x) &gt; 0)))
-comyel_winter_ecoregions &lt;- comyel_winter[poly_id,]</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="wintering.html#cb17-1" aria-hidden="true" tabindex="-1"></a>winter_intersect <span class="ot">&lt;-</span> <span class="fu">st_intersects</span>(comyel_winter, new.winter.coords, <span class="at">sparse =</span> T)</span>
+<span id="cb17-2"><a href="wintering.html#cb17-2" aria-hidden="true" tabindex="-1"></a>poly_id <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(winter_intersect, <span class="cf">function</span>(x) <span class="fu">length</span>(x) <span class="sc">&gt;</span> <span class="dv">0</span>)))</span>
+<span id="cb17-3"><a href="wintering.html#cb17-3" aria-hidden="true" tabindex="-1"></a>comyel_winter_ecoregions <span class="ot">&lt;-</span> comyel_winter[poly_id,]</span></code></pre></div>
 
 </div>
 </div>

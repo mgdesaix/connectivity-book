@@ -149,8 +149,8 @@ You can install the development version of MuSpTest from \href{https://github.co
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# install.packages("devtools")}
-\NormalTok{devtools}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"mgdesaix/MuSpTest"}\NormalTok{, }\AttributeTok{auth\_token =} \StringTok{"xxx"}\NormalTok{)}
+\CommentTok{\# install.packages("remotes")}
+\NormalTok{remotes}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"mgdesaix/MuSpTest"}\NormalTok{, }\AttributeTok{auth\_token =} \StringTok{"xxx"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -168,29 +168,35 @@ In the migratory network analyses, the \texttt{ebirdst} abundance data is used t
 
 Prior to doing anything with eBird Status and Trends data, you will need to download the \texttt{ebirdst} package, and then get access to the data. To download the package:
 
-\begin{verbatim}
-# install.packages("remotes")
-remotes::install_github("CornellLabofOrnithology/ebirdst")
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# install.packages("remotes")}
+\NormalTok{remotes}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"CornellLabofOrnithology/ebirdst"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 Then, get access to \texttt{ebirdst} data at \url{https://ebird.org/st/request}. You will receive a key to download \texttt{ebirdst} data and you can enter that key in R:
 
-\begin{verbatim}
-ebirdst::set_ebirdst_access_key("XXXXX")
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ebirdst}\SpecialCharTok{::}\FunctionTok{set\_ebirdst\_access\_key}\NormalTok{(}\StringTok{"XXXXX"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 where \texttt{"XXXXX"} is the key.
 
 The primary packages for this vignette are:
 
-\begin{verbatim}
-library(MuSpTest)
-library(sf)
-library(terra)
-library(tidyverse)
-library(ebirdst)
-library(rnaturalearth)
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(MuSpTest)}
+\FunctionTok{library}\NormalTok{(sf)}
+\FunctionTok{library}\NormalTok{(terra)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(ebirdst)}
+\FunctionTok{library}\NormalTok{(rnaturalearth)}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{seasonal-abundance}{%
 \section{Seasonal abundance}\label{seasonal-abundance}}
@@ -201,10 +207,12 @@ Specify the species of interest for \texttt{get\_ebirdst\_abd\_season()} with \t
 
 Below is an example for downloading data for the \href{https://ebird.org/species/comyel}{Common Yellowthroat} and creating the seasonal abundance raster stack.
 
-\begin{verbatim}
-# This can take a while depending on the species (5-10 min.)
-abd_season <- get_ebirdst_abd_season(species = "comyel", path = "./comyel/")
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# This can take a while depending on the species (5{-}10 min.)}
+\NormalTok{abd\_season }\OtherTok{\textless{}{-}} \FunctionTok{get\_ebirdst\_abd\_season}\NormalTok{(}\AttributeTok{species =} \StringTok{"comyel"}\NormalTok{, }\AttributeTok{path =} \StringTok{"./comyel/"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{generating-seasonal-polygons}{%
 \section{Generating seasonal polygons}\label{generating-seasonal-polygons}}
@@ -213,41 +221,47 @@ Using the previously created seasonal abundance rasters, we will convert them to
 
 We also need land extent data. We will get land data from the \texttt{rnaturalearth} package using the following code. Depending on the organism's range, you will need to filter continent to the appropriate region. Here, we want both North and South America.
 
-\begin{verbatim}
-ne_scale <- 50
-# land polygon
-ne_land <- rnaturalearth::ne_countries(scale = ne_scale, returnclass = "sf") %>%
-  dplyr::filter(continent %in% c("North America", "South America")) %>%
-  sf::st_set_precision(1e6) %>%
-  sf::st_union() %>% 
-  sf::st_geometry()
-ne_land_proj <- sf::st_transform(ne_land, crs = sf::st_crs(abd_season))
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ne\_scale }\OtherTok{\textless{}{-}} \DecValTok{50}
+\CommentTok{\# land polygon}
+\NormalTok{ne\_land }\OtherTok{\textless{}{-}}\NormalTok{ rnaturalearth}\SpecialCharTok{::}\FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{scale =}\NormalTok{ ne\_scale, }\AttributeTok{returnclass =} \StringTok{"sf"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(continent }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"North America"}\NormalTok{, }\StringTok{"South America"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_set\_precision}\NormalTok{(}\FloatTok{1e6}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_union}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_geometry}\NormalTok{()}
+\NormalTok{ne\_land\_proj }\OtherTok{\textless{}{-}}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_transform}\NormalTok{(ne\_land, }\AttributeTok{crs =}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_crs}\NormalTok{(abd\_season))}
+\end{Highlighting}
+\end{Shaded}
 
 Now we have all the input data we need to get the polygons of the range. The function \texttt{range\_smooth()} in the \texttt{MuSpTest} package takes care of this. In the process of smoothing the polygon, small regions are dropped and holes in the polygon filled in based on the size (\(km^2\)) specified with the \texttt{smooth\_area} parameter. Below it is set at 1000 \(km^2\) (e.g.~a 31.6 km * 31.6 km square), but you may want to increase or decrease depending on the organism.
 
-\begin{verbatim}
-# this fuction can take a while (~10 min.)
-comyel_range_smooth <- range_smooth(abd_season = abd_season, 
-                                  path = "./comyel/shapefiles", 
-                                  filename = "range_smooth",
-                                  ne_land = ne_land_proj,
-                                  smooth_area = 1000,
-                                  split_migration = FALSE, 
-                                  show_yearround = FALSE)
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# this fuction can take a while (\textasciitilde{}10 min.)}
+\NormalTok{comyel\_range\_smooth }\OtherTok{\textless{}{-}} \FunctionTok{range\_smooth}\NormalTok{(}\AttributeTok{abd\_season =}\NormalTok{ abd\_season, }
+                                  \AttributeTok{path =} \StringTok{"./comyel/shapefiles"}\NormalTok{, }
+                                  \AttributeTok{filename =} \StringTok{"range\_smooth"}\NormalTok{,}
+                                  \AttributeTok{ne\_land =}\NormalTok{ ne\_land\_proj,}
+                                  \AttributeTok{smooth\_area =} \DecValTok{1000}\NormalTok{,}
+                                  \AttributeTok{split\_migration =} \ConstantTok{FALSE}\NormalTok{, }
+                                  \AttributeTok{show\_yearround =} \ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 Extracting a single polygon of a portion of the range is simple and quick! Here's an example of getting the \emph{breeding} season range from the \texttt{range\_smooth()} output.
 
-\begin{verbatim}
-comyel_breed_smooth <- dplyr::filter(comyel_range_smooth,
-                                season == "breeding") %>%
-                    sf::st_transform(crs = 4326)
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{comyel\_breed\_smooth }\OtherTok{\textless{}{-}}\NormalTok{ dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(comyel\_range\_smooth,}
+\NormalTok{                                season }\SpecialCharTok{==} \StringTok{"breeding"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{                    sf}\SpecialCharTok{::}\FunctionTok{st\_transform}\NormalTok{(}\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
 
-sf::st_write(comyel_breed_smooth, dsn = './comyel/shapefiles',
-          layer = "comyel_breed_smooth",
-          driver = "ESRI Shapefile")
-\end{verbatim}
+\NormalTok{sf}\SpecialCharTok{::}\FunctionTok{st\_write}\NormalTok{(comyel\_breed\_smooth, }\AttributeTok{dsn =} \StringTok{\textquotesingle{}./comyel/shapefiles\textquotesingle{}}\NormalTok{,}
+          \AttributeTok{layer =} \StringTok{"comyel\_breed\_smooth"}\NormalTok{,}
+          \AttributeTok{driver =} \StringTok{"ESRI Shapefile"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{creating-the-genoscape}{%
 \section{Creating the genoscape}\label{creating-the-genoscape}}
@@ -266,58 +280,64 @@ This is modified from Eric Anderson's \href{https://github.com/eriqande/make-a-B
 
 The \texttt{comyel\_assignment} data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.
 
-\begin{verbatim}
-Q_matrix <- MuSpTest::comyel_assignment %>%
-  dplyr::select(CA, Midwest, NewEngland, West, Southwest) %>%
-  as.matrix()
-long_lat_matrix <- MuSpTest::comyel_assignment %>%
-  dplyr::select(Long, Lat) %>%
-  as.matrix()
-cluster_colors <-  c(
-  CA = "#CC0000",
-  Midwest = "#3399FF",
-  NewEngland = "#9933CC",
-  West = "#009933",
-  Southwest = "#FF6600") 
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Q\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ MuSpTest}\SpecialCharTok{::}\NormalTok{comyel\_assignment }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(CA, Midwest, NewEngland, West, Southwest) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as.matrix}\NormalTok{()}
+\NormalTok{long\_lat\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ MuSpTest}\SpecialCharTok{::}\NormalTok{comyel\_assignment }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(Long, Lat) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as.matrix}\NormalTok{()}
+\NormalTok{cluster\_colors }\OtherTok{\textless{}{-}}  \FunctionTok{c}\NormalTok{(}
+  \AttributeTok{CA =} \StringTok{"\#CC0000"}\NormalTok{,}
+  \AttributeTok{Midwest =} \StringTok{"\#3399FF"}\NormalTok{,}
+  \AttributeTok{NewEngland =} \StringTok{"\#9933CC"}\NormalTok{,}
+  \AttributeTok{West =} \StringTok{"\#009933"}\NormalTok{,}
+  \AttributeTok{Southwest =} \StringTok{"\#FF6600"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
 
 We will use a \href{https://github.com/eriqande/TESS3_encho_sen}{modified version} of the \texttt{tess3r} package to create the genoscape rasters.
 
-\begin{verbatim}
-# remotes::install_github("eriqande/TESS3_encho_sen")
-genoscape_brick <- tess3r::tess3Q_map_rasters(
-  x = Q_matrix, 
-  coord = long_lat_matrix,  
-  map.polygon = breed_smooth,
-  window = terra::ext(breed_smooth)[1:4],
-  resolution = c(300,300), # if you want more cells in your raster, set higher
-  col.palette = tess3r::CreatePalette(cluster_colors, length(cluster_colors)), 
-  method = "map.max", 
-  interpol = tess3r::FieldsKrigModel(10),  
-  main = "Ancestry coefficients",
-  xlab = "Longitude", 
-  ylab = "Latitude", 
-  cex = .4
-)
-names(genoscape_brick) <- colnames(Q_matrix)
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# remotes::install\_github("eriqande/TESS3\_encho\_sen")}
+\NormalTok{genoscape\_brick }\OtherTok{\textless{}{-}}\NormalTok{ tess3r}\SpecialCharTok{::}\FunctionTok{tess3Q\_map\_rasters}\NormalTok{(}
+  \AttributeTok{x =}\NormalTok{ Q\_matrix, }
+  \AttributeTok{coord =}\NormalTok{ long\_lat\_matrix,  }
+  \AttributeTok{map.polygon =}\NormalTok{ breed\_smooth,}
+  \AttributeTok{window =}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{ext}\NormalTok{(breed\_smooth)[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{],}
+  \AttributeTok{resolution =} \FunctionTok{c}\NormalTok{(}\DecValTok{300}\NormalTok{,}\DecValTok{300}\NormalTok{), }\CommentTok{\# if you want more cells in your raster, set higher}
+  \AttributeTok{col.palette =}\NormalTok{ tess3r}\SpecialCharTok{::}\FunctionTok{CreatePalette}\NormalTok{(cluster\_colors, }\FunctionTok{length}\NormalTok{(cluster\_colors)), }
+  \AttributeTok{method =} \StringTok{"map.max"}\NormalTok{, }
+  \AttributeTok{interpol =}\NormalTok{ tess3r}\SpecialCharTok{::}\FunctionTok{FieldsKrigModel}\NormalTok{(}\DecValTok{10}\NormalTok{),  }
+  \AttributeTok{main =} \StringTok{"Ancestry coefficients"}\NormalTok{,}
+  \AttributeTok{xlab =} \StringTok{"Longitude"}\NormalTok{, }
+  \AttributeTok{ylab =} \StringTok{"Latitude"}\NormalTok{, }
+  \AttributeTok{cex =}\NormalTok{ .}\DecValTok{4}
+\NormalTok{)}
+\FunctionTok{names}\NormalTok{(genoscape\_brick) }\OtherTok{\textless{}{-}} \FunctionTok{colnames}\NormalTok{(Q\_matrix)}
 
-out.files <- paste0("./comyel/genoscape/comyel_genoscape_cluster_", names(genoscape_brick), ".tif")
-terra::writeRaster(terra::rast(genoscape_brick), filename = out.files)
-\end{verbatim}
+\NormalTok{out.files }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"./comyel/genoscape/comyel\_genoscape\_cluster\_"}\NormalTok{, }\FunctionTok{names}\NormalTok{(genoscape\_brick), }\StringTok{".tif"}\NormalTok{)}
+\NormalTok{terra}\SpecialCharTok{::}\FunctionTok{writeRaster}\NormalTok{(terra}\SpecialCharTok{::}\FunctionTok{rast}\NormalTok{(genoscape\_brick), }\AttributeTok{filename =}\NormalTok{ out.files)}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{genoscape-polygons}{%
 \section{Genoscape polygons}\label{genoscape-polygons}}
 
 Using the genoscape rasters we will convert them to polygons, using the handy \texttt{scape\_to\_shape()} function. The \texttt{prob\_threshold} parameter specifies the value to determine if a raster cell is included in the polygon for that genoscape. This value should be customized for different species to check for overlap of genoscape polygons, which is not desirable. Setting too high of a threshold will create very small breeding nodes, while too low of a threshold will result in large, overlapping breeding nodes.
 
-\begin{verbatim}
-genoscape_files <- list.files("./comyel/genoscape", 
-                                     full.names = T,
-                                     pattern = "*.tif")
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{genoscape\_files }\OtherTok{\textless{}{-}} \FunctionTok{list.files}\NormalTok{(}\StringTok{"./comyel/genoscape"}\NormalTok{, }
+                                     \AttributeTok{full.names =}\NormalTok{ T,}
+                                     \AttributeTok{pattern =} \StringTok{"*.tif"}\NormalTok{)}
 
-genoscape_raster_stack <- terra::rast(genoscape_files)
-genoscape_polygon_sf <- scape_to_shape(x = genoscape_raster_stack, prob_threshold = 0.5)
-\end{verbatim}
+\NormalTok{genoscape\_raster\_stack }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{rast}\NormalTok{(genoscape\_files)}
+\NormalTok{genoscape\_polygon\_sf }\OtherTok{\textless{}{-}} \FunctionTok{scape\_to\_shape}\NormalTok{(}\AttributeTok{x =}\NormalTok{ genoscape\_raster\_stack, }\AttributeTok{prob\_threshold =} \FloatTok{0.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 Check out the polygons
 
@@ -356,38 +376,44 @@ For the migratory networks, we will use ecoregions to define the nonbreeding nod
 
 The ecoregion data is provided by {[}provide link{]}. The ecoregions are provided in this this package as \texttt{ecoregions\_simple}. We will intersect the ecoregions with the wintering range of the Common Yellowthroat to identify all the ecoregions that overlap with the wintering range.
 
-\begin{verbatim}
-comyel_winter <- comyel_range_smooth %>%
-  dplyr::filter(season == "nonbreeding") %>%
-  sf::st_transform(crs = 4326) %>%
-  sf::st_intersection(MuSpTest::ecoregions_simple) %>%
-  dplyr::select(Region)
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{comyel\_winter }\OtherTok{\textless{}{-}}\NormalTok{ comyel\_range\_smooth }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(season }\SpecialCharTok{==} \StringTok{"nonbreeding"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_transform}\NormalTok{(}\AttributeTok{crs =} \DecValTok{4326}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_intersection}\NormalTok{(MuSpTest}\SpecialCharTok{::}\NormalTok{ecoregions\_simple) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(Region)}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{snap-points}{%
 \section{Snap points}\label{snap-points}}
 
 Sometimes individuals are not quite within the wintering nodes. Here, we will make sure all sampled individuals get assigned to the nearest ecoregion.
 
-\begin{verbatim}
-winter.coords <- MuSpTest::coye.winter.meta %>%
-  st_as_sf(coords=c("Long","Lat")) %>%
-  st_cast("MULTIPOINT") %>%
-  st_set_crs(4326)
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{winter.coords }\OtherTok{\textless{}{-}}\NormalTok{ MuSpTest}\SpecialCharTok{::}\NormalTok{coye.winter.meta }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{st\_as\_sf}\NormalTok{(}\AttributeTok{coords=}\FunctionTok{c}\NormalTok{(}\StringTok{"Long"}\NormalTok{,}\StringTok{"Lat"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{st\_cast}\NormalTok{(}\StringTok{"MULTIPOINT"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{st\_set\_crs}\NormalTok{(}\DecValTok{4326}\NormalTok{)}
   
-new.winter.coords <- snap_points(winter.coords, comyel_winter, 150000)
-\end{verbatim}
+\NormalTok{new.winter.coords }\OtherTok{\textless{}{-}} \FunctionTok{snap\_points}\NormalTok{(winter.coords, comyel\_winter, }\DecValTok{150000}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{finalize-wintering-nodes}{%
 \section{Finalize wintering nodes}\label{finalize-wintering-nodes}}
 
 Now that points have been \emph{snapped} to the appropriate ecoregions, we can further subset all of the ecoregions in which we have actually sampled individuals from. If we haven't sampled individuals from a region, we can't use that region as a node in the migratory connectivity network!
 
-\begin{verbatim}
-winter_intersect <- st_intersects(comyel_winter, new.winter.coords, sparse = T)
-poly_id <- which(unlist(lapply(winter_intersect, function(x) length(x) > 0)))
-comyel_winter_ecoregions <- comyel_winter[poly_id,]
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{winter\_intersect }\OtherTok{\textless{}{-}} \FunctionTok{st\_intersects}\NormalTok{(comyel\_winter, new.winter.coords, }\AttributeTok{sparse =}\NormalTok{ T)}
+\NormalTok{poly\_id }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(}\FunctionTok{unlist}\NormalTok{(}\FunctionTok{lapply}\NormalTok{(winter\_intersect, }\ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{length}\NormalTok{(x) }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{)))}
+\NormalTok{comyel\_winter\_ecoregions }\OtherTok{\textless{}{-}}\NormalTok{ comyel\_winter[poly\_id,]}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{connectivity}{%
 \chapter{Connectivity Model}\label{connectivity}}
@@ -399,27 +425,31 @@ To create the connectivity model, we will first specify the relative abundance f
 
 For the breeding nodes, we will input the breeding range abundance raster, genoscape polygons, and genoscape cluster names into the \texttt{MuSpTest} function \texttt{get\_abundance\_stats()}. The output will be a data frame of the summarized node suitability.
 
-\begin{verbatim}
-abd_season <- terra::rast("./comyel/comyel.abd_season.tif")
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{abd\_season }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{rast}\NormalTok{(}\StringTok{"./comyel/comyel.abd\_season.tif"}\NormalTok{)}
 
-## Breeding
-cluster_names <- genoscape_polygon_sf$Cluster
-genoscape_polygon_sf <- sf::st_read("./comyel/genoscape/polygons/comyel_genoscape_polygon_sf.shp")
-breeding_abundance_sum <- get_abundance_stats(range_raster = abd_season[["breeding"]],
-                                              node_poly = genoscape_polygon_sf,
-                                              group_names = cluster_names)
-\end{verbatim}
+\DocumentationTok{\#\# Breeding}
+\NormalTok{cluster\_names }\OtherTok{\textless{}{-}}\NormalTok{ genoscape\_polygon\_sf}\SpecialCharTok{$}\NormalTok{Cluster}
+\NormalTok{genoscape\_polygon\_sf }\OtherTok{\textless{}{-}}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_read}\NormalTok{(}\StringTok{"./comyel/genoscape/polygons/comyel\_genoscape\_polygon\_sf.shp"}\NormalTok{)}
+\NormalTok{breeding\_abundance\_sum }\OtherTok{\textless{}{-}} \FunctionTok{get\_abundance\_stats}\NormalTok{(}\AttributeTok{range\_raster =}\NormalTok{ abd\_season[[}\StringTok{"breeding"}\NormalTok{]],}
+                                              \AttributeTok{node\_poly =}\NormalTok{ genoscape\_polygon\_sf,}
+                                              \AttributeTok{group\_names =}\NormalTok{ cluster\_names)}
+\end{Highlighting}
+\end{Shaded}
 
 Similarly for the wintering nodes, we will input the nonbreeding range abundance raster, winter ecoregions, and ecoregion names into the \texttt{MuSpTest} function \texttt{get\_abundance\_stats()}.
 
-\begin{verbatim}
-## Nonbreeding
-comyel_winter_ecoregions <- sf::st_read("./comyel/winter_regions/comyel_winter_ecoregions.shp")
-ecoregion_names <- comyel_winter_ecoregions$Region
-nonbreeding_abundance_sum <- get_abundance_stats(range_raster = abd_season[["nonbreeding"]],
-                                                 node_poly = comyel_winter_ecoregions,
-                                                 group_names = ecoregion_names)
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Nonbreeding}
+\NormalTok{comyel\_winter\_ecoregions }\OtherTok{\textless{}{-}}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_read}\NormalTok{(}\StringTok{"./comyel/winter\_regions/comyel\_winter\_ecoregions.shp"}\NormalTok{)}
+\NormalTok{ecoregion\_names }\OtherTok{\textless{}{-}}\NormalTok{ comyel\_winter\_ecoregions}\SpecialCharTok{$}\NormalTok{Region}
+\NormalTok{nonbreeding\_abundance\_sum }\OtherTok{\textless{}{-}} \FunctionTok{get\_abundance\_stats}\NormalTok{(}\AttributeTok{range\_raster =}\NormalTok{ abd\_season[[}\StringTok{"nonbreeding"}\NormalTok{]],}
+                                                 \AttributeTok{node\_poly =}\NormalTok{ comyel\_winter\_ecoregions,}
+                                                 \AttributeTok{group\_names =}\NormalTok{ ecoregion\_names)}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{run-connectivity-model}{%
 \section{Run connectivity model}\label{run-connectivity-model}}

@@ -189,56 +189,56 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">2.1</span> ebirdst</h2>
 <p>In the migratory network analyses, the <code>ebirdst</code> abundance data is used to delineate the different stages of the annual cycle. The <code>MuSpTest</code> package provides code for these first sections that function as a wrapper for the <code>ebirdst</code> package to streamline the process. If you would like to know more about the underlying <code>ebirdst</code> code and analyses, check out the <a href="https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html">excellent tutorial</a> by Strimas-Mackey, Auer, and Fink.</p>
 <p>Prior to doing anything with eBird Status and Trends data, you will need to download the <code>ebirdst</code> package, and then get access to the data. To download the package:</p>
-<pre><code># install.packages(&quot;remotes&quot;)
-remotes::install_github(&quot;CornellLabofOrnithology/ebirdst&quot;)</code></pre>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="breeding.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
+<span id="cb2-2"><a href="breeding.html#cb2-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;CornellLabofOrnithology/ebirdst&quot;</span>)</span></code></pre></div>
 <p>Then, get access to <code>ebirdst</code> data at <a href="https://ebird.org/st/request" class="uri">https://ebird.org/st/request</a>. You will receive a key to download <code>ebirdst</code> data and you can enter that key in R:</p>
-<pre><code>ebirdst::set_ebirdst_access_key(&quot;XXXXX&quot;)</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="breeding.html#cb3-1" aria-hidden="true" tabindex="-1"></a>ebirdst<span class="sc">::</span><span class="fu">set_ebirdst_access_key</span>(<span class="st">&quot;XXXXX&quot;</span>)</span></code></pre></div>
 <p>where <code>"XXXXX"</code> is the key.</p>
 <p>The primary packages for this vignette are:</p>
-<pre><code>library(MuSpTest)
-library(sf)
-library(terra)
-library(tidyverse)
-library(ebirdst)
-library(rnaturalearth)</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="breeding.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuSpTest)</span>
+<span id="cb4-2"><a href="breeding.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb4-3"><a href="breeding.html#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb4-4"><a href="breeding.html#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb4-5"><a href="breeding.html#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ebirdst)</span>
+<span id="cb4-6"><a href="breeding.html#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rnaturalearth)</span></code></pre></div>
 </div>
 <div id="seasonal-abundance" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Seasonal abundance</h2>
 <p>The first function, <code>get_ebirdst_abd_season()</code>, downloads species data and creates a multi-layered raster of seasonal abundance data (nonbreeding, prebreeding migration, breeding, and postbreeding migration). The function currently takes two inputs, <code>species</code> and <code>path</code>. <code>ebirdst</code> data download is based on the six-letter species code, thus, we use the same naming system. You can find the specific codes with the <a href="https://rdrr.io/github/CornellLabofOrnithology/ebirdst/man/get_species.html">get_species</a> function from the <code>ebirdst</code> package.</p>
 <p>Specify the species of interest for <code>get_ebirdst_abd_season()</code> with <code>species</code>. <code>path</code> specifies the output path for the single multi-layered raster file that is produced, with the default being the current directory. If you want to output to another directory, make sure that directory is already created. The output naming convention for the raster is “[species code].abd_season.tif.”</p>
 <p>Below is an example for downloading data for the <a href="https://ebird.org/species/comyel">Common Yellowthroat</a> and creating the seasonal abundance raster stack.</p>
-<pre><code># This can take a while depending on the species (5-10 min.)
-abd_season &lt;- get_ebirdst_abd_season(species = &quot;comyel&quot;, path = &quot;./comyel/&quot;)</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="breeding.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This can take a while depending on the species (5-10 min.)</span></span>
+<span id="cb5-2"><a href="breeding.html#cb5-2" aria-hidden="true" tabindex="-1"></a>abd_season <span class="ot">&lt;-</span> <span class="fu">get_ebirdst_abd_season</span>(<span class="at">species =</span> <span class="st">&quot;comyel&quot;</span>, <span class="at">path =</span> <span class="st">&quot;./comyel/&quot;</span>)</span></code></pre></div>
 </div>
 <div id="generating-seasonal-polygons" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> Generating seasonal polygons</h2>
 <p>Using the previously created seasonal abundance rasters, we will convert them to polygons of the range. The details can be found in the <code>ebirdst</code> <a href="https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html">tutorial</a>, but the gist of it is that we’ll distinguish non-zero abundance from non-predicted areas, and delineate nice <em>smooth</em> ranges for the different stages.</p>
 <p>We also need land extent data. We will get land data from the <code>rnaturalearth</code> package using the following code. Depending on the organism’s range, you will need to filter continent to the appropriate region. Here, we want both North and South America.</p>
-<pre><code>ne_scale &lt;- 50
-# land polygon
-ne_land &lt;- rnaturalearth::ne_countries(scale = ne_scale, returnclass = &quot;sf&quot;) %&gt;%
-  dplyr::filter(continent %in% c(&quot;North America&quot;, &quot;South America&quot;)) %&gt;%
-  sf::st_set_precision(1e6) %&gt;%
-  sf::st_union() %&gt;% 
-  sf::st_geometry()
-ne_land_proj &lt;- sf::st_transform(ne_land, crs = sf::st_crs(abd_season))</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="breeding.html#cb6-1" aria-hidden="true" tabindex="-1"></a>ne_scale <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb6-2"><a href="breeding.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># land polygon</span></span>
+<span id="cb6-3"><a href="breeding.html#cb6-3" aria-hidden="true" tabindex="-1"></a>ne_land <span class="ot">&lt;-</span> rnaturalearth<span class="sc">::</span><span class="fu">ne_countries</span>(<span class="at">scale =</span> ne_scale, <span class="at">returnclass =</span> <span class="st">&quot;sf&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="breeding.html#cb6-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(continent <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;North America&quot;</span>, <span class="st">&quot;South America&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="breeding.html#cb6-5" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_set_precision</span>(<span class="fl">1e6</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a href="breeding.html#cb6-6" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_union</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb6-7"><a href="breeding.html#cb6-7" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_geometry</span>()</span>
+<span id="cb6-8"><a href="breeding.html#cb6-8" aria-hidden="true" tabindex="-1"></a>ne_land_proj <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(ne_land, <span class="at">crs =</span> sf<span class="sc">::</span><span class="fu">st_crs</span>(abd_season))</span></code></pre></div>
 <p>Now we have all the input data we need to get the polygons of the range. The function <code>range_smooth()</code> in the <code>MuSpTest</code> package takes care of this. In the process of smoothing the polygon, small regions are dropped and holes in the polygon filled in based on the size (<span class="math inline">\(km^2\)</span>) specified with the <code>smooth_area</code> parameter. Below it is set at 1000 <span class="math inline">\(km^2\)</span> (e.g. a 31.6 km * 31.6 km square), but you may want to increase or decrease depending on the organism.</p>
-<pre><code># this fuction can take a while (~10 min.)
-comyel_range_smooth &lt;- range_smooth(abd_season = abd_season, 
-                                  path = &quot;./comyel/shapefiles&quot;, 
-                                  filename = &quot;range_smooth&quot;,
-                                  ne_land = ne_land_proj,
-                                  smooth_area = 1000,
-                                  split_migration = FALSE, 
-                                  show_yearround = FALSE)</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="breeding.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this fuction can take a while (~10 min.)</span></span>
+<span id="cb7-2"><a href="breeding.html#cb7-2" aria-hidden="true" tabindex="-1"></a>comyel_range_smooth <span class="ot">&lt;-</span> <span class="fu">range_smooth</span>(<span class="at">abd_season =</span> abd_season, </span>
+<span id="cb7-3"><a href="breeding.html#cb7-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">path =</span> <span class="st">&quot;./comyel/shapefiles&quot;</span>, </span>
+<span id="cb7-4"><a href="breeding.html#cb7-4" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">filename =</span> <span class="st">&quot;range_smooth&quot;</span>,</span>
+<span id="cb7-5"><a href="breeding.html#cb7-5" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">ne_land =</span> ne_land_proj,</span>
+<span id="cb7-6"><a href="breeding.html#cb7-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">smooth_area =</span> <span class="dv">1000</span>,</span>
+<span id="cb7-7"><a href="breeding.html#cb7-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">split_migration =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb7-8"><a href="breeding.html#cb7-8" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">show_yearround =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p>Extracting a single polygon of a portion of the range is simple and quick! Here’s an example of getting the <em>breeding</em> season range from the <code>range_smooth()</code> output.</p>
-<pre><code>comyel_breed_smooth &lt;- dplyr::filter(comyel_range_smooth,
-                                season == &quot;breeding&quot;) %&gt;%
-                    sf::st_transform(crs = 4326)
-
-sf::st_write(comyel_breed_smooth, dsn = &#39;./comyel/shapefiles&#39;,
-          layer = &quot;comyel_breed_smooth&quot;,
-          driver = &quot;ESRI Shapefile&quot;)</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="breeding.html#cb8-1" aria-hidden="true" tabindex="-1"></a>comyel_breed_smooth <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(comyel_range_smooth,</span>
+<span id="cb8-2"><a href="breeding.html#cb8-2" aria-hidden="true" tabindex="-1"></a>                                season <span class="sc">==</span> <span class="st">&quot;breeding&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="breeding.html#cb8-3" aria-hidden="true" tabindex="-1"></a>                    sf<span class="sc">::</span><span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb8-4"><a href="breeding.html#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="breeding.html#cb8-5" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_write</span>(comyel_breed_smooth, <span class="at">dsn =</span> <span class="st">&#39;./comyel/shapefiles&#39;</span>,</span>
+<span id="cb8-6"><a href="breeding.html#cb8-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">layer =</span> <span class="st">&quot;comyel_breed_smooth&quot;</span>,</span>
+<span id="cb8-7"><a href="breeding.html#cb8-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">driver =</span> <span class="st">&quot;ESRI Shapefile&quot;</span>)</span></code></pre></div>
 </div>
 <div id="creating-the-genoscape" class="section level2" number="2.4">
 <h2><span class="header-section-number">2.4</span> Creating the genoscape</h2>
@@ -249,48 +249,48 @@ sf::st_write(comyel_breed_smooth, dsn = &#39;./comyel/shapefiles&#39;,
 <li>Breeding range polygon</li>
 </ul>
 <p>The <code>comyel_assignment</code> data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.</p>
-<pre><code>Q_matrix &lt;- MuSpTest::comyel_assignment %&gt;%
-  dplyr::select(CA, Midwest, NewEngland, West, Southwest) %&gt;%
-  as.matrix()
-long_lat_matrix &lt;- MuSpTest::comyel_assignment %&gt;%
-  dplyr::select(Long, Lat) %&gt;%
-  as.matrix()
-cluster_colors &lt;-  c(
-  CA = &quot;#CC0000&quot;,
-  Midwest = &quot;#3399FF&quot;,
-  NewEngland = &quot;#9933CC&quot;,
-  West = &quot;#009933&quot;,
-  Southwest = &quot;#FF6600&quot;) </code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="breeding.html#cb9-1" aria-hidden="true" tabindex="-1"></a>Q_matrix <span class="ot">&lt;-</span> MuSpTest<span class="sc">::</span>comyel_assignment <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="breeding.html#cb9-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(CA, Midwest, NewEngland, West, Southwest) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="breeding.html#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb9-4"><a href="breeding.html#cb9-4" aria-hidden="true" tabindex="-1"></a>long_lat_matrix <span class="ot">&lt;-</span> MuSpTest<span class="sc">::</span>comyel_assignment <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href="breeding.html#cb9-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Long, Lat) <span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="breeding.html#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb9-7"><a href="breeding.html#cb9-7" aria-hidden="true" tabindex="-1"></a>cluster_colors <span class="ot">&lt;-</span>  <span class="fu">c</span>(</span>
+<span id="cb9-8"><a href="breeding.html#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">CA =</span> <span class="st">&quot;#CC0000&quot;</span>,</span>
+<span id="cb9-9"><a href="breeding.html#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Midwest =</span> <span class="st">&quot;#3399FF&quot;</span>,</span>
+<span id="cb9-10"><a href="breeding.html#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">NewEngland =</span> <span class="st">&quot;#9933CC&quot;</span>,</span>
+<span id="cb9-11"><a href="breeding.html#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">West =</span> <span class="st">&quot;#009933&quot;</span>,</span>
+<span id="cb9-12"><a href="breeding.html#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Southwest =</span> <span class="st">&quot;#FF6600&quot;</span>) </span></code></pre></div>
 <p>We will use a <a href="https://github.com/eriqande/TESS3_encho_sen">modified version</a> of the <code>tess3r</code> package to create the genoscape rasters.</p>
-<pre><code># remotes::install_github(&quot;eriqande/TESS3_encho_sen&quot;)
-genoscape_brick &lt;- tess3r::tess3Q_map_rasters(
-  x = Q_matrix, 
-  coord = long_lat_matrix,  
-  map.polygon = breed_smooth,
-  window = terra::ext(breed_smooth)[1:4],
-  resolution = c(300,300), # if you want more cells in your raster, set higher
-  col.palette = tess3r::CreatePalette(cluster_colors, length(cluster_colors)), 
-  method = &quot;map.max&quot;, 
-  interpol = tess3r::FieldsKrigModel(10),  
-  main = &quot;Ancestry coefficients&quot;,
-  xlab = &quot;Longitude&quot;, 
-  ylab = &quot;Latitude&quot;, 
-  cex = .4
-)
-names(genoscape_brick) &lt;- colnames(Q_matrix)
-
-out.files &lt;- paste0(&quot;./comyel/genoscape/comyel_genoscape_cluster_&quot;, names(genoscape_brick), &quot;.tif&quot;)
-terra::writeRaster(terra::rast(genoscape_brick), filename = out.files)</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="breeding.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github(&quot;eriqande/TESS3_encho_sen&quot;)</span></span>
+<span id="cb10-2"><a href="breeding.html#cb10-2" aria-hidden="true" tabindex="-1"></a>genoscape_brick <span class="ot">&lt;-</span> tess3r<span class="sc">::</span><span class="fu">tess3Q_map_rasters</span>(</span>
+<span id="cb10-3"><a href="breeding.html#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> Q_matrix, </span>
+<span id="cb10-4"><a href="breeding.html#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">coord =</span> long_lat_matrix,  </span>
+<span id="cb10-5"><a href="breeding.html#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">map.polygon =</span> breed_smooth,</span>
+<span id="cb10-6"><a href="breeding.html#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">window =</span> terra<span class="sc">::</span><span class="fu">ext</span>(breed_smooth)[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>],</span>
+<span id="cb10-7"><a href="breeding.html#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">resolution =</span> <span class="fu">c</span>(<span class="dv">300</span>,<span class="dv">300</span>), <span class="co"># if you want more cells in your raster, set higher</span></span>
+<span id="cb10-8"><a href="breeding.html#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.palette =</span> tess3r<span class="sc">::</span><span class="fu">CreatePalette</span>(cluster_colors, <span class="fu">length</span>(cluster_colors)), </span>
+<span id="cb10-9"><a href="breeding.html#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;map.max&quot;</span>, </span>
+<span id="cb10-10"><a href="breeding.html#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">interpol =</span> tess3r<span class="sc">::</span><span class="fu">FieldsKrigModel</span>(<span class="dv">10</span>),  </span>
+<span id="cb10-11"><a href="breeding.html#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Ancestry coefficients&quot;</span>,</span>
+<span id="cb10-12"><a href="breeding.html#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Longitude&quot;</span>, </span>
+<span id="cb10-13"><a href="breeding.html#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Latitude&quot;</span>, </span>
+<span id="cb10-14"><a href="breeding.html#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> .<span class="dv">4</span></span>
+<span id="cb10-15"><a href="breeding.html#cb10-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-16"><a href="breeding.html#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(genoscape_brick) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(Q_matrix)</span>
+<span id="cb10-17"><a href="breeding.html#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="breeding.html#cb10-18" aria-hidden="true" tabindex="-1"></a>out.files <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;./comyel/genoscape/comyel_genoscape_cluster_&quot;</span>, <span class="fu">names</span>(genoscape_brick), <span class="st">&quot;.tif&quot;</span>)</span>
+<span id="cb10-19"><a href="breeding.html#cb10-19" aria-hidden="true" tabindex="-1"></a>terra<span class="sc">::</span><span class="fu">writeRaster</span>(terra<span class="sc">::</span><span class="fu">rast</span>(genoscape_brick), <span class="at">filename =</span> out.files)</span></code></pre></div>
 </div>
 <div id="genoscape-polygons" class="section level2" number="2.5">
 <h2><span class="header-section-number">2.5</span> Genoscape polygons</h2>
 <p>Using the genoscape rasters we will convert them to polygons, using the handy <code>scape_to_shape()</code> function. The <code>prob_threshold</code> parameter specifies the value to determine if a raster cell is included in the polygon for that genoscape. This value should be customized for different species to check for overlap of genoscape polygons, which is not desirable. Setting too high of a threshold will create very small breeding nodes, while too low of a threshold will result in large, overlapping breeding nodes.</p>
-<pre><code>genoscape_files &lt;- list.files(&quot;./comyel/genoscape&quot;, 
-                                     full.names = T,
-                                     pattern = &quot;*.tif&quot;)
-
-genoscape_raster_stack &lt;- terra::rast(genoscape_files)
-genoscape_polygon_sf &lt;- scape_to_shape(x = genoscape_raster_stack, prob_threshold = 0.5)</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="breeding.html#cb11-1" aria-hidden="true" tabindex="-1"></a>genoscape_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">&quot;./comyel/genoscape&quot;</span>, </span>
+<span id="cb11-2"><a href="breeding.html#cb11-2" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">full.names =</span> T,</span>
+<span id="cb11-3"><a href="breeding.html#cb11-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">pattern =</span> <span class="st">&quot;*.tif&quot;</span>)</span>
+<span id="cb11-4"><a href="breeding.html#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="breeding.html#cb11-5" aria-hidden="true" tabindex="-1"></a>genoscape_raster_stack <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rast</span>(genoscape_files)</span>
+<span id="cb11-6"><a href="breeding.html#cb11-6" aria-hidden="true" tabindex="-1"></a>genoscape_polygon_sf <span class="ot">&lt;-</span> <span class="fu">scape_to_shape</span>(<span class="at">x =</span> genoscape_raster_stack, <span class="at">prob_threshold =</span> <span class="fl">0.5</span>)</span></code></pre></div>
 <p>Check out the polygons</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="breeding.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
 <span id="cb12-2"><a href="breeding.html#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> genoscape_polygon_sf,<span class="at">alpha =</span> <span class="fl">0.75</span>, <span class="fu">aes</span>(<span class="at">fill =</span> Cluster)) <span class="sc">+</span></span>

@@ -188,21 +188,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">4.1</span> Specifying relative abundance</h2>
 <p>To create the connectivity model, we will first specify the relative abundance for each of the nodes (breeding and wintering). This is used to determine the overall importance of the node to the connectivity model. In this example, we will use summarize relative abundance from the seasonal <code>ebirdst</code> rasters we created, but other data could be used as well (for example, habitat suitability from ecological niche models).</p>
 <p>For the breeding nodes, we will input the breeding range abundance raster, genoscape polygons, and genoscape cluster names into the <code>MuSpTest</code> function <code>get_abundance_stats()</code>. The output will be a data frame of the summarized node suitability.</p>
-<pre><code>abd_season &lt;- terra::rast(&quot;./comyel/comyel.abd_season.tif&quot;)
-
-## Breeding
-cluster_names &lt;- genoscape_polygon_sf$Cluster
-genoscape_polygon_sf &lt;- sf::st_read(&quot;./comyel/genoscape/polygons/comyel_genoscape_polygon_sf.shp&quot;)
-breeding_abundance_sum &lt;- get_abundance_stats(range_raster = abd_season[[&quot;breeding&quot;]],
-                                              node_poly = genoscape_polygon_sf,
-                                              group_names = cluster_names)</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="connectivity.html#cb18-1" aria-hidden="true" tabindex="-1"></a>abd_season <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rast</span>(<span class="st">&quot;./comyel/comyel.abd_season.tif&quot;</span>)</span>
+<span id="cb18-2"><a href="connectivity.html#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="connectivity.html#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Breeding</span></span>
+<span id="cb18-4"><a href="connectivity.html#cb18-4" aria-hidden="true" tabindex="-1"></a>cluster_names <span class="ot">&lt;-</span> genoscape_polygon_sf<span class="sc">$</span>Cluster</span>
+<span id="cb18-5"><a href="connectivity.html#cb18-5" aria-hidden="true" tabindex="-1"></a>genoscape_polygon_sf <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_read</span>(<span class="st">&quot;./comyel/genoscape/polygons/comyel_genoscape_polygon_sf.shp&quot;</span>)</span>
+<span id="cb18-6"><a href="connectivity.html#cb18-6" aria-hidden="true" tabindex="-1"></a>breeding_abundance_sum <span class="ot">&lt;-</span> <span class="fu">get_abundance_stats</span>(<span class="at">range_raster =</span> abd_season[[<span class="st">&quot;breeding&quot;</span>]],</span>
+<span id="cb18-7"><a href="connectivity.html#cb18-7" aria-hidden="true" tabindex="-1"></a>                                              <span class="at">node_poly =</span> genoscape_polygon_sf,</span>
+<span id="cb18-8"><a href="connectivity.html#cb18-8" aria-hidden="true" tabindex="-1"></a>                                              <span class="at">group_names =</span> cluster_names)</span></code></pre></div>
 <p>Similarly for the wintering nodes, we will input the nonbreeding range abundance raster, winter ecoregions, and ecoregion names into the <code>MuSpTest</code> function <code>get_abundance_stats()</code>.</p>
-<pre><code>## Nonbreeding
-comyel_winter_ecoregions &lt;- sf::st_read(&quot;./comyel/winter_regions/comyel_winter_ecoregions.shp&quot;)
-ecoregion_names &lt;- comyel_winter_ecoregions$Region
-nonbreeding_abundance_sum &lt;- get_abundance_stats(range_raster = abd_season[[&quot;nonbreeding&quot;]],
-                                                 node_poly = comyel_winter_ecoregions,
-                                                 group_names = ecoregion_names)</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="connectivity.html#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Nonbreeding</span></span>
+<span id="cb19-2"><a href="connectivity.html#cb19-2" aria-hidden="true" tabindex="-1"></a>comyel_winter_ecoregions <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_read</span>(<span class="st">&quot;./comyel/winter_regions/comyel_winter_ecoregions.shp&quot;</span>)</span>
+<span id="cb19-3"><a href="connectivity.html#cb19-3" aria-hidden="true" tabindex="-1"></a>ecoregion_names <span class="ot">&lt;-</span> comyel_winter_ecoregions<span class="sc">$</span>Region</span>
+<span id="cb19-4"><a href="connectivity.html#cb19-4" aria-hidden="true" tabindex="-1"></a>nonbreeding_abundance_sum <span class="ot">&lt;-</span> <span class="fu">get_abundance_stats</span>(<span class="at">range_raster =</span> abd_season[[<span class="st">&quot;nonbreeding&quot;</span>]],</span>
+<span id="cb19-5"><a href="connectivity.html#cb19-5" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">node_poly =</span> comyel_winter_ecoregions,</span>
+<span id="cb19-6"><a href="connectivity.html#cb19-6" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">group_names =</span> ecoregion_names)</span></code></pre></div>
 </div>
 <div id="run-connectivity-model" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span> Run connectivity model</h2>
