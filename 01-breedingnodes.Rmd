@@ -36,13 +36,13 @@ library(rnaturalearth)
 
 The first function, `get_ebirdst_abd_season()`, downloads species data and creates a multi-layered raster of seasonal abundance data (nonbreeding, prebreeding migration, breeding, and postbreeding migration). The function currently takes two inputs, `species` and `path`. `ebirdst` data download is based on the six-letter species code, thus, we use the same naming system. You can find the specific codes with the [get_species](https://rdrr.io/github/CornellLabofOrnithology/ebirdst/man/get_species.html) function from the `ebirdst` package. 
 
-Specify the species of interest for `get_ebirdst_abd_season()` with `species`. `path` specifies the output path for the single multi-layered raster file that is produced, with the default being the current directory. If you want to output to another directory, make sure that directory is already created. The output naming convention for the raster is "[species code].abd_season.tif". 
+Specify the species of interest for `get_ebirdst_abd_season()` with `species`.
 
 Below is an example for downloading data for the [Common Yellowthroat](https://ebird.org/species/comyel) and creating the seasonal abundance raster stack.
 
 ``` r
 # This can take a while depending on the species (5-10 min.)
-abd_season <- get_ebirdst_abd_season(species = "comyel", path = "./comyel/")
+abd_season <- get_ebirdst_abd_season(species = "comyel")
 ```
 
 ## Generating seasonal polygons
@@ -67,8 +67,6 @@ Now we have all the input data we need to get the polygons of the range. The fun
 ``` r
 # this fuction can take a while (~10 min.)
 comyel_range_smooth <- range_smooth(abd_season = abd_season, 
-                                  path = "./comyel/shapefiles", 
-                                  filename = "range_smooth",
                                   ne_land = ne_land_proj,
                                   smooth_area = 1000,
                                   split_migration = FALSE, 

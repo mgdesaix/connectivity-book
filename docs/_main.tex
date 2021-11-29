@@ -203,14 +203,14 @@ The primary packages for this vignette are:
 
 The first function, \texttt{get\_ebirdst\_abd\_season()}, downloads species data and creates a multi-layered raster of seasonal abundance data (nonbreeding, prebreeding migration, breeding, and postbreeding migration). The function currently takes two inputs, \texttt{species} and \texttt{path}. \texttt{ebirdst} data download is based on the six-letter species code, thus, we use the same naming system. You can find the specific codes with the \href{https://rdrr.io/github/CornellLabofOrnithology/ebirdst/man/get_species.html}{get\_species} function from the \texttt{ebirdst} package.
 
-Specify the species of interest for \texttt{get\_ebirdst\_abd\_season()} with \texttt{species}. \texttt{path} specifies the output path for the single multi-layered raster file that is produced, with the default being the current directory. If you want to output to another directory, make sure that directory is already created. The output naming convention for the raster is ``{[}species code{]}.abd\_season.tif''.
+Specify the species of interest for \texttt{get\_ebirdst\_abd\_season()} with \texttt{species}.
 
 Below is an example for downloading data for the \href{https://ebird.org/species/comyel}{Common Yellowthroat} and creating the seasonal abundance raster stack.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# This can take a while depending on the species (5{-}10 min.)}
-\NormalTok{abd\_season }\OtherTok{\textless{}{-}} \FunctionTok{get\_ebirdst\_abd\_season}\NormalTok{(}\AttributeTok{species =} \StringTok{"comyel"}\NormalTok{, }\AttributeTok{path =} \StringTok{"./comyel/"}\NormalTok{)}
+\NormalTok{abd\_season }\OtherTok{\textless{}{-}} \FunctionTok{get\_ebirdst\_abd\_season}\NormalTok{(}\AttributeTok{species =} \StringTok{"comyel"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -240,8 +240,6 @@ Now we have all the input data we need to get the polygons of the range. The fun
 \begin{Highlighting}[]
 \CommentTok{\# this fuction can take a while (\textasciitilde{}10 min.)}
 \NormalTok{comyel\_range\_smooth }\OtherTok{\textless{}{-}} \FunctionTok{range\_smooth}\NormalTok{(}\AttributeTok{abd\_season =}\NormalTok{ abd\_season, }
-                                  \AttributeTok{path =} \StringTok{"./comyel/shapefiles"}\NormalTok{, }
-                                  \AttributeTok{filename =} \StringTok{"range\_smooth"}\NormalTok{,}
                                   \AttributeTok{ne\_land =}\NormalTok{ ne\_land\_proj,}
                                   \AttributeTok{smooth\_area =} \DecValTok{1000}\NormalTok{,}
                                   \AttributeTok{split\_migration =} \ConstantTok{FALSE}\NormalTok{, }
