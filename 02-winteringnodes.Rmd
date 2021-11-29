@@ -1,0 +1,41 @@
+# Wintering nodes {#wintering}
+
+For the migratory networks, we will use ecoregions to define the nonbreeding nodes. However, other nonbreeding nodes could be defined by the user instead. If you already have polygons defining your nonbreeding of nodes interest, then move along to ...
+
+## Subsetting winter ecoregions
+
+The ecoregion data is provided by [provide link]. The ecoregions are provided in this this package as `ecoregions_simple`. We will intersect the ecoregions with the wintering range of the Common Yellowthroat to identify all the ecoregions that overlap with the wintering range.
+
+```
+comyel_winter <- comyel_range_smooth %>%
+  dplyr::filter(season == "nonbreeding") %>%
+  sf::st_transform(crs = 4326) %>%
+  sf::st_intersection(MuSpTest::ecoregions_simple) %>%
+  dplyr::select(Region)
+```
+
+
+## Snap points
+
+Sometimes individuals are not quite within the wintering nodes. Here, we will make sure all sampled individuals get assigned to the nearest ecoregion.
+
+```
+winter.coords <- MuSpTest::coye.winter.meta %>%
+  st_as_sf(coords=c("Long","Lat")) %>%
+  st_cast("MULTIPOINT") %>%
+  st_set_crs(4326)
+  
+new.winter.coords <- snap_points(winter.coords, comyel_winter, 150000)
+```
+
+## Finalize wintering nodes
+
+Now that points have been *snapped* to the appropriate ecoregions, we can further subset all of the ecoregions in which we have actually sampled individuals from. If we haven't sampled individuals from a region, we can't use that region as a node in the migratory connectivity network! 
+
+```
+winter_intersect <- st_intersects(comyel_winter, new.winter.coords, sparse = T)
+poly_id <- which(unlist(lapply(winter_intersect, function(x) length(x) > 0)))
+comyel_winter_ecoregions <- comyel_winter[poly_id,]
+```
+
+

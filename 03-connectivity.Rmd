@@ -1,0 +1,37 @@
+# Connectivity Model {#connectivity}
+
+
+## Specifying relative abundance
+
+To create the connectivity model, we will first specify the relative abundance for each of the nodes (breeding and wintering). This is used to determine the overall importance of the node to the connectivity model. In this example, we will use summarize relative abundance from the seasonal `ebirdst` rasters we created, but other data could be used as well (for example, habitat suitability from ecological niche models).
+
+For the breeding nodes, we will input the breeding range abundance raster, genoscape polygons, and genoscape cluster names into the `MuSpTest` function `get_abundance_stats()`. The output will be a data frame of the summarized node suitability.
+
+```
+abd_season <- terra::rast("./comyel/comyel.abd_season.tif")
+
+## Breeding
+cluster_names <- genoscape_polygon_sf$Cluster
+genoscape_polygon_sf <- sf::st_read("./comyel/genoscape/polygons/comyel_genoscape_polygon_sf.shp")
+breeding_abundance_sum <- get_abundance_stats(range_raster = abd_season[["breeding"]],
+                                              node_poly = genoscape_polygon_sf,
+                                              group_names = cluster_names)
+```
+
+Similarly for the wintering nodes, we will input the nonbreeding range abundance raster, winter ecoregions, and ecoregion names into the `MuSpTest` function `get_abundance_stats()`.
+
+```
+## Nonbreeding
+comyel_winter_ecoregions <- sf::st_read("./comyel/winter_regions/comyel_winter_ecoregions.shp")
+ecoregion_names <- comyel_winter_ecoregions$Region
+nonbreeding_abundance_sum <- get_abundance_stats(range_raster = abd_season[["nonbreeding"]],
+                                                 node_poly = comyel_winter_ecoregions,
+                                                 group_names = ecoregion_names)
+```
+
+
+## Run connectivity model
+
+
+
+

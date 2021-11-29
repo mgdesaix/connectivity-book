@@ -1,0 +1,16 @@
+introduction
+installation
+breeding
+ebirdst
+seasonal-abundance
+generating-seasonal-polygons
+creating-the-genoscape
+genoscape-polygons
+wintering
+subsetting-winter-ecoregions
+snap-points
+finalize-wintering-nodes
+connectivity
+specifying-relative-abundance
+run-connectivity-model
+network-visualization

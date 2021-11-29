@@ -1,0 +1,42 @@
+--- 
+title: "Creating Migratory Connectivity Networks in R"
+author: "Matt DeSaix"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+# url: your book url like https://bookdown.org/yihui/bookdown
+# cover-image: path to the social sharing image like images/cover.jpg
+description: |
+  This provides examples and documentation of the MuSpTest package
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+---
+
+# Introduction
+
+This text outlines how to create migratory connectivity networks using the R package `MuSpTest` (*We need a name!*). The creation of the migratory connectivity networks is broken into three main parts:
+
+1. Delineating [breeding nodes](#breeding)
+2. Delineating [wintering nodes](#wintering)
+3. Create [migratory connectivity network](#connectivity)
+
+## Installation 
+
+You can install the development version of MuSpTest from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("mgdesaix/MuSpTest", auth_token = "xxx")
+```
+
+**Note:** The `auth_token =` specifies my personal access token to allow the download because it is currently a private repository. Replace "xxx" with the token until we make the repository public.
+
+
+
+```{r include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+), 'packages.bib')
+```
