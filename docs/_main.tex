@@ -1,0 +1,434 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{book}
+\title{Creating Migratory Connectivity Networks in R}
+\author{Matt DeSaix}
+\date{2021-11-29}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Creating Migratory Connectivity Networks in R},
+  pdfauthor={Matt DeSaix},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\usepackage{booktabs}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage[]{natbib}
+\bibliographystyle{plainnat}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{1}
+\tableofcontents
+}
+\hypertarget{introduction}{%
+\chapter{Introduction}\label{introduction}}
+
+This text outlines how to create migratory connectivity networks using the R package \texttt{MuSpTest} (\emph{We need a name!}). The creation of the migratory connectivity networks is broken into three main parts:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Delineating \protect\hyperlink{breeding}{breeding nodes}
+\item
+  Delineating \protect\hyperlink{wintering}{wintering nodes}
+\item
+  Create \protect\hyperlink{connectivity}{migratory connectivity network}
+\end{enumerate}
+
+\hypertarget{installation}{%
+\section{Installation}\label{installation}}
+
+You can install the development version of MuSpTest from \href{https://github.com/}{GitHub} with:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# install.packages("devtools")}
+\NormalTok{devtools}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"mgdesaix/MuSpTest"}\NormalTok{, }\AttributeTok{auth\_token =} \StringTok{"xxx"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Note:} The \texttt{auth\_token\ =} specifies my personal access token to allow the download because it is currently a private repository. Replace ``xxx'' with the token until we make the repository public.
+
+\hypertarget{breeding}{%
+\chapter{Breeding nodes}\label{breeding}}
+
+Breeding nodes are delineated by the genetically distinct populations on the breeding grounds. In this example, we'll show how to use \href{https://ebird.org/science/status-and-trends}{eBird Status and Trends} data to specify the breeding range and then use genetic data from admixture analyses to specify the spatial extent of the breeding nodes.
+
+\hypertarget{ebirdst}{%
+\section{ebirdst}\label{ebirdst}}
+
+In the migratory network analyses, the \texttt{ebirdst} abundance data is used to delineate the different stages of the annual cycle. The \texttt{MuSpTest} package provides code for these first sections that function as a wrapper for the \texttt{ebirdst} package to streamline the process. If you would like to know more about the underlying \texttt{ebirdst} code and analyses, check out the \href{https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html}{excellent tutorial} by Strimas-Mackey, Auer, and Fink.
+
+Prior to doing anything with eBird Status and Trends data, you will need to download the \texttt{ebirdst} package, and then get access to the data. To download the package:
+
+\begin{verbatim}
+# install.packages("remotes")
+remotes::install_github("CornellLabofOrnithology/ebirdst")
+\end{verbatim}
+
+Then, get access to \texttt{ebirdst} data at \url{https://ebird.org/st/request}. You will receive a key to download \texttt{ebirdst} data and you can enter that key in R:
+
+\begin{verbatim}
+ebirdst::set_ebirdst_access_key("XXXXX")
+\end{verbatim}
+
+where \texttt{"XXXXX"} is the key.
+
+The primary packages for this vignette are:
+
+\begin{verbatim}
+library(MuSpTest)
+library(sf)
+library(terra)
+library(tidyverse)
+library(ebirdst)
+library(rnaturalearth)
+\end{verbatim}
+
+\hypertarget{seasonal-abundance}{%
+\section{Seasonal abundance}\label{seasonal-abundance}}
+
+The first function, \texttt{get\_ebirdst\_abd\_season()}, downloads species data and creates a multi-layered raster of seasonal abundance data (nonbreeding, prebreeding migration, breeding, and postbreeding migration). The function currently takes two inputs, \texttt{species} and \texttt{path}. \texttt{ebirdst} data download is based on the six-letter species code, thus, we use the same naming system. You can find the specific codes with the \href{https://rdrr.io/github/CornellLabofOrnithology/ebirdst/man/get_species.html}{get\_species} function from the \texttt{ebirdst} package.
+
+Specify the species of interest for \texttt{get\_ebirdst\_abd\_season()} with \texttt{species}. \texttt{path} specifies the output path for the single multi-layered raster file that is produced, with the default being the current directory. If you want to output to another directory, make sure that directory is already created. The output naming convention for the raster is ``{[}species code{]}.abd\_season.tif''.
+
+Below is an example for downloading data for the \href{https://ebird.org/species/comyel}{Common Yellowthroat} and creating the seasonal abundance raster stack.
+
+\begin{verbatim}
+# This can take a while depending on the species (5-10 min.)
+abd_season <- get_ebirdst_abd_season(species = "comyel", path = "./comyel/")
+\end{verbatim}
+
+\hypertarget{generating-seasonal-polygons}{%
+\section{Generating seasonal polygons}\label{generating-seasonal-polygons}}
+
+Using the previously created seasonal abundance rasters, we will convert them to polygons of the range. The details can be found in the \texttt{ebirdst} \href{https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html}{tutorial}, but the gist of it is that we'll distinguish non-zero abundance from non-predicted areas, and delineate nice \emph{smooth} ranges for the different stages.
+
+We also need land extent data. We will get land data from the \texttt{rnaturalearth} package using the following code. Depending on the organism's range, you will need to filter continent to the appropriate region. Here, we want both North and South America.
+
+\begin{verbatim}
+ne_scale <- 50
+# land polygon
+ne_land <- rnaturalearth::ne_countries(scale = ne_scale, returnclass = "sf") %>%
+  dplyr::filter(continent %in% c("North America", "South America")) %>%
+  sf::st_set_precision(1e6) %>%
+  sf::st_union() %>% 
+  sf::st_geometry()
+ne_land_proj <- sf::st_transform(ne_land, crs = sf::st_crs(abd_season))
+\end{verbatim}
+
+Now we have all the input data we need to get the polygons of the range. The function \texttt{range\_smooth()} in the \texttt{MuSpTest} package takes care of this. In the process of smoothing the polygon, small regions are dropped and holes in the polygon filled in based on the size (\(km^2\)) specified with the \texttt{smooth\_area} parameter. Below it is set at 1000 \(km^2\) (e.g.~a 31.6 km * 31.6 km square), but you may want to increase or decrease depending on the organism.
+
+\begin{verbatim}
+# this fuction can take a while (~10 min.)
+comyel_range_smooth <- range_smooth(abd_season = abd_season, 
+                                  path = "./comyel/shapefiles", 
+                                  filename = "range_smooth",
+                                  ne_land = ne_land_proj,
+                                  smooth_area = 1000,
+                                  split_migration = FALSE, 
+                                  show_yearround = FALSE)
+\end{verbatim}
+
+Extracting a single polygon of a portion of the range is simple and quick! Here's an example of getting the \emph{breeding} season range from the \texttt{range\_smooth()} output.
+
+\begin{verbatim}
+comyel_breed_smooth <- dplyr::filter(comyel_range_smooth,
+                                season == "breeding") %>%
+                    sf::st_transform(crs = 4326)
+
+sf::st_write(comyel_breed_smooth, dsn = './comyel/shapefiles',
+          layer = "comyel_breed_smooth",
+          driver = "ESRI Shapefile")
+\end{verbatim}
+
+\hypertarget{creating-the-genoscape}{%
+\section{Creating the genoscape}\label{creating-the-genoscape}}
+
+This is modified from Eric Anderson's \href{https://github.com/eriqande/make-a-BGP-map}{Github project} that uses a matrix of individual Q-values to create a rasters of genetically distinct clusters - the \textbf{genoscape}. If you want to learn the ins and outs of making a \emph{beautiful} genoscape map, check out Eric's awesome \href{https://github.com/eriqande/make-a-BGP-map}{tutorial}. We will use the breeding polygon created in the previous step to specify the breeding range for the genoscape. The input data we need are:
+
+\begin{itemize}
+\tightlist
+\item
+  Individual Q-value matrix
+\item
+  Lat/lon matrix of individual
+\item
+  Breeding range polygon
+\end{itemize}
+
+The \texttt{comyel\_assignment} data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.
+
+\begin{verbatim}
+Q_matrix <- MuSpTest::comyel_assignment %>%
+  dplyr::select(CA, Midwest, NewEngland, West, Southwest) %>%
+  as.matrix()
+long_lat_matrix <- MuSpTest::comyel_assignment %>%
+  dplyr::select(Long, Lat) %>%
+  as.matrix()
+cluster_colors <-  c(
+  CA = "#CC0000",
+  Midwest = "#3399FF",
+  NewEngland = "#9933CC",
+  West = "#009933",
+  Southwest = "#FF6600") 
+\end{verbatim}
+
+We will use a \href{https://github.com/eriqande/TESS3_encho_sen}{modified version} of the \texttt{tess3r} package to create the genoscape rasters.
+
+\begin{verbatim}
+# remotes::install_github("eriqande/TESS3_encho_sen")
+genoscape_brick <- tess3r::tess3Q_map_rasters(
+  x = Q_matrix, 
+  coord = long_lat_matrix,  
+  map.polygon = breed_smooth,
+  window = terra::ext(breed_smooth)[1:4],
+  resolution = c(300,300), # if you want more cells in your raster, set higher
+  col.palette = tess3r::CreatePalette(cluster_colors, length(cluster_colors)), 
+  method = "map.max", 
+  interpol = tess3r::FieldsKrigModel(10),  
+  main = "Ancestry coefficients",
+  xlab = "Longitude", 
+  ylab = "Latitude", 
+  cex = .4
+)
+names(genoscape_brick) <- colnames(Q_matrix)
+
+out.files <- paste0("./comyel/genoscape/comyel_genoscape_cluster_", names(genoscape_brick), ".tif")
+terra::writeRaster(terra::rast(genoscape_brick), filename = out.files)
+\end{verbatim}
+
+\hypertarget{genoscape-polygons}{%
+\section{Genoscape polygons}\label{genoscape-polygons}}
+
+Using the genoscape rasters we will convert them to polygons, using the handy \texttt{scape\_to\_shape()} function. The \texttt{prob\_threshold} parameter specifies the value to determine if a raster cell is included in the polygon for that genoscape. This value should be customized for different species to check for overlap of genoscape polygons, which is not desirable. Setting too high of a threshold will create very small breeding nodes, while too low of a threshold will result in large, overlapping breeding nodes.
+
+\begin{verbatim}
+genoscape_files <- list.files("./comyel/genoscape", 
+                                     full.names = T,
+                                     pattern = "*.tif")
+
+genoscape_raster_stack <- terra::rast(genoscape_files)
+genoscape_polygon_sf <- scape_to_shape(x = genoscape_raster_stack, prob_threshold = 0.5)
+\end{verbatim}
+
+Check out the polygons
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ genoscape\_polygon\_sf,}\AttributeTok{alpha =} \FloatTok{0.75}\NormalTok{, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Cluster)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =}\NormalTok{ cluster\_colors)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{_main_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+Check which polygons are overlapping. Each row of the output provides a pair of overlapping polygons (if there are any).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{check\_genoscape\_overlap}\NormalTok{(genoscape\_polygon\_sf)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      [,1]      [,2]        
+## [1,] "CA"      "West"      
+## [2,] "Midwest" "NewEngland"
+## [3,] "Midwest" "West"
+\end{verbatim}
+
+\hypertarget{wintering}{%
+\chapter{Wintering nodes}\label{wintering}}
+
+For the migratory networks, we will use ecoregions to define the nonbreeding nodes. However, other nonbreeding nodes could be defined by the user instead. If you already have polygons defining your nonbreeding of nodes interest, then move along to \ldots{}
+
+\hypertarget{subsetting-winter-ecoregions}{%
+\section{Subsetting winter ecoregions}\label{subsetting-winter-ecoregions}}
+
+The ecoregion data is provided by {[}provide link{]}. The ecoregions are provided in this this package as \texttt{ecoregions\_simple}. We will intersect the ecoregions with the wintering range of the Common Yellowthroat to identify all the ecoregions that overlap with the wintering range.
+
+\begin{verbatim}
+comyel_winter <- comyel_range_smooth %>%
+  dplyr::filter(season == "nonbreeding") %>%
+  sf::st_transform(crs = 4326) %>%
+  sf::st_intersection(MuSpTest::ecoregions_simple) %>%
+  dplyr::select(Region)
+\end{verbatim}
+
+\hypertarget{snap-points}{%
+\section{Snap points}\label{snap-points}}
+
+Sometimes individuals are not quite within the wintering nodes. Here, we will make sure all sampled individuals get assigned to the nearest ecoregion.
+
+\begin{verbatim}
+winter.coords <- MuSpTest::coye.winter.meta %>%
+  st_as_sf(coords=c("Long","Lat")) %>%
+  st_cast("MULTIPOINT") %>%
+  st_set_crs(4326)
+  
+new.winter.coords <- snap_points(winter.coords, comyel_winter, 150000)
+\end{verbatim}
+
+\hypertarget{finalize-wintering-nodes}{%
+\section{Finalize wintering nodes}\label{finalize-wintering-nodes}}
+
+Now that points have been \emph{snapped} to the appropriate ecoregions, we can further subset all of the ecoregions in which we have actually sampled individuals from. If we haven't sampled individuals from a region, we can't use that region as a node in the migratory connectivity network!
+
+\begin{verbatim}
+winter_intersect <- st_intersects(comyel_winter, new.winter.coords, sparse = T)
+poly_id <- which(unlist(lapply(winter_intersect, function(x) length(x) > 0)))
+comyel_winter_ecoregions <- comyel_winter[poly_id,]
+\end{verbatim}
+
+\hypertarget{connectivity}{%
+\chapter{Connectivity Model}\label{connectivity}}
+
+\hypertarget{specifying-relative-abundance}{%
+\section{Specifying relative abundance}\label{specifying-relative-abundance}}
+
+To create the connectivity model, we will first specify the relative abundance for each of the nodes (breeding and wintering). This is used to determine the overall importance of the node to the connectivity model. In this example, we will use summarize relative abundance from the seasonal \texttt{ebirdst} rasters we created, but other data could be used as well (for example, habitat suitability from ecological niche models).
+
+For the breeding nodes, we will input the breeding range abundance raster, genoscape polygons, and genoscape cluster names into the \texttt{MuSpTest} function \texttt{get\_abundance\_stats()}. The output will be a data frame of the summarized node suitability.
+
+\begin{verbatim}
+abd_season <- terra::rast("./comyel/comyel.abd_season.tif")
+
+## Breeding
+cluster_names <- genoscape_polygon_sf$Cluster
+genoscape_polygon_sf <- sf::st_read("./comyel/genoscape/polygons/comyel_genoscape_polygon_sf.shp")
+breeding_abundance_sum <- get_abundance_stats(range_raster = abd_season[["breeding"]],
+                                              node_poly = genoscape_polygon_sf,
+                                              group_names = cluster_names)
+\end{verbatim}
+
+Similarly for the wintering nodes, we will input the nonbreeding range abundance raster, winter ecoregions, and ecoregion names into the \texttt{MuSpTest} function \texttt{get\_abundance\_stats()}.
+
+\begin{verbatim}
+## Nonbreeding
+comyel_winter_ecoregions <- sf::st_read("./comyel/winter_regions/comyel_winter_ecoregions.shp")
+ecoregion_names <- comyel_winter_ecoregions$Region
+nonbreeding_abundance_sum <- get_abundance_stats(range_raster = abd_season[["nonbreeding"]],
+                                                 node_poly = comyel_winter_ecoregions,
+                                                 group_names = ecoregion_names)
+\end{verbatim}
+
+\hypertarget{run-connectivity-model}{%
+\section{Run connectivity model}\label{run-connectivity-model}}
+
+\hypertarget{network-visualization}{%
+\chapter{Network visualization}\label{network-visualization}}
+
+To be created\ldots{}
+
+  \bibliography{book.bib,packages.bib}
+
+\end{document}
