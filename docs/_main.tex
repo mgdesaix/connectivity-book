@@ -4,9 +4,9 @@
 %
 \documentclass[
 ]{book}
-\title{Creating Migratory Connectivity Networks in R}
+\title{Creating Migratory Networks in R}
 \author{Matt DeSaix}
-\date{2021-11-29}
+\date{2021-12-20}
 
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
@@ -40,7 +40,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-  pdftitle={Creating Migratory Connectivity Networks in R},
+  pdftitle={Creating Migratory Networks in R},
   pdfauthor={Matt DeSaix},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
@@ -129,7 +129,7 @@
 \hypertarget{introduction}{%
 \chapter{Introduction}\label{introduction}}
 
-This text outlines how to create migratory connectivity networks using the R package \texttt{MuSpTest} (\emph{We need a name!}). The creation of the migratory connectivity networks is broken into three main parts:
+This text outlines how to create migratory networks using the R package \texttt{MuSpTest} (\emph{We need a name!}). The creation of the migratory networks is broken into three main parts:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -139,7 +139,7 @@ This text outlines how to create migratory connectivity networks using the R pac
 \item
   Delineating \protect\hyperlink{wintering}{wintering nodes}
 \item
-  Create \protect\hyperlink{connectivity}{migratory connectivity network}
+  Create \protect\hyperlink{connectivity}{migratory network}
 \end{enumerate}
 
 \hypertarget{installation}{%
@@ -414,12 +414,12 @@ Now that points have been \emph{snapped} to the appropriate ecoregions, we can f
 \end{Shaded}
 
 \hypertarget{connectivity}{%
-\chapter{Connectivity Model}\label{connectivity}}
+\chapter{Migratory Network Model}\label{connectivity}}
 
 \hypertarget{specifying-relative-abundance}{%
 \section{Specifying relative abundance}\label{specifying-relative-abundance}}
 
-To create the connectivity model, we will first specify the relative abundance for each of the nodes (breeding and wintering). This is used to determine the overall importance of the node to the connectivity model. In this example, we will use summarize relative abundance from the seasonal \texttt{ebirdst} rasters we created, but other data could be used as well (for example, habitat suitability from ecological niche models).
+To create the network model, we will first specify the relative abundance for each of the nodes (breeding and wintering). This is used to determine the overall importance of the node to the network model. In this example, we will use summarize relative abundance from the seasonal \texttt{ebirdst} rasters we created, but other data could be used as well (for example, habitat suitability from ecological niche models).
 
 For the breeding nodes, we will input the breeding range abundance raster, genoscape polygons, and genoscape cluster names into the \texttt{MuSpTest} function \texttt{get\_abundance\_stats()}. The output will be a data frame of the summarized node suitability.
 
@@ -449,8 +449,8 @@ Similarly for the wintering nodes, we will input the nonbreeding range abundance
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{run-connectivity-model}{%
-\section{Run connectivity model}\label{run-connectivity-model}}
+\hypertarget{run-network-model}{%
+\section{Run network model}\label{run-network-model}}
 
 \hypertarget{network-visualization}{%
 \chapter{Network visualization}\label{network-visualization}}

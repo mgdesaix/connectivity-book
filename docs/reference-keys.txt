@@ -12,5 +12,5 @@ snap-points
 finalize-wintering-nodes
 connectivity
 specifying-relative-abundance
-run-connectivity-model
+run-network-model
 network-visualization
