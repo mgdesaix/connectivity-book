@@ -1,5 +1,5 @@
 --- 
-title: "Creating Migratory Connectivity Networks in R"
+title: "Creating Migratory Networks in R"
 author: "Matt DeSaix"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -15,11 +15,11 @@ github-repo: rstudio/bookdown-demo
 
 # Introduction
 
-This text outlines how to create migratory connectivity networks using the R package `MuSpTest` (*We need a name!*). The creation of the migratory connectivity networks is broken into three main parts:
+This text outlines how to create migratory networks using the R package `MuSpTest` (*We need a name!*). The creation of the migratory networks is broken into three main parts:
 
 1. Delineating [breeding nodes](#breeding)
 2. Delineating [wintering nodes](#wintering)
-3. Create [migratory connectivity network](#connectivity)
+3. Create [migratory network](#connectivity)
 
 ## Installation 
 
