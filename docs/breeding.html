@@ -24,7 +24,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2022-01-05" />
+<meta name="date" content="2022-01-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -158,9 +158,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4" data-path="connectivity.html"><a href="connectivity.html"><i class="fa fa-check"></i><b>4</b> Migratory Network Model</a>
 <ul>
 <li class="chapter" data-level="4.1" data-path="connectivity.html"><a href="connectivity.html#specifying-relative-abundance"><i class="fa fa-check"></i><b>4.1</b> Specifying relative abundance</a></li>
-<li class="chapter" data-level="4.2" data-path="connectivity.html"><a href="connectivity.html#run-network-model"><i class="fa fa-check"></i><b>4.2</b> Run network model</a></li>
+<li class="chapter" data-level="4.2" data-path="connectivity.html"><a href="connectivity.html#preparing-model-data"><i class="fa fa-check"></i><b>4.2</b> Preparing model data</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="connectivity.html"><a href="connectivity.html#intersecting-sampling-point-data-with-wintering-nodes"><i class="fa fa-check"></i><b>4.2.1</b> Intersecting sampling point data with wintering nodes</a></li>
+<li class="chapter" data-level="4.2.2" data-path="connectivity.html"><a href="connectivity.html#refining-relative-abundance-metrics"><i class="fa fa-check"></i><b>4.2.2</b> Refining relative abundance metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="network-visualization.html"><a href="network-visualization.html"><i class="fa fa-check"></i><b>5</b> Network visualization</a></li>
+<li class="chapter" data-level="4.3" data-path="connectivity.html"><a href="connectivity.html#jags-model"><i class="fa fa-check"></i><b>4.3</b> JAGS model</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="connectivity.html"><a href="connectivity.html#install-jags-and-jagsui-package"><i class="fa fa-check"></i><b>4.3.1</b> Install JAGS and jagsUI package</a></li>
+<li class="chapter" data-level="4.3.2" data-path="connectivity.html"><a href="connectivity.html#data-input"><i class="fa fa-check"></i><b>4.3.2</b> Data input</a></li>
+<li class="chapter" data-level="4.3.3" data-path="connectivity.html"><a href="connectivity.html#running-the-model"><i class="fa fa-check"></i><b>4.3.3</b> Running the model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>5</b> Network visualization</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -246,11 +256,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Lat/lon matrix of individual</li>
 <li>Breeding range polygon</li>
 </ul>
-<p>The <code>comyel_assignment</code> data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="breeding.html#cb9-1" aria-hidden="true" tabindex="-1"></a>Q_matrix <span class="ot">&lt;-</span> MuSpTest<span class="sc">::</span>comyel_assignment <span class="sc">%&gt;%</span></span>
+<p>The <code>comyel_breeding_data</code> data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="breeding.html#cb9-1" aria-hidden="true" tabindex="-1"></a>Q_matrix <span class="ot">&lt;-</span> MuSpTest<span class="sc">::</span>comyel_breeding_data <span class="sc">%&gt;%</span></span>
 <span id="cb9-2"><a href="breeding.html#cb9-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(CA, Midwest, NewEngland, West, Southwest) <span class="sc">%&gt;%</span></span>
 <span id="cb9-3"><a href="breeding.html#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb9-4"><a href="breeding.html#cb9-4" aria-hidden="true" tabindex="-1"></a>long_lat_matrix <span class="ot">&lt;-</span> MuSpTest<span class="sc">::</span>comyel_assignment <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="breeding.html#cb9-4" aria-hidden="true" tabindex="-1"></a>long_lat_matrix <span class="ot">&lt;-</span> MuSpTest<span class="sc">::</span>comyel_breeding_data <span class="sc">%&gt;%</span></span>
 <span id="cb9-5"><a href="breeding.html#cb9-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Long, Lat) <span class="sc">%&gt;%</span></span>
 <span id="cb9-6"><a href="breeding.html#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
 <span id="cb9-7"><a href="breeding.html#cb9-7" aria-hidden="true" tabindex="-1"></a>cluster_colors <span class="ot">&lt;-</span>  <span class="fu">c</span>(</span>
@@ -300,6 +310,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## [1,] &quot;CA&quot;      &quot;West&quot;      
 ## [2,] &quot;Midwest&quot; &quot;NewEngland&quot;
 ## [3,] &quot;Midwest&quot; &quot;West&quot;</code></pre>
+<p>Now on to creating the <a href="wintering.html#wintering">wintering nodes</a></p>
 
 </div>
 </div>

@@ -7,7 +7,7 @@ To create the network model, we will first specify the relative abundance for ea
 
 For the breeding nodes, we will input the breeding range abundance raster, genoscape polygons, and genoscape cluster names into the `MuSpTest` function `get_abundance_stats()`. The output will be a data frame of the summarized node suitability.
 
-``` r
+```r
 abd_season <- terra::rast("./comyel/comyel.abd_season.tif")
 
 ## Breeding
@@ -20,7 +20,7 @@ breeding_abundance_sum <- get_abundance_stats(range_raster = abd_season[["breedi
 
 Similarly for the wintering nodes, we will input the nonbreeding range abundance raster, winter ecoregions, and ecoregion names into the `MuSpTest` function `get_abundance_stats()`.
 
-``` r
+```r
 ## Nonbreeding
 comyel_winter_ecoregions <- sf::st_read("./comyel/winter_regions/comyel_winter_ecoregions.shp")
 ecoregion_names <- comyel_winter_ecoregions$Region
@@ -30,8 +30,113 @@ nonbreeding_abundance_sum <- get_abundance_stats(range_raster = abd_season[["non
 ```
 
 
-## Run network model
+## Preparing model data
 
+The input data we need for the migratory network model are:
 
+* Assignment matrix
+* Breeding node relative abundance
+* Wintering node relative abundance
 
+In the Common Yellowthroat example, we have sampling data for wintering individuals and the assigned breeding population of those individuals. To create the assignment matrix of wintering nodes to breeding nodes, we need to determine which wintering nodes (i.e. ecoregions in this example) the Common Yellowthroat individuals are from.
+
+### Intersecting sampling point data with wintering nodes
+
+In the code below, the coordinates of the wintering data are used to intersect with the wintering ecoregions the Common Yellowthroat are found in. This creates the assignment matrix `conn.df`
+
+```r
+winter.points <- MuSpTest::comyel_wintering_data %>%
+  sf::st_as_sf(coords=c("Long","Lat"))%>%
+  sf::st_cast("MULTIPOINT")%>%
+  sf::st_set_crs(4326)
+
+conn.df <- sf::st_intersection(winter.points, comyel_winter_ecoregions) %>%
+  as.data.frame() %>%
+  dplyr::select(BreedingAssignment, Region) %>%
+  rename("Bnode" = "BreedingAssignment",
+         "Wnode" = "Region") %>%
+  group_by(Bnode, Wnode) %>%
+  summarize(N = n(),
+            .groups = "drop") %>%
+  drop_na() %>%
+  pivot_wider(names_from = Wnode, values_from = N) %>%
+  replace(is.na(.), 0) %>%
+  column_to_rownames("Bnode")
+```
+
+### Refining relative abundance metrics
+
+We will do some additional refinement of the ebirdst relative abundance calculated earlier on this page in order to have it formatted properly for the migratory network model.
+
+```r
+# total.mn.abd.br <- read_csv("./comyel/total.mn.abd.br.csv")
+# total.mn.abd.nbr <- read_csv("./comyel/total.mn.abd.nbr.csv")
+names(total.mn.abd.br) <- c("ID", "mean", "sd", "min", "max", "total")
+names(total.mn.abd.nbr) <- names(total.mn.abd.br)
+hsm.metrics <- rbind(total.mn.abd.br, total.mn.abd.nbr) %>%
+  dplyr::mutate(area = total / mean) %>%
+  dplyr::mutate(sdsummed = sd * sqrt(area))
+
+hsm.b.total <- hsm.metrics[hsm.metrics$ID %in% rownames(conn.df), "total"]
+hsm.w.total <- hsm.metrics[hsm.metrics$ID %in% colnames(conn.df), "total"]
+pop.b <- round(1000*hsm.b.total/sum(hsm.b.total),0)
+pop.w <- round(1000*hsm.w.total/sum(hsm.w.total),0)
+```
+
+## JAGS model
+
+### Install JAGS and jagsUI package
+
+The migratory network model will be run using R packages that run JAGS (Just Another Gibbs Sampler). JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS can be downloaded [here](https://mcmc-jags.sourceforge.io/). Once JAGS is installed, download the `jagsUI` R package which can be found on CRAN - `install.packages("jagsUI")`.
+
+### Data input
+
+The code below creates the `jags.data` object which will serve as input for the model.
+
+```r
+obs_bnode_n <- nrow(conn.df)
+obs_wnode_n <- ncol(conn.df)
+dta_conn <- as.matrix(conn.df)
+
+jags.data <- list(obs_bnode_n = obs_bnode_n,
+                  obs_wnode_n = obs_wnode_n,
+                  dta_conn_x = dta_conn,
+                  dta_conn_y = dta_conn,
+                  dta_conn_colsum = colSums(dta_conn),
+                  dta_conn_rowsum = rowSums(dta_conn),
+                  dta_conn_effort = colSums(dta_conn)/sum(dta_conn),
+                  dta_conn_nb.est.mn = pop.b,
+                  dta_conn_nb.est.sum = sum(pop.b),
+                  dta_conn_nw.est.mn = pop.w,
+                  dta_conn_nw.est.sum = sum(pop.w))
+```
+
+### Running the model
+
+In the code below, we will set the simulation parameters and run the model using the input data we created above. The hierarchical model is defined by the `inpm_conn_02.txt` file that is provided in this package and called below with the `system.file()` function in R. There are lots of resources if you would like to learn more about JAGS and using it in R - you can find some [here](https://bookdown.org/steve_midway/BHME/Ch4.html) and [here](https://rstudio-pubs-static.s3.amazonaws.com/272658_ae4d482c86514674be17042c852ebbfc.html).
+
+```r
+parameters <- c("conn_g")
+# parameters from prod and surv models
+ ni <- 500000
+ nt <- 4
+ nb <- 100000
+# na <- 50000  #not using
+ nc <- 3
+
+# use autojags, run until converged
+model.file <- system.file("extdata", "inpm_conn_02.txt", package = "MuSpTest")
+jags.out <- autojags(jags.data, inits = NULL, parameters, model.file,  
+                 n.chains = nc, n.thin = nt, iter.increment = ni,
+                 max.iter = ni*50+nb, n.burnin = nb,  
+                 n.adapt= NULL, parallel=TRUE)
+
+desc.out <- list(bnodes = rownames(conn.df),
+               wnodes = colnames(conn.df))
+
+save(jags.out, desc.out, jags.data, 
+     file = "./comyel/jags_models/comyel.inpm_conn2.Rdata")
+```
+
+Voila. A migratory network model is completed. Now, onto [visualization](#visualization)
 

@@ -24,7 +24,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2022-01-05" />
+<meta name="date" content="2022-01-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="wintering.html"/>
-<link rel="next" href="network-visualization.html"/>
+<link rel="next" href="visualization.html"/>
 <script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -158,9 +158,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4" data-path="connectivity.html"><a href="connectivity.html"><i class="fa fa-check"></i><b>4</b> Migratory Network Model</a>
 <ul>
 <li class="chapter" data-level="4.1" data-path="connectivity.html"><a href="connectivity.html#specifying-relative-abundance"><i class="fa fa-check"></i><b>4.1</b> Specifying relative abundance</a></li>
-<li class="chapter" data-level="4.2" data-path="connectivity.html"><a href="connectivity.html#run-network-model"><i class="fa fa-check"></i><b>4.2</b> Run network model</a></li>
+<li class="chapter" data-level="4.2" data-path="connectivity.html"><a href="connectivity.html#preparing-model-data"><i class="fa fa-check"></i><b>4.2</b> Preparing model data</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="connectivity.html"><a href="connectivity.html#intersecting-sampling-point-data-with-wintering-nodes"><i class="fa fa-check"></i><b>4.2.1</b> Intersecting sampling point data with wintering nodes</a></li>
+<li class="chapter" data-level="4.2.2" data-path="connectivity.html"><a href="connectivity.html#refining-relative-abundance-metrics"><i class="fa fa-check"></i><b>4.2.2</b> Refining relative abundance metrics</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="network-visualization.html"><a href="network-visualization.html"><i class="fa fa-check"></i><b>5</b> Network visualization</a></li>
+<li class="chapter" data-level="4.3" data-path="connectivity.html"><a href="connectivity.html#jags-model"><i class="fa fa-check"></i><b>4.3</b> JAGS model</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="connectivity.html"><a href="connectivity.html#install-jags-and-jagsui-package"><i class="fa fa-check"></i><b>4.3.1</b> Install JAGS and jagsUI package</a></li>
+<li class="chapter" data-level="4.3.2" data-path="connectivity.html"><a href="connectivity.html#data-input"><i class="fa fa-check"></i><b>4.3.2</b> Data input</a></li>
+<li class="chapter" data-level="4.3.3" data-path="connectivity.html"><a href="connectivity.html#running-the-model"><i class="fa fa-check"></i><b>4.3.3</b> Running the model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>5</b> Network visualization</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -204,9 +214,104 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb19-5"><a href="connectivity.html#cb19-5" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">node_poly =</span> comyel_winter_ecoregions,</span>
 <span id="cb19-6"><a href="connectivity.html#cb19-6" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">group_names =</span> ecoregion_names)</span></code></pre></div>
 </div>
-<div id="run-network-model" class="section level2" number="4.2">
-<h2><span class="header-section-number">4.2</span> Run network model</h2>
+<div id="preparing-model-data" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Preparing model data</h2>
+<p>The input data we need for the migratory network model are:</p>
+<ul>
+<li>Assignment matrix</li>
+<li>Breeding node relative abundance</li>
+<li>Wintering node relative abundance</li>
+</ul>
+<p>In the Common Yellowthroat example, we have sampling data for wintering individuals and the assigned breeding population of those individuals. To create the assignment matrix of wintering nodes to breeding nodes, we need to determine which wintering nodes (i.e. ecoregions in this example) the Common Yellowthroat individuals are from.</p>
+<div id="intersecting-sampling-point-data-with-wintering-nodes" class="section level3" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> Intersecting sampling point data with wintering nodes</h3>
+<p>In the code below, the coordinates of the wintering data are used to intersect with the wintering ecoregions the Common Yellowthroat are found in. This creates the assignment matrix <code>conn.df</code></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="connectivity.html#cb20-1" aria-hidden="true" tabindex="-1"></a>winter.points <span class="ot">&lt;-</span> MuSpTest<span class="sc">::</span>comyel_wintering_data <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="connectivity.html#cb20-2" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_as_sf</span>(<span class="at">coords=</span><span class="fu">c</span>(<span class="st">&quot;Long&quot;</span>,<span class="st">&quot;Lat&quot;</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="connectivity.html#cb20-3" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_cast</span>(<span class="st">&quot;MULTIPOINT&quot;</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="connectivity.html#cb20-4" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_set_crs</span>(<span class="dv">4326</span>)</span>
+<span id="cb20-5"><a href="connectivity.html#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="connectivity.html#cb20-6" aria-hidden="true" tabindex="-1"></a>conn.df <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_intersection</span>(winter.points, comyel_winter_ecoregions) <span class="sc">%&gt;%</span></span>
+<span id="cb20-7"><a href="connectivity.html#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-8"><a href="connectivity.html#cb20-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(BreedingAssignment, Region) <span class="sc">%&gt;%</span></span>
+<span id="cb20-9"><a href="connectivity.html#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">&quot;Bnode&quot;</span> <span class="ot">=</span> <span class="st">&quot;BreedingAssignment&quot;</span>,</span>
+<span id="cb20-10"><a href="connectivity.html#cb20-10" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;Wnode&quot;</span> <span class="ot">=</span> <span class="st">&quot;Region&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-11"><a href="connectivity.html#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Bnode, Wnode) <span class="sc">%&gt;%</span></span>
+<span id="cb20-12"><a href="connectivity.html#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">N =</span> <span class="fu">n</span>(),</span>
+<span id="cb20-13"><a href="connectivity.html#cb20-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-14"><a href="connectivity.html#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-15"><a href="connectivity.html#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> Wnode, <span class="at">values_from =</span> N) <span class="sc">%&gt;%</span></span>
+<span id="cb20-16"><a href="connectivity.html#cb20-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">replace</span>(<span class="fu">is.na</span>(.), <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-17"><a href="connectivity.html#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="st">&quot;Bnode&quot;</span>)</span></code></pre></div>
+</div>
+<div id="refining-relative-abundance-metrics" class="section level3" number="4.2.2">
+<h3><span class="header-section-number">4.2.2</span> Refining relative abundance metrics</h3>
+<p>We will do some additional refinement of the ebirdst relative abundance calculated earlier on this page in order to have it formatted properly for the migratory network model.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="connectivity.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># total.mn.abd.br &lt;- read_csv(&quot;./comyel/total.mn.abd.br.csv&quot;)</span></span>
+<span id="cb21-2"><a href="connectivity.html#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># total.mn.abd.nbr &lt;- read_csv(&quot;./comyel/total.mn.abd.nbr.csv&quot;)</span></span>
+<span id="cb21-3"><a href="connectivity.html#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(total.mn.abd.br) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ID&quot;</span>, <span class="st">&quot;mean&quot;</span>, <span class="st">&quot;sd&quot;</span>, <span class="st">&quot;min&quot;</span>, <span class="st">&quot;max&quot;</span>, <span class="st">&quot;total&quot;</span>)</span>
+<span id="cb21-4"><a href="connectivity.html#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(total.mn.abd.nbr) <span class="ot">&lt;-</span> <span class="fu">names</span>(total.mn.abd.br)</span>
+<span id="cb21-5"><a href="connectivity.html#cb21-5" aria-hidden="true" tabindex="-1"></a>hsm.metrics <span class="ot">&lt;-</span> <span class="fu">rbind</span>(total.mn.abd.br, total.mn.abd.nbr) <span class="sc">%&gt;%</span></span>
+<span id="cb21-6"><a href="connectivity.html#cb21-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">area =</span> total <span class="sc">/</span> mean) <span class="sc">%&gt;%</span></span>
+<span id="cb21-7"><a href="connectivity.html#cb21-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">sdsummed =</span> sd <span class="sc">*</span> <span class="fu">sqrt</span>(area))</span>
+<span id="cb21-8"><a href="connectivity.html#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="connectivity.html#cb21-9" aria-hidden="true" tabindex="-1"></a>hsm.b.total <span class="ot">&lt;-</span> hsm.metrics[hsm.metrics<span class="sc">$</span>ID <span class="sc">%in%</span> <span class="fu">rownames</span>(conn.df), <span class="st">&quot;total&quot;</span>]</span>
+<span id="cb21-10"><a href="connectivity.html#cb21-10" aria-hidden="true" tabindex="-1"></a>hsm.w.total <span class="ot">&lt;-</span> hsm.metrics[hsm.metrics<span class="sc">$</span>ID <span class="sc">%in%</span> <span class="fu">colnames</span>(conn.df), <span class="st">&quot;total&quot;</span>]</span>
+<span id="cb21-11"><a href="connectivity.html#cb21-11" aria-hidden="true" tabindex="-1"></a>pop.b <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">1000</span><span class="sc">*</span>hsm.b.total<span class="sc">/</span><span class="fu">sum</span>(hsm.b.total),<span class="dv">0</span>)</span>
+<span id="cb21-12"><a href="connectivity.html#cb21-12" aria-hidden="true" tabindex="-1"></a>pop.w <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">1000</span><span class="sc">*</span>hsm.w.total<span class="sc">/</span><span class="fu">sum</span>(hsm.w.total),<span class="dv">0</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="jags-model" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> JAGS model</h2>
+<div id="install-jags-and-jagsui-package" class="section level3" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> Install JAGS and jagsUI package</h3>
+<p>The migratory network model will be run using R packages that run JAGS (Just Another Gibbs Sampler). JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS can be downloaded <a href="https://mcmc-jags.sourceforge.io/">here</a>. Once JAGS is installed, download the <code>jagsUI</code> R package which can be found on CRAN - <code>install.packages("jagsUI")</code>.</p>
+</div>
+<div id="data-input" class="section level3" number="4.3.2">
+<h3><span class="header-section-number">4.3.2</span> Data input</h3>
+<p>The code below creates the <code>jags.data</code> object which will serve as input for the model.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="connectivity.html#cb22-1" aria-hidden="true" tabindex="-1"></a>obs_bnode_n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(conn.df)</span>
+<span id="cb22-2"><a href="connectivity.html#cb22-2" aria-hidden="true" tabindex="-1"></a>obs_wnode_n <span class="ot">&lt;-</span> <span class="fu">ncol</span>(conn.df)</span>
+<span id="cb22-3"><a href="connectivity.html#cb22-3" aria-hidden="true" tabindex="-1"></a>dta_conn <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(conn.df)</span>
+<span id="cb22-4"><a href="connectivity.html#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="connectivity.html#cb22-5" aria-hidden="true" tabindex="-1"></a>jags.data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">obs_bnode_n =</span> obs_bnode_n,</span>
+<span id="cb22-6"><a href="connectivity.html#cb22-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">obs_wnode_n =</span> obs_wnode_n,</span>
+<span id="cb22-7"><a href="connectivity.html#cb22-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dta_conn_x =</span> dta_conn,</span>
+<span id="cb22-8"><a href="connectivity.html#cb22-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dta_conn_y =</span> dta_conn,</span>
+<span id="cb22-9"><a href="connectivity.html#cb22-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dta_conn_colsum =</span> <span class="fu">colSums</span>(dta_conn),</span>
+<span id="cb22-10"><a href="connectivity.html#cb22-10" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dta_conn_rowsum =</span> <span class="fu">rowSums</span>(dta_conn),</span>
+<span id="cb22-11"><a href="connectivity.html#cb22-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dta_conn_effort =</span> <span class="fu">colSums</span>(dta_conn)<span class="sc">/</span><span class="fu">sum</span>(dta_conn),</span>
+<span id="cb22-12"><a href="connectivity.html#cb22-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dta_conn_nb.est.mn =</span> pop.b,</span>
+<span id="cb22-13"><a href="connectivity.html#cb22-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dta_conn_nb.est.sum =</span> <span class="fu">sum</span>(pop.b),</span>
+<span id="cb22-14"><a href="connectivity.html#cb22-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dta_conn_nw.est.mn =</span> pop.w,</span>
+<span id="cb22-15"><a href="connectivity.html#cb22-15" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dta_conn_nw.est.sum =</span> <span class="fu">sum</span>(pop.w))</span></code></pre></div>
+</div>
+<div id="running-the-model" class="section level3" number="4.3.3">
+<h3><span class="header-section-number">4.3.3</span> Running the model</h3>
+<p>In the code below, we will set the simulation parameters and run the model using the input data we created above. The hierarchical model is defined by the <code>inpm_conn_02.txt</code> file that is provided in this package and called below with the <code>system.file()</code> function in R. There are lots of resources if you would like to learn more about JAGS and using it in R - you can find some <a href="https://bookdown.org/steve_midway/BHME/Ch4.html">here</a> and <a href="https://rstudio-pubs-static.s3.amazonaws.com/272658_ae4d482c86514674be17042c852ebbfc.html">here</a>.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="connectivity.html#cb23-1" aria-hidden="true" tabindex="-1"></a>parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;conn_g&quot;</span>)</span>
+<span id="cb23-2"><a href="connectivity.html#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># parameters from prod and surv models</span></span>
+<span id="cb23-3"><a href="connectivity.html#cb23-3" aria-hidden="true" tabindex="-1"></a> ni <span class="ot">&lt;-</span> <span class="dv">500000</span></span>
+<span id="cb23-4"><a href="connectivity.html#cb23-4" aria-hidden="true" tabindex="-1"></a> nt <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb23-5"><a href="connectivity.html#cb23-5" aria-hidden="true" tabindex="-1"></a> nb <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
+<span id="cb23-6"><a href="connectivity.html#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co"># na &lt;- 50000  #not using</span></span>
+<span id="cb23-7"><a href="connectivity.html#cb23-7" aria-hidden="true" tabindex="-1"></a> nc <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb23-8"><a href="connectivity.html#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="connectivity.html#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co"># use autojags, run until converged</span></span>
+<span id="cb23-10"><a href="connectivity.html#cb23-10" aria-hidden="true" tabindex="-1"></a>model.file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;inpm_conn_02.txt&quot;</span>, <span class="at">package =</span> <span class="st">&quot;MuSpTest&quot;</span>)</span>
+<span id="cb23-11"><a href="connectivity.html#cb23-11" aria-hidden="true" tabindex="-1"></a>jags.out <span class="ot">&lt;-</span> <span class="fu">autojags</span>(jags.data, <span class="at">inits =</span> <span class="cn">NULL</span>, parameters, model.file,  </span>
+<span id="cb23-12"><a href="connectivity.html#cb23-12" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.chains =</span> nc, <span class="at">n.thin =</span> nt, <span class="at">iter.increment =</span> ni,</span>
+<span id="cb23-13"><a href="connectivity.html#cb23-13" aria-hidden="true" tabindex="-1"></a>                 <span class="at">max.iter =</span> ni<span class="sc">*</span><span class="dv">50</span><span class="sc">+</span>nb, <span class="at">n.burnin =</span> nb,  </span>
+<span id="cb23-14"><a href="connectivity.html#cb23-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n.adapt=</span> <span class="cn">NULL</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span>
+<span id="cb23-15"><a href="connectivity.html#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-16"><a href="connectivity.html#cb23-16" aria-hidden="true" tabindex="-1"></a>desc.out <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">bnodes =</span> <span class="fu">rownames</span>(conn.df),</span>
+<span id="cb23-17"><a href="connectivity.html#cb23-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">wnodes =</span> <span class="fu">colnames</span>(conn.df))</span>
+<span id="cb23-18"><a href="connectivity.html#cb23-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-19"><a href="connectivity.html#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(jags.out, desc.out, jags.data, </span>
+<span id="cb23-20"><a href="connectivity.html#cb23-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">file =</span> <span class="st">&quot;./comyel/jags_models/comyel.inpm_conn2.Rdata&quot;</span>)</span></code></pre></div>
+<p>Voila. A migratory network model is completed. Now, onto <a href="visualization.html#visualization">visualization</a></p>
 
+</div>
 </div>
 </div>
             </section>
@@ -215,7 +320,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 <a href="wintering.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="network-visualization.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="visualization.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

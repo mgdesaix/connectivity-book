@@ -12,5 +12,11 @@ snap-points
 finalize-wintering-nodes
 connectivity
 specifying-relative-abundance
-run-network-model
-network-visualization
+preparing-model-data
+intersecting-sampling-point-data-with-wintering-nodes
+refining-relative-abundance-metrics
+jags-model
+install-jags-and-jagsui-package
+data-input
+running-the-model
+visualization

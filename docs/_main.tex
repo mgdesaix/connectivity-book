@@ -6,7 +6,7 @@
 ]{book}
 \title{Creating Migratory Networks in R}
 \author{Matt DeSaix}
-\date{2022-01-05}
+\date{2022-01-06}
 
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
@@ -276,14 +276,14 @@ This is modified from Eric Anderson's \href{https://github.com/eriqande/make-a-B
   Breeding range polygon
 \end{itemize}
 
-The \texttt{comyel\_assignment} data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.
+The \texttt{comyel\_breeding\_data} data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{Q\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ MuSpTest}\SpecialCharTok{::}\NormalTok{comyel\_assignment }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{Q\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ MuSpTest}\SpecialCharTok{::}\NormalTok{comyel\_breeding\_data }\SpecialCharTok{\%\textgreater{}\%}
 \NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(CA, Midwest, NewEngland, West, Southwest) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{as.matrix}\NormalTok{()}
-\NormalTok{long\_lat\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ MuSpTest}\SpecialCharTok{::}\NormalTok{comyel\_assignment }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{long\_lat\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ MuSpTest}\SpecialCharTok{::}\NormalTok{comyel\_breeding\_data }\SpecialCharTok{\%\textgreater{}\%}
 \NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(Long, Lat) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{as.matrix}\NormalTok{()}
 \NormalTok{cluster\_colors }\OtherTok{\textless{}{-}}  \FunctionTok{c}\NormalTok{(}
@@ -364,6 +364,8 @@ Check which polygons are overlapping. Each row of the output provides a pair of 
 ## [3,] "Midwest" "West"
 \end{verbatim}
 
+Now on to creating the \protect\hyperlink{wintering}{wintering nodes}
+
 \hypertarget{wintering}{%
 \chapter{Wintering nodes}\label{wintering}}
 
@@ -391,7 +393,7 @@ Sometimes individuals are not quite within the wintering nodes. Here, we will ma
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{winter.coords }\OtherTok{\textless{}{-}}\NormalTok{ MuSpTest}\SpecialCharTok{::}\NormalTok{coye.winter.meta }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{winter.coords }\OtherTok{\textless{}{-}}\NormalTok{ MuSpTest}\SpecialCharTok{::}\NormalTok{comyel\_wintering\_data }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{st\_as\_sf}\NormalTok{(}\AttributeTok{coords=}\FunctionTok{c}\NormalTok{(}\StringTok{"Long"}\NormalTok{,}\StringTok{"Lat"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{st\_cast}\NormalTok{(}\StringTok{"MULTIPOINT"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{st\_set\_crs}\NormalTok{(}\DecValTok{4326}\NormalTok{)}
@@ -412,6 +414,8 @@ Now that points have been \emph{snapped} to the appropriate ecoregions, we can f
 \NormalTok{comyel\_winter\_ecoregions }\OtherTok{\textless{}{-}}\NormalTok{ comyel\_winter[poly\_id,]}
 \end{Highlighting}
 \end{Shaded}
+
+Now on to creating the \protect\hyperlink{connectivity}{migratory network model}
 
 \hypertarget{connectivity}{%
 \chapter{Migratory Network Model}\label{connectivity}}
@@ -449,11 +453,139 @@ Similarly for the wintering nodes, we will input the nonbreeding range abundance
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{run-network-model}{%
-\section{Run network model}\label{run-network-model}}
+\hypertarget{preparing-model-data}{%
+\section{Preparing model data}\label{preparing-model-data}}
 
-\hypertarget{network-visualization}{%
-\chapter{Network visualization}\label{network-visualization}}
+The input data we need for the migratory network model are:
+
+\begin{itemize}
+\tightlist
+\item
+  Assignment matrix
+\item
+  Breeding node relative abundance
+\item
+  Wintering node relative abundance
+\end{itemize}
+
+In the Common Yellowthroat example, we have sampling data for wintering individuals and the assigned breeding population of those individuals. To create the assignment matrix of wintering nodes to breeding nodes, we need to determine which wintering nodes (i.e.~ecoregions in this example) the Common Yellowthroat individuals are from.
+
+\hypertarget{intersecting-sampling-point-data-with-wintering-nodes}{%
+\subsection{Intersecting sampling point data with wintering nodes}\label{intersecting-sampling-point-data-with-wintering-nodes}}
+
+In the code below, the coordinates of the wintering data are used to intersect with the wintering ecoregions the Common Yellowthroat are found in. This creates the assignment matrix \texttt{conn.df}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{winter.points }\OtherTok{\textless{}{-}}\NormalTok{ MuSpTest}\SpecialCharTok{::}\NormalTok{comyel\_wintering\_data }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sf}\NormalTok{(}\AttributeTok{coords=}\FunctionTok{c}\NormalTok{(}\StringTok{"Long"}\NormalTok{,}\StringTok{"Lat"}\NormalTok{))}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_cast}\NormalTok{(}\StringTok{"MULTIPOINT"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_set\_crs}\NormalTok{(}\DecValTok{4326}\NormalTok{)}
+
+\NormalTok{conn.df }\OtherTok{\textless{}{-}}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_intersection}\NormalTok{(winter.points, comyel\_winter\_ecoregions) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as.data.frame}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(BreedingAssignment, Region) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{rename}\NormalTok{(}\StringTok{"Bnode"} \OtherTok{=} \StringTok{"BreedingAssignment"}\NormalTok{,}
+         \StringTok{"Wnode"} \OtherTok{=} \StringTok{"Region"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Bnode, Wnode) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{N =} \FunctionTok{n}\NormalTok{(),}
+            \AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{drop\_na}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ Wnode, }\AttributeTok{values\_from =}\NormalTok{ N) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{replace}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(.), }\DecValTok{0}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{column\_to\_rownames}\NormalTok{(}\StringTok{"Bnode"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{refining-relative-abundance-metrics}{%
+\subsection{Refining relative abundance metrics}\label{refining-relative-abundance-metrics}}
+
+We will do some additional refinement of the ebirdst relative abundance calculated earlier on this page in order to have it formatted properly for the migratory network model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# total.mn.abd.br \textless{}{-} read\_csv("./comyel/total.mn.abd.br.csv")}
+\CommentTok{\# total.mn.abd.nbr \textless{}{-} read\_csv("./comyel/total.mn.abd.nbr.csv")}
+\FunctionTok{names}\NormalTok{(total.mn.abd.br) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ID"}\NormalTok{, }\StringTok{"mean"}\NormalTok{, }\StringTok{"sd"}\NormalTok{, }\StringTok{"min"}\NormalTok{, }\StringTok{"max"}\NormalTok{, }\StringTok{"total"}\NormalTok{)}
+\FunctionTok{names}\NormalTok{(total.mn.abd.nbr) }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(total.mn.abd.br)}
+\NormalTok{hsm.metrics }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(total.mn.abd.br, total.mn.abd.nbr) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{area =}\NormalTok{ total }\SpecialCharTok{/}\NormalTok{ mean) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{sdsummed =}\NormalTok{ sd }\SpecialCharTok{*} \FunctionTok{sqrt}\NormalTok{(area))}
+
+\NormalTok{hsm.b.total }\OtherTok{\textless{}{-}}\NormalTok{ hsm.metrics[hsm.metrics}\SpecialCharTok{$}\NormalTok{ID }\SpecialCharTok{\%in\%} \FunctionTok{rownames}\NormalTok{(conn.df), }\StringTok{"total"}\NormalTok{]}
+\NormalTok{hsm.w.total }\OtherTok{\textless{}{-}}\NormalTok{ hsm.metrics[hsm.metrics}\SpecialCharTok{$}\NormalTok{ID }\SpecialCharTok{\%in\%} \FunctionTok{colnames}\NormalTok{(conn.df), }\StringTok{"total"}\NormalTok{]}
+\NormalTok{pop.b }\OtherTok{\textless{}{-}} \FunctionTok{round}\NormalTok{(}\DecValTok{1000}\SpecialCharTok{*}\NormalTok{hsm.b.total}\SpecialCharTok{/}\FunctionTok{sum}\NormalTok{(hsm.b.total),}\DecValTok{0}\NormalTok{)}
+\NormalTok{pop.w }\OtherTok{\textless{}{-}} \FunctionTok{round}\NormalTok{(}\DecValTok{1000}\SpecialCharTok{*}\NormalTok{hsm.w.total}\SpecialCharTok{/}\FunctionTok{sum}\NormalTok{(hsm.w.total),}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{jags-model}{%
+\section{JAGS model}\label{jags-model}}
+
+\hypertarget{install-jags-and-jagsui-package}{%
+\subsection{Install JAGS and jagsUI package}\label{install-jags-and-jagsui-package}}
+
+The migratory network model will be run using R packages that run JAGS (Just Another Gibbs Sampler). JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS can be downloaded \href{https://mcmc-jags.sourceforge.io/}{here}. Once JAGS is installed, download the \texttt{jagsUI} R package which can be found on CRAN - \texttt{install.packages("jagsUI")}.
+
+\hypertarget{data-input}{%
+\subsection{Data input}\label{data-input}}
+
+The code below creates the \texttt{jags.data} object which will serve as input for the model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{obs\_bnode\_n }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(conn.df)}
+\NormalTok{obs\_wnode\_n }\OtherTok{\textless{}{-}} \FunctionTok{ncol}\NormalTok{(conn.df)}
+\NormalTok{dta\_conn }\OtherTok{\textless{}{-}} \FunctionTok{as.matrix}\NormalTok{(conn.df)}
+
+\NormalTok{jags.data }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{obs\_bnode\_n =}\NormalTok{ obs\_bnode\_n,}
+                  \AttributeTok{obs\_wnode\_n =}\NormalTok{ obs\_wnode\_n,}
+                  \AttributeTok{dta\_conn\_x =}\NormalTok{ dta\_conn,}
+                  \AttributeTok{dta\_conn\_y =}\NormalTok{ dta\_conn,}
+                  \AttributeTok{dta\_conn\_colsum =} \FunctionTok{colSums}\NormalTok{(dta\_conn),}
+                  \AttributeTok{dta\_conn\_rowsum =} \FunctionTok{rowSums}\NormalTok{(dta\_conn),}
+                  \AttributeTok{dta\_conn\_effort =} \FunctionTok{colSums}\NormalTok{(dta\_conn)}\SpecialCharTok{/}\FunctionTok{sum}\NormalTok{(dta\_conn),}
+                  \AttributeTok{dta\_conn\_nb.est.mn =}\NormalTok{ pop.b,}
+                  \AttributeTok{dta\_conn\_nb.est.sum =} \FunctionTok{sum}\NormalTok{(pop.b),}
+                  \AttributeTok{dta\_conn\_nw.est.mn =}\NormalTok{ pop.w,}
+                  \AttributeTok{dta\_conn\_nw.est.sum =} \FunctionTok{sum}\NormalTok{(pop.w))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{running-the-model}{%
+\subsection{Running the model}\label{running-the-model}}
+
+In the code below, we will set the simulation parameters and run the model using the input data we created above. The hierarchical model is defined by the \texttt{inpm\_conn\_02.txt} file that is provided in this package and called below with the \texttt{system.file()} function in R. There are lots of resources if you would like to learn more about JAGS and using it in R - you can find some \href{https://bookdown.org/steve_midway/BHME/Ch4.html}{here} and \href{https://rstudio-pubs-static.s3.amazonaws.com/272658_ae4d482c86514674be17042c852ebbfc.html}{here}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{parameters }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"conn\_g"}\NormalTok{)}
+\CommentTok{\# parameters from prod and surv models}
+\NormalTok{ ni }\OtherTok{\textless{}{-}} \DecValTok{500000}
+\NormalTok{ nt }\OtherTok{\textless{}{-}} \DecValTok{4}
+\NormalTok{ nb }\OtherTok{\textless{}{-}} \DecValTok{100000}
+\CommentTok{\# na \textless{}{-} 50000  \#not using}
+\NormalTok{ nc }\OtherTok{\textless{}{-}} \DecValTok{3}
+
+\CommentTok{\# use autojags, run until converged}
+\NormalTok{model.file }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"inpm\_conn\_02.txt"}\NormalTok{, }\AttributeTok{package =} \StringTok{"MuSpTest"}\NormalTok{)}
+\NormalTok{jags.out }\OtherTok{\textless{}{-}} \FunctionTok{autojags}\NormalTok{(jags.data, }\AttributeTok{inits =} \ConstantTok{NULL}\NormalTok{, parameters, model.file,  }
+                 \AttributeTok{n.chains =}\NormalTok{ nc, }\AttributeTok{n.thin =}\NormalTok{ nt, }\AttributeTok{iter.increment =}\NormalTok{ ni,}
+                 \AttributeTok{max.iter =}\NormalTok{ ni}\SpecialCharTok{*}\DecValTok{50}\SpecialCharTok{+}\NormalTok{nb, }\AttributeTok{n.burnin =}\NormalTok{ nb,  }
+                 \AttributeTok{n.adapt=} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{parallel=}\ConstantTok{TRUE}\NormalTok{)}
+
+\NormalTok{desc.out }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{bnodes =} \FunctionTok{rownames}\NormalTok{(conn.df),}
+               \AttributeTok{wnodes =} \FunctionTok{colnames}\NormalTok{(conn.df))}
+
+\FunctionTok{save}\NormalTok{(jags.out, desc.out, jags.data, }
+     \AttributeTok{file =} \StringTok{"./comyel/jags\_models/comyel.inpm\_conn2.Rdata"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Voila. A migratory network model is completed. Now, onto \protect\hyperlink{visualization}{visualization}
+
+\hypertarget{visualization}{%
+\chapter{Network visualization}\label{visualization}}
 
 To be created\ldots{}
 

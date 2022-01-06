@@ -173,3 +173,5 @@ Check which polygons are overlapping. Each row of the output provides a pair of 
 ```{r}
 check_genoscape_overlap(genoscape_polygon_sf)
 ```
+
+Now on to creating the [wintering nodes](#wintering)

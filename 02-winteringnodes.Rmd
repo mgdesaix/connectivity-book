@@ -38,4 +38,5 @@ poly_id <- which(unlist(lapply(winter_intersect, function(x) length(x) > 0)))
 comyel_winter_ecoregions <- comyel_winter[poly_id,]
 ```
 
+Now on to creating the [migratory network model](#connectivity)
 
