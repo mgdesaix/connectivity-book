@@ -93,13 +93,13 @@ This is modified from Eric Anderson's [Github project](https://github.com/eriqan
 * Lat/lon matrix of individual
 * Breeding range polygon
 
-The `comyel_assignment` data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.
+The `comyel_breeding_data` data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.
 
 ``` r
-Q_matrix <- MuSpTest::comyel_assignment %>%
+Q_matrix <- MuSpTest::comyel_breeding_data %>%
   dplyr::select(CA, Midwest, NewEngland, West, Southwest) %>%
   as.matrix()
-long_lat_matrix <- MuSpTest::comyel_assignment %>%
+long_lat_matrix <- MuSpTest::comyel_breeding_data %>%
   dplyr::select(Long, Lat) %>%
   as.matrix()
 cluster_colors <-  c(

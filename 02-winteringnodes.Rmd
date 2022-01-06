@@ -20,7 +20,7 @@ comyel_winter <- comyel_range_smooth %>%
 Sometimes individuals are not quite within the wintering nodes. Here, we will make sure all sampled individuals get assigned to the nearest ecoregion.
 
 ``` r
-winter.coords <- MuSpTest::coye.winter.meta %>%
+winter.coords <- MuSpTest::comyel_wintering_data %>%
   st_as_sf(coords=c("Long","Lat")) %>%
   st_cast("MULTIPOINT") %>%
   st_set_crs(4326)
