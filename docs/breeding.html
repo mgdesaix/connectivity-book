@@ -314,7 +314,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="breeding.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
 <span id="cb12-2"><a href="breeding.html#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> genoscape_polygon_sf,<span class="at">alpha =</span> <span class="fl">0.75</span>, <span class="fu">aes</span>(<span class="at">fill =</span> Cluster)) <span class="sc">+</span></span>
 <span id="cb12-3"><a href="breeding.html#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cluster_colors)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-3-1.png" width="70%" /></p>
 <p>Check which polygons are overlapping. Each row of the output provides a pair of overlapping polygons (if there are any).</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="breeding.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_genoscape_overlap</span>(genoscape_polygon_sf)</span></code></pre></div>
 <pre><code>##      [,1]      [,2]        

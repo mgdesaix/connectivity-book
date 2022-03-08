@@ -167,7 +167,7 @@ cluster_colors <-  c(
   Southwest = "#FF6600") 
 ```
 
-```{r}
+```{r, out.width='70%'}
 ggplot() +
   geom_sf(data = genoscape_polygon_sf,alpha = 0.75, aes(fill = Cluster)) +
   scale_fill_manual(values = cluster_colors)
