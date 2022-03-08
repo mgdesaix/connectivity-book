@@ -3,7 +3,9 @@ installation
 breeding
 ebirdst
 seasonal-abundance
+warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below
 generating-seasonal-polygons
+warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below-1
 creating-the-genoscape
 genoscape-polygons
 wintering

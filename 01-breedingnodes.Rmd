@@ -4,7 +4,7 @@ Breeding nodes are delineated by the genetically distinct populations on the bre
 
 ## ebirdst
 
-In the migratory network analyses, the `ebirdst` abundance data is used to delineate the different stages of the annual cycle. The `MuSpTest` package provides code for these first sections that function as a wrapper for the `ebirdst` package to streamline the process. If you would like to know more about the underlying `ebirdst` code and analyses, check out the [excellent tutorial](https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html) by Strimas-Mackey, Auer, and Fink.
+In the migratory network analyses, the `ebirdst` abundance data is used to delineate the different stages of the annual cycle. The `Mignette` package provides code for these first sections that function as a wrapper for the `ebirdst` package to streamline the process. If you would like to know more about the underlying `ebirdst` code and analyses, check out the [excellent tutorial](https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html) by Strimas-Mackey, Auer, and Fink.
 
 Prior to doing anything with eBird Status and Trends data, you will need to download the `ebirdst` package, and then get access to the data. To download the package:
 
@@ -24,15 +24,16 @@ where `"XXXXX"` is the key.
 The primary packages for this vignette are:
 
 ``` r
-library(MuSpTest)
+library(Mignette)
 library(sf)
 library(terra)
 library(tidyverse)
 library(ebirdst)
-library(rnaturalearth)
 ```
 
 ## Seasonal abundance
+
+### WARNING: This section is currently deprecated. Please use the [ebirdst tutorial](https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html) to generate seasonal abundance polygons and continue to section 2.4 below
 
 The first function, `get_ebirdst_abd_season()`, downloads species data and creates a multi-layered raster of seasonal abundance data (nonbreeding, prebreeding migration, breeding, and postbreeding migration). The function currently takes two inputs, `species` and `path`. `ebirdst` data download is based on the six-letter species code, thus, we use the same naming system. You can find the specific codes with the [get_species](https://rdrr.io/github/CornellLabofOrnithology/ebirdst/man/get_species.html) function from the `ebirdst` package. 
 
@@ -46,6 +47,8 @@ abd_season <- get_ebirdst_abd_season(species = "comyel")
 ```
 
 ## Generating seasonal polygons
+
+### WARNING: This section is currently deprecated. Please use the [ebirdst tutorial](https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html) to generate seasonal abundance polygons and continue to section 2.4 below
 
 Using the previously created  seasonal abundance rasters, we will convert them to polygons of the range. The details can be found in the `ebirdst` [tutorial](https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html), but the gist of it is that we'll distinguish non-zero abundance from non-predicted areas, and delineate nice *smooth* ranges for the different stages. 
 
@@ -62,7 +65,7 @@ ne_land <- rnaturalearth::ne_countries(scale = ne_scale, returnclass = "sf") %>%
 ne_land_proj <- sf::st_transform(ne_land, crs = sf::st_crs(abd_season))
 ```
 
-Now we have all the input data we need to get the polygons of the range. The function `range_smooth()` in the `MuSpTest` package takes care of this. In the process of smoothing the polygon, small regions are dropped and holes in the polygon filled in based on the size ($km^2$) specified with the `smooth_area` parameter. Below it is set at 1000 $km^2$ (e.g. a 31.6 km * 31.6 km square), but you may want to increase or decrease depending on the organism.
+Now we have all the input data we need to get the polygons of the range. The function `range_smooth()` in the `Mignette` package takes care of this. In the process of smoothing the polygon, small regions are dropped and holes in the polygon filled in based on the size ($km^2$) specified with the `smooth_area` parameter. Below it is set at 1000 $km^2$ (e.g. a 31.6 km * 31.6 km square), but you may want to increase or decrease depending on the organism.
 
 ``` r
 # this fuction can take a while (~10 min.)
@@ -85,6 +88,8 @@ sf::st_write(comyel_breed_smooth, dsn = './comyel/shapefiles',
           driver = "ESRI Shapefile")
 ```
 
+
+
 ## Creating the genoscape
 
 This is modified from Eric Anderson's [Github project](https://github.com/eriqande/make-a-BGP-map) that uses a matrix of individual Q-values to create a rasters of genetically distinct clusters - the **genoscape**. If you want to learn the ins and outs of making a *beautiful* genoscape map, check out Eric's awesome [tutorial](https://github.com/eriqande/make-a-BGP-map). We will use the breeding polygon created in the previous step to specify the breeding range for the genoscape. The input data we need are:
@@ -96,10 +101,10 @@ This is modified from Eric Anderson's [Github project](https://github.com/eriqan
 The `comyel_breeding_data` data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.
 
 ``` r
-Q_matrix <- MuSpTest::comyel_breeding_data %>%
+Q_matrix <- Mignette::comyel_breeding_data %>%
   dplyr::select(CA, Midwest, NewEngland, West, Southwest) %>%
   as.matrix()
-long_lat_matrix <- MuSpTest::comyel_breeding_data %>%
+long_lat_matrix <- Mignette::comyel_breeding_data %>%
   dplyr::select(Long, Lat) %>%
   as.matrix()
 cluster_colors <-  c(
@@ -150,9 +155,9 @@ genoscape_polygon_sf <- scape_to_shape(x = genoscape_raster_stack, prob_threshol
 Check out the polygons
 
 ```{r, echo = F, results = F, message = F}
-library(ggplot2)
 library(sf)
-library(MuSpTest)
+library(ggplot2)
+library(Mignette)
 genoscape_polygon_sf <- st_read(dsn = "./data/comyel/genoscape/polygons", layer = "comyel_genoscape_polygon_sf")
 cluster_colors <-  c(
   CA = "#CC0000",

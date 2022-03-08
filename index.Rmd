@@ -8,14 +8,14 @@ bibliography: [book.bib, packages.bib]
 # url: your book url like https://bookdown.org/yihui/bookdown
 # cover-image: path to the social sharing image like images/cover.jpg
 description: |
-  This provides examples and documentation of the MuSpTest package
+  This provides examples and documentation of the Mignette package
 link-citations: yes
 github-repo: rstudio/bookdown-demo
 ---
 
 # Introduction
 
-This text outlines how to create migratory networks using the R package `MuSpTest` (*We need a name!*). The creation of the migratory networks is broken into three main parts:
+This text outlines how to create migratory networks using the R package `Mignette` (**Mig**ratory **net**work **t**ools **e**nsemble). The creation of a migratory network is broken into three main parts:
 
 1. Delineating [breeding nodes](#breeding)
 2. Delineating [wintering nodes](#wintering)
@@ -23,11 +23,11 @@ This text outlines how to create migratory networks using the R package `MuSpTes
 
 ## Installation 
 
-You can install the development version of MuSpTest from [GitHub](https://github.com/) with:
+You can install the development version of Mignette from GitHub with:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("mgdesaix/MuSpTest", auth_token = "xxx")
+remotes::install_github("mgdesaix/Mignette", auth_token = "xxx")
 ```
 
 **Note:** The `auth_token =` specifies my personal access token to allow the download because it is currently a private repository. Replace "xxx" with the token until we make the repository public.

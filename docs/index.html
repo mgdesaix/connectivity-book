@@ -5,26 +5,26 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Creating Migratory Networks in R</title>
-  <meta name="description" content="This provides examples and documentation of the MuSpTest package" />
+  <meta name="description" content="This provides examples and documentation of the Mignette package" />
   <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Creating Migratory Networks in R" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="This provides examples and documentation of the MuSpTest package" />
+  <meta property="og:description" content="This provides examples and documentation of the Mignette package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Creating Migratory Networks in R" />
   
-  <meta name="twitter:description" content="This provides examples and documentation of the MuSpTest package" />
+  <meta name="twitter:description" content="This provides examples and documentation of the Mignette package" />
   
 
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2022-01-06" />
+<meta name="date" content="2022-03-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -144,8 +144,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2" data-path="breeding.html"><a href="breeding.html"><i class="fa fa-check"></i><b>2</b> Breeding nodes</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="breeding.html"><a href="breeding.html#ebirdst"><i class="fa fa-check"></i><b>2.1</b> ebirdst</a></li>
-<li class="chapter" data-level="2.2" data-path="breeding.html"><a href="breeding.html#seasonal-abundance"><i class="fa fa-check"></i><b>2.2</b> Seasonal abundance</a></li>
-<li class="chapter" data-level="2.3" data-path="breeding.html"><a href="breeding.html#generating-seasonal-polygons"><i class="fa fa-check"></i><b>2.3</b> Generating seasonal polygons</a></li>
+<li class="chapter" data-level="2.2" data-path="breeding.html"><a href="breeding.html#seasonal-abundance"><i class="fa fa-check"></i><b>2.2</b> Seasonal abundance</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="breeding.html"><a href="breeding.html#warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below"><i class="fa fa-check"></i><b>2.2.1</b> WARNING: This section is currently deprecated. Please use the <span>ebirdst tutorial</span> to generate seasonal abundance polygons and continue to section 2.4 below</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="breeding.html"><a href="breeding.html#generating-seasonal-polygons"><i class="fa fa-check"></i><b>2.3</b> Generating seasonal polygons</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="breeding.html"><a href="breeding.html#warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below-1"><i class="fa fa-check"></i><b>2.3.1</b> WARNING: This section is currently deprecated. Please use the <span>ebirdst tutorial</span> to generate seasonal abundance polygons and continue to section 2.4 below</a></li>
+</ul></li>
 <li class="chapter" data-level="2.4" data-path="breeding.html"><a href="breeding.html#creating-the-genoscape"><i class="fa fa-check"></i><b>2.4</b> Creating the genoscape</a></li>
 <li class="chapter" data-level="2.5" data-path="breeding.html"><a href="breeding.html#genoscape-polygons"><i class="fa fa-check"></i><b>2.5</b> Genoscape polygons</a></li>
 </ul></li>
@@ -195,11 +201,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">Creating Migratory Networks in R</h1>
 <p class="author"><em>Matt DeSaix</em></p>
-<p class="date"><em>2022-01-06</em></p>
+<p class="date"><em>2022-03-08</em></p>
 </div>
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">Chapter 1</span> Introduction</h1>
-<p>This text outlines how to create migratory networks using the R package <code>MuSpTest</code> (<em>We need a name!</em>). The creation of the migratory networks is broken into three main parts:</p>
+<p>This text outlines how to create migratory networks using the R package <code>Mignette</code> (<strong>Mig</strong>ratory <strong>net</strong>work <strong>t</strong>ools <strong>e</strong>nsemble). The creation of a migratory network is broken into three main parts:</p>
 <ol style="list-style-type: decimal">
 <li>Delineating <a href="breeding.html#breeding">breeding nodes</a></li>
 <li>Delineating <a href="wintering.html#wintering">wintering nodes</a></li>
@@ -207,9 +213,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <div id="installation" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Installation</h2>
-<p>You can install the development version of MuSpTest from <a href="https://github.com/">GitHub</a> with:</p>
+<p>You can install the development version of Mignette from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
-<span id="cb1-2"><a href="index.html#cb1-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;mgdesaix/MuSpTest&quot;</span>, <span class="at">auth_token =</span> <span class="st">&quot;xxx&quot;</span>)</span></code></pre></div>
+<span id="cb1-2"><a href="index.html#cb1-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;mgdesaix/Mignette&quot;</span>, <span class="at">auth_token =</span> <span class="st">&quot;xxx&quot;</span>)</span></code></pre></div>
 <p><strong>Note:</strong> The <code>auth_token =</code> specifies my personal access token to allow the download because it is currently a private repository. Replace “xxx” with the token until we make the repository public.</p>
 
 </div>

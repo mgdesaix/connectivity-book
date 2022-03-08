@@ -5,26 +5,26 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 Breeding nodes | Creating Migratory Networks in R</title>
-  <meta name="description" content="This provides examples and documentation of the MuSpTest package" />
+  <meta name="description" content="This provides examples and documentation of the Mignette package" />
   <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 Breeding nodes | Creating Migratory Networks in R" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="This provides examples and documentation of the MuSpTest package" />
+  <meta property="og:description" content="This provides examples and documentation of the Mignette package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapter 2 Breeding nodes | Creating Migratory Networks in R" />
   
-  <meta name="twitter:description" content="This provides examples and documentation of the MuSpTest package" />
+  <meta name="twitter:description" content="This provides examples and documentation of the Mignette package" />
   
 
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2022-01-06" />
+<meta name="date" content="2022-03-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -144,8 +144,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2" data-path="breeding.html"><a href="breeding.html"><i class="fa fa-check"></i><b>2</b> Breeding nodes</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="breeding.html"><a href="breeding.html#ebirdst"><i class="fa fa-check"></i><b>2.1</b> ebirdst</a></li>
-<li class="chapter" data-level="2.2" data-path="breeding.html"><a href="breeding.html#seasonal-abundance"><i class="fa fa-check"></i><b>2.2</b> Seasonal abundance</a></li>
-<li class="chapter" data-level="2.3" data-path="breeding.html"><a href="breeding.html#generating-seasonal-polygons"><i class="fa fa-check"></i><b>2.3</b> Generating seasonal polygons</a></li>
+<li class="chapter" data-level="2.2" data-path="breeding.html"><a href="breeding.html#seasonal-abundance"><i class="fa fa-check"></i><b>2.2</b> Seasonal abundance</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="breeding.html"><a href="breeding.html#warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below"><i class="fa fa-check"></i><b>2.2.1</b> WARNING: This section is currently deprecated. Please use the <span>ebirdst tutorial</span> to generate seasonal abundance polygons and continue to section 2.4 below</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="breeding.html"><a href="breeding.html#generating-seasonal-polygons"><i class="fa fa-check"></i><b>2.3</b> Generating seasonal polygons</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="breeding.html"><a href="breeding.html#warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below-1"><i class="fa fa-check"></i><b>2.3.1</b> WARNING: This section is currently deprecated. Please use the <span>ebirdst tutorial</span> to generate seasonal abundance polygons and continue to section 2.4 below</a></li>
+</ul></li>
 <li class="chapter" data-level="2.4" data-path="breeding.html"><a href="breeding.html#creating-the-genoscape"><i class="fa fa-check"></i><b>2.4</b> Creating the genoscape</a></li>
 <li class="chapter" data-level="2.5" data-path="breeding.html"><a href="breeding.html#genoscape-polygons"><i class="fa fa-check"></i><b>2.5</b> Genoscape polygons</a></li>
 </ul></li>
@@ -197,7 +203,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Breeding nodes are delineated by the genetically distinct populations on the breeding grounds. In this example, we’ll show how to use <a href="https://ebird.org/science/status-and-trends">eBird Status and Trends</a> data to specify the breeding range and then use genetic data from admixture analyses to specify the spatial extent of the breeding nodes.</p>
 <div id="ebirdst" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> ebirdst</h2>
-<p>In the migratory network analyses, the <code>ebirdst</code> abundance data is used to delineate the different stages of the annual cycle. The <code>MuSpTest</code> package provides code for these first sections that function as a wrapper for the <code>ebirdst</code> package to streamline the process. If you would like to know more about the underlying <code>ebirdst</code> code and analyses, check out the <a href="https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html">excellent tutorial</a> by Strimas-Mackey, Auer, and Fink.</p>
+<p>In the migratory network analyses, the <code>ebirdst</code> abundance data is used to delineate the different stages of the annual cycle. The <code>Mignette</code> package provides code for these first sections that function as a wrapper for the <code>ebirdst</code> package to streamline the process. If you would like to know more about the underlying <code>ebirdst</code> code and analyses, check out the <a href="https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html">excellent tutorial</a> by Strimas-Mackey, Auer, and Fink.</p>
 <p>Prior to doing anything with eBird Status and Trends data, you will need to download the <code>ebirdst</code> package, and then get access to the data. To download the package:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="breeding.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
 <span id="cb2-2"><a href="breeding.html#cb2-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;CornellLabofOrnithology/ebirdst&quot;</span>)</span></code></pre></div>
@@ -205,23 +211,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="breeding.html#cb3-1" aria-hidden="true" tabindex="-1"></a>ebirdst<span class="sc">::</span><span class="fu">set_ebirdst_access_key</span>(<span class="st">&quot;XXXXX&quot;</span>)</span></code></pre></div>
 <p>where <code>"XXXXX"</code> is the key.</p>
 <p>The primary packages for this vignette are:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="breeding.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuSpTest)</span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="breeding.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Mignette)</span>
 <span id="cb4-2"><a href="breeding.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
 <span id="cb4-3"><a href="breeding.html#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
 <span id="cb4-4"><a href="breeding.html#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb4-5"><a href="breeding.html#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ebirdst)</span>
-<span id="cb4-6"><a href="breeding.html#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rnaturalearth)</span></code></pre></div>
+<span id="cb4-5"><a href="breeding.html#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ebirdst)</span></code></pre></div>
 </div>
 <div id="seasonal-abundance" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Seasonal abundance</h2>
+<div id="warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below" class="section level3" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> WARNING: This section is currently deprecated. Please use the <a href="https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html">ebirdst tutorial</a> to generate seasonal abundance polygons and continue to section 2.4 below</h3>
 <p>The first function, <code>get_ebirdst_abd_season()</code>, downloads species data and creates a multi-layered raster of seasonal abundance data (nonbreeding, prebreeding migration, breeding, and postbreeding migration). The function currently takes two inputs, <code>species</code> and <code>path</code>. <code>ebirdst</code> data download is based on the six-letter species code, thus, we use the same naming system. You can find the specific codes with the <a href="https://rdrr.io/github/CornellLabofOrnithology/ebirdst/man/get_species.html">get_species</a> function from the <code>ebirdst</code> package.</p>
 <p>Specify the species of interest for <code>get_ebirdst_abd_season()</code> with <code>species</code>.</p>
 <p>Below is an example for downloading data for the <a href="https://ebird.org/species/comyel">Common Yellowthroat</a> and creating the seasonal abundance raster stack.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="breeding.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This can take a while depending on the species (5-10 min.)</span></span>
 <span id="cb5-2"><a href="breeding.html#cb5-2" aria-hidden="true" tabindex="-1"></a>abd_season <span class="ot">&lt;-</span> <span class="fu">get_ebirdst_abd_season</span>(<span class="at">species =</span> <span class="st">&quot;comyel&quot;</span>)</span></code></pre></div>
 </div>
+</div>
 <div id="generating-seasonal-polygons" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> Generating seasonal polygons</h2>
+<div id="warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below-1" class="section level3" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> WARNING: This section is currently deprecated. Please use the <a href="https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html">ebirdst tutorial</a> to generate seasonal abundance polygons and continue to section 2.4 below</h3>
 <p>Using the previously created seasonal abundance rasters, we will convert them to polygons of the range. The details can be found in the <code>ebirdst</code> <a href="https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html">tutorial</a>, but the gist of it is that we’ll distinguish non-zero abundance from non-predicted areas, and delineate nice <em>smooth</em> ranges for the different stages.</p>
 <p>We also need land extent data. We will get land data from the <code>rnaturalearth</code> package using the following code. Depending on the organism’s range, you will need to filter continent to the appropriate region. Here, we want both North and South America.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="breeding.html#cb6-1" aria-hidden="true" tabindex="-1"></a>ne_scale <span class="ot">&lt;-</span> <span class="dv">50</span></span>
@@ -232,7 +242,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-6"><a href="breeding.html#cb6-6" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_union</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb6-7"><a href="breeding.html#cb6-7" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_geometry</span>()</span>
 <span id="cb6-8"><a href="breeding.html#cb6-8" aria-hidden="true" tabindex="-1"></a>ne_land_proj <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(ne_land, <span class="at">crs =</span> sf<span class="sc">::</span><span class="fu">st_crs</span>(abd_season))</span></code></pre></div>
-<p>Now we have all the input data we need to get the polygons of the range. The function <code>range_smooth()</code> in the <code>MuSpTest</code> package takes care of this. In the process of smoothing the polygon, small regions are dropped and holes in the polygon filled in based on the size (<span class="math inline">\(km^2\)</span>) specified with the <code>smooth_area</code> parameter. Below it is set at 1000 <span class="math inline">\(km^2\)</span> (e.g. a 31.6 km * 31.6 km square), but you may want to increase or decrease depending on the organism.</p>
+<p>Now we have all the input data we need to get the polygons of the range. The function <code>range_smooth()</code> in the <code>Mignette</code> package takes care of this. In the process of smoothing the polygon, small regions are dropped and holes in the polygon filled in based on the size (<span class="math inline">\(km^2\)</span>) specified with the <code>smooth_area</code> parameter. Below it is set at 1000 <span class="math inline">\(km^2\)</span> (e.g. a 31.6 km * 31.6 km square), but you may want to increase or decrease depending on the organism.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="breeding.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this fuction can take a while (~10 min.)</span></span>
 <span id="cb7-2"><a href="breeding.html#cb7-2" aria-hidden="true" tabindex="-1"></a>comyel_range_smooth <span class="ot">&lt;-</span> <span class="fu">range_smooth</span>(<span class="at">abd_season =</span> abd_season, </span>
 <span id="cb7-3"><a href="breeding.html#cb7-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">ne_land =</span> ne_land_proj,</span>
@@ -248,6 +258,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb8-6"><a href="breeding.html#cb8-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">layer =</span> <span class="st">&quot;comyel_breed_smooth&quot;</span>,</span>
 <span id="cb8-7"><a href="breeding.html#cb8-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">driver =</span> <span class="st">&quot;ESRI Shapefile&quot;</span>)</span></code></pre></div>
 </div>
+</div>
 <div id="creating-the-genoscape" class="section level2" number="2.4">
 <h2><span class="header-section-number">2.4</span> Creating the genoscape</h2>
 <p>This is modified from Eric Anderson’s <a href="https://github.com/eriqande/make-a-BGP-map">Github project</a> that uses a matrix of individual Q-values to create a rasters of genetically distinct clusters - the <strong>genoscape</strong>. If you want to learn the ins and outs of making a <em>beautiful</em> genoscape map, check out Eric’s awesome <a href="https://github.com/eriqande/make-a-BGP-map">tutorial</a>. We will use the breeding polygon created in the previous step to specify the breeding range for the genoscape. The input data we need are:</p>
@@ -257,10 +268,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Breeding range polygon</li>
 </ul>
 <p>The <code>comyel_breeding_data</code> data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="breeding.html#cb9-1" aria-hidden="true" tabindex="-1"></a>Q_matrix <span class="ot">&lt;-</span> MuSpTest<span class="sc">::</span>comyel_breeding_data <span class="sc">%&gt;%</span></span>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="breeding.html#cb9-1" aria-hidden="true" tabindex="-1"></a>Q_matrix <span class="ot">&lt;-</span> Mignette<span class="sc">::</span>comyel_breeding_data <span class="sc">%&gt;%</span></span>
 <span id="cb9-2"><a href="breeding.html#cb9-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(CA, Midwest, NewEngland, West, Southwest) <span class="sc">%&gt;%</span></span>
 <span id="cb9-3"><a href="breeding.html#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb9-4"><a href="breeding.html#cb9-4" aria-hidden="true" tabindex="-1"></a>long_lat_matrix <span class="ot">&lt;-</span> MuSpTest<span class="sc">::</span>comyel_breeding_data <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="breeding.html#cb9-4" aria-hidden="true" tabindex="-1"></a>long_lat_matrix <span class="ot">&lt;-</span> Mignette<span class="sc">::</span>comyel_breeding_data <span class="sc">%&gt;%</span></span>
 <span id="cb9-5"><a href="breeding.html#cb9-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Long, Lat) <span class="sc">%&gt;%</span></span>
 <span id="cb9-6"><a href="breeding.html#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
 <span id="cb9-7"><a href="breeding.html#cb9-7" aria-hidden="true" tabindex="-1"></a>cluster_colors <span class="ot">&lt;-</span>  <span class="fu">c</span>(</span>
