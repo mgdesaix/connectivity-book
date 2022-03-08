@@ -18,7 +18,7 @@ jobs:
       - name: Install rmarkdown
         run: Rscript -e 'install.packages(c("rmarkdown","bookdown", "ggplot2", "sf", "remotes"))'
       - name: Install Mignette
-        run: Rscript -e 'remotes::install_github("mgdesaix/Mignette", auth_token = "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")'
+        run: Rscript -e 'remotes::install_github("mgdesaix/Mignette")'
       - name: Render Book
         run: Rscript -e 'bookdown::render_book("index.Rmd")'
       - uses: actions/upload-artifact@v1
