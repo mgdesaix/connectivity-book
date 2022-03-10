@@ -27,11 +27,8 @@ You can install the development version of Mignette from GitHub with:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("mgdesaix/Mignette", auth_token = "xxx")
+remotes::install_github("mgdesaix/Mignette")
 ```
-
-**Note:** The `auth_token =` specifies my personal access token to allow the download because it is currently a private repository. Replace "xxx" with the token until we make the repository public.
-
 
 
 ```{r include=FALSE}
