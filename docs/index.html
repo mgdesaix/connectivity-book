@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Creating Migratory Networks in R</title>
   <meta name="description" content="This provides examples and documentation of the Mignette package" />
-  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Creating Migratory Networks in R" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="This provides examples and documentation of the Mignette package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
@@ -24,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2022-03-10" />
+<meta name="date" content="2023-02-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,6 @@
   
 
 <link rel="next" href="breeding.html"/>
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -51,8 +49,9 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -93,7 +92,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -106,7 +105,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -146,11 +145,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.1" data-path="breeding.html"><a href="breeding.html#ebirdst"><i class="fa fa-check"></i><b>2.1</b> ebirdst</a></li>
 <li class="chapter" data-level="2.2" data-path="breeding.html"><a href="breeding.html#seasonal-abundance"><i class="fa fa-check"></i><b>2.2</b> Seasonal abundance</a>
 <ul>
-<li class="chapter" data-level="2.2.1" data-path="breeding.html"><a href="breeding.html#warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below"><i class="fa fa-check"></i><b>2.2.1</b> WARNING: This section is currently deprecated. Please use the <span>ebirdst tutorial</span> to generate seasonal abundance polygons and continue to section 2.4 below</a></li>
+<li class="chapter" data-level="2.2.1" data-path="breeding.html"><a href="breeding.html#warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below"><i class="fa fa-check"></i><b>2.2.1</b> WARNING: This section is currently deprecated. Please use the ebirdst tutorial to generate seasonal abundance polygons and continue to section 2.4 below</a></li>
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="breeding.html"><a href="breeding.html#generating-seasonal-polygons"><i class="fa fa-check"></i><b>2.3</b> Generating seasonal polygons</a>
 <ul>
-<li class="chapter" data-level="2.3.1" data-path="breeding.html"><a href="breeding.html#warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below-1"><i class="fa fa-check"></i><b>2.3.1</b> WARNING: This section is currently deprecated. Please use the <span>ebirdst tutorial</span> to generate seasonal abundance polygons and continue to section 2.4 below</a></li>
+<li class="chapter" data-level="2.3.1" data-path="breeding.html"><a href="breeding.html#warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below-1"><i class="fa fa-check"></i><b>2.3.1</b> WARNING: This section is currently deprecated. Please use the ebirdst tutorial to generate seasonal abundance polygons and continue to section 2.4 below</a></li>
 </ul></li>
 <li class="chapter" data-level="2.4" data-path="breeding.html"><a href="breeding.html#creating-the-genoscape"><i class="fa fa-check"></i><b>2.4</b> Creating the genoscape</a></li>
 <li class="chapter" data-level="2.5" data-path="breeding.html"><a href="breeding.html#genoscape-polygons"><i class="fa fa-check"></i><b>2.5</b> Genoscape polygons</a></li>
@@ -201,18 +200,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">Creating Migratory Networks in R</h1>
 <p class="author"><em>Matt DeSaix</em></p>
-<p class="date"><em>2022-03-10</em></p>
+<p class="date"><em>2023-02-20</em></p>
 </div>
-<div id="introduction" class="section level1" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Introduction</h1>
-<p>This text outlines how to create migratory networks using the R package <code>Mignette</code> (<strong>Mig</strong>ratory <strong>net</strong>work <strong>t</strong>ools <strong>e</strong>nsemble). The creation of a migratory network is broken into three main parts:</p>
+<div id="introduction" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>This text outlines how to create migratory networks using the R package <code>Mignette</code> (<strong>Mig</strong>ratory <strong>net</strong>work <strong>t</strong>ools <strong>e</strong>nsemble). <code>Mignette</code> was developed to facilitate conservation and management decision-making for migratory wildlife populations with genetic data. Genetic data are used for the delineation of breeding populations, as well as for the assignment of individuals sampled from non-breeding populations to their likely origin of breeding. Habitat suitability metrics are used to determine the relative importance of different breeding and non-breeding populations to the overall migratory network. <code>Mignette</code> also allows users to incorporate assignment data from geolocators. The creation of a migratory network is broken into three main parts:</p>
 <ol style="list-style-type: decimal">
 <li>Delineating <a href="breeding.html#breeding">breeding nodes</a></li>
-<li>Delineating <a href="wintering.html#wintering">wintering nodes</a></li>
+<li>Delineating <a href="wintering.html#wintering">non-breeding nodes</a></li>
 <li>Create <a href="connectivity.html#connectivity">migratory network</a></li>
 </ol>
-<div id="installation" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> Installation</h2>
+<p>Users with pre-existing data specifying breeding and non-breeding populations, population assignment, and habitat suitability metrics for the populations can use their data directly for the <a href="connectivity.html#connectivity">creation of migratory network steps</a> in <code>Mignette</code>. We also provide tools within <code>Mignette</code> to facilitate the <a href="breeding.html#breeding">delineation of breeding nodes</a> and <a href="wintering.html#wintering">non-breeding nodes</a>, and provide examples with migratory bird species.</p>
+<div id="installation" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> Installation<a href="index.html#installation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>You can install the development version of Mignette from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
 <span id="cb1-2"><a href="index.html#cb1-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;mgdesaix/Mignette&quot;</span>)</span></code></pre></div>
@@ -279,20 +279,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:")
-      if (/^https?:/.test(src))
-        src = src.replace(/^https?:/, '');
-    script.src = src;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

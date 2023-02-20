@@ -15,11 +15,13 @@ github-repo: rstudio/bookdown-demo
 
 # Introduction
 
-This text outlines how to create migratory networks using the R package `Mignette` (**Mig**ratory **net**work **t**ools **e**nsemble). The creation of a migratory network is broken into three main parts:
+This text outlines how to create migratory networks using the R package `Mignette` (**Mig**ratory **net**work **t**ools **e**nsemble). `Mignette` was developed to facilitate conservation and management decision-making for migratory wildlife populations with genetic data. Genetic data are used for the delineation of breeding populations, as well as for the assignment of individuals sampled from non-breeding populations to their likely origin of breeding. Habitat suitability metrics are used to determine the relative importance of different breeding and non-breeding populations to the overall migratory network. `Mignette` also allows users to incorporate assignment data from geolocators. The creation of a migratory network is broken into three main parts:
 
 1. Delineating [breeding nodes](#breeding)
-2. Delineating [wintering nodes](#wintering)
+2. Delineating [non-breeding nodes](#wintering)
 3. Create [migratory network](#connectivity)
+
+Users with pre-existing data specifying breeding and non-breeding populations, population assignment, and habitat suitability metrics for the populations can use their data directly for the [creation of migratory network steps](#connectivity) in `Mignette`. We also provide tools within `Mignette` to facilitate the [delineation of breeding nodes](#breeding) and [non-breeding nodes](#wintering), and provide examples with migratory bird species.
 
 ## Installation 
 
