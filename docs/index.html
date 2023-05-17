@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-02-20" />
+<meta name="date" content="2023-05-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 
-<link rel="next" href="breeding.html"/>
+<link rel="next" href="quickstart.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -119,6 +119,28 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -140,42 +162,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#installation"><i class="fa fa-check"></i><b>1.1</b> Installation</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="breeding.html"><a href="breeding.html"><i class="fa fa-check"></i><b>2</b> Breeding nodes</a>
+<li class="chapter" data-level="2" data-path="quickstart.html"><a href="quickstart.html"><i class="fa fa-check"></i><b>2</b> Quick start example</a></li>
+<li class="chapter" data-level="3" data-path="breeding.html"><a href="breeding.html"><i class="fa fa-check"></i><b>3</b> Breeding nodes</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="breeding.html"><a href="breeding.html#ebirdst"><i class="fa fa-check"></i><b>2.1</b> ebirdst</a></li>
-<li class="chapter" data-level="2.2" data-path="breeding.html"><a href="breeding.html#seasonal-abundance"><i class="fa fa-check"></i><b>2.2</b> Seasonal abundance</a>
+<li class="chapter" data-level="3.1" data-path="breeding.html"><a href="breeding.html#ebirdst"><i class="fa fa-check"></i><b>3.1</b> ebirdst</a></li>
+<li class="chapter" data-level="3.2" data-path="breeding.html"><a href="breeding.html#creating-the-genoscape"><i class="fa fa-check"></i><b>3.2</b> Creating the genoscape</a>
 <ul>
-<li class="chapter" data-level="2.2.1" data-path="breeding.html"><a href="breeding.html#warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below"><i class="fa fa-check"></i><b>2.2.1</b> WARNING: This section is currently deprecated. Please use the ebirdst tutorial to generate seasonal abundance polygons and continue to section 2.4 below</a></li>
-</ul></li>
-<li class="chapter" data-level="2.3" data-path="breeding.html"><a href="breeding.html#generating-seasonal-polygons"><i class="fa fa-check"></i><b>2.3</b> Generating seasonal polygons</a>
-<ul>
-<li class="chapter" data-level="2.3.1" data-path="breeding.html"><a href="breeding.html#warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below-1"><i class="fa fa-check"></i><b>2.3.1</b> WARNING: This section is currently deprecated. Please use the ebirdst tutorial to generate seasonal abundance polygons and continue to section 2.4 below</a></li>
-</ul></li>
-<li class="chapter" data-level="2.4" data-path="breeding.html"><a href="breeding.html#creating-the-genoscape"><i class="fa fa-check"></i><b>2.4</b> Creating the genoscape</a></li>
-<li class="chapter" data-level="2.5" data-path="breeding.html"><a href="breeding.html#genoscape-polygons"><i class="fa fa-check"></i><b>2.5</b> Genoscape polygons</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>3</b> Wintering nodes</a>
-<ul>
-<li class="chapter" data-level="3.1" data-path="wintering.html"><a href="wintering.html#subsetting-winter-ecoregions"><i class="fa fa-check"></i><b>3.1</b> Subsetting winter ecoregions</a></li>
-<li class="chapter" data-level="3.2" data-path="wintering.html"><a href="wintering.html#snap-points"><i class="fa fa-check"></i><b>3.2</b> Snap points</a></li>
-<li class="chapter" data-level="3.3" data-path="wintering.html"><a href="wintering.html#finalize-wintering-nodes"><i class="fa fa-check"></i><b>3.3</b> Finalize wintering nodes</a></li>
-</ul></li>
-<li class="chapter" data-level="4" data-path="connectivity.html"><a href="connectivity.html"><i class="fa fa-check"></i><b>4</b> Migratory Network Model</a>
-<ul>
-<li class="chapter" data-level="4.1" data-path="connectivity.html"><a href="connectivity.html#specifying-relative-abundance"><i class="fa fa-check"></i><b>4.1</b> Specifying relative abundance</a></li>
-<li class="chapter" data-level="4.2" data-path="connectivity.html"><a href="connectivity.html#preparing-model-data"><i class="fa fa-check"></i><b>4.2</b> Preparing model data</a>
-<ul>
-<li class="chapter" data-level="4.2.1" data-path="connectivity.html"><a href="connectivity.html#intersecting-sampling-point-data-with-wintering-nodes"><i class="fa fa-check"></i><b>4.2.1</b> Intersecting sampling point data with wintering nodes</a></li>
-<li class="chapter" data-level="4.2.2" data-path="connectivity.html"><a href="connectivity.html#refining-relative-abundance-metrics"><i class="fa fa-check"></i><b>4.2.2</b> Refining relative abundance metrics</a></li>
-</ul></li>
-<li class="chapter" data-level="4.3" data-path="connectivity.html"><a href="connectivity.html#jags-model"><i class="fa fa-check"></i><b>4.3</b> JAGS model</a>
-<ul>
-<li class="chapter" data-level="4.3.1" data-path="connectivity.html"><a href="connectivity.html#install-jags-and-jagsui-package"><i class="fa fa-check"></i><b>4.3.1</b> Install JAGS and jagsUI package</a></li>
-<li class="chapter" data-level="4.3.2" data-path="connectivity.html"><a href="connectivity.html#data-input"><i class="fa fa-check"></i><b>4.3.2</b> Data input</a></li>
-<li class="chapter" data-level="4.3.3" data-path="connectivity.html"><a href="connectivity.html#running-the-model"><i class="fa fa-check"></i><b>4.3.3</b> Running the model</a></li>
+<li class="chapter" data-level="3.2.1" data-path="breeding.html"><a href="breeding.html#genoscape-polygons"><i class="fa fa-check"></i><b>3.2.1</b> Genoscape polygons</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>5</b> Network visualization</a></li>
+<li class="chapter" data-level="4" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>4</b> Wintering nodes</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-winter-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting winter ecoregions</a></li>
+<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#snap-points"><i class="fa fa-check"></i><b>4.2</b> Snap points</a></li>
+<li class="chapter" data-level="4.3" data-path="wintering.html"><a href="wintering.html#finalize-wintering-nodes"><i class="fa fa-check"></i><b>4.3</b> Finalize wintering nodes</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>5</b> Relative Abundance</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="abundance.html"><a href="abundance.html#get-relative-abundance-for-a-genoscape-raster"><i class="fa fa-check"></i><b>5.1</b> Get relative abundance for a genoscape (raster)</a></li>
+<li class="chapter" data-level="5.2" data-path="abundance.html"><a href="abundance.html#get-relative-abundance-for-a-vector"><i class="fa fa-check"></i><b>5.2</b> Get relative abundance for a vector</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="connectivity.html"><a href="connectivity.html"><i class="fa fa-check"></i><b>6</b> Migratory Network Model</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="connectivity.html"><a href="connectivity.html#input-data"><i class="fa fa-check"></i><b>6.1</b> Input data</a></li>
+<li class="chapter" data-level="6.2" data-path="connectivity.html"><a href="connectivity.html#migratory-network-model-jags"><i class="fa fa-check"></i><b>6.2</b> Migratory network model (JAGS)</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="connectivity.html"><a href="connectivity.html#preparing-input-data"><i class="fa fa-check"></i><b>6.2.1</b> Preparing input data</a></li>
+<li class="chapter" data-level="6.2.2" data-path="connectivity.html"><a href="connectivity.html#running-the-model"><i class="fa fa-check"></i><b>6.2.2</b> Running the model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>7</b> Network visualization</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -200,23 +216,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">Creating Migratory Networks in R</h1>
 <p class="author"><em>Matt DeSaix</em></p>
-<p class="date"><em>2023-02-20</em></p>
+<p class="date"><em>2023-05-17</em></p>
 </div>
 <div id="introduction" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>This text outlines how to create migratory networks using the R package <code>Mignette</code> (<strong>Mig</strong>ratory <strong>net</strong>work <strong>t</strong>ools <strong>e</strong>nsemble). <code>Mignette</code> was developed to facilitate conservation and management decision-making for migratory wildlife populations with genetic data. Genetic data are used for the delineation of breeding populations, as well as for the assignment of individuals sampled from non-breeding populations to their likely origin of breeding. Habitat suitability metrics are used to determine the relative importance of different breeding and non-breeding populations to the overall migratory network. <code>Mignette</code> also allows users to incorporate assignment data from geolocators. The creation of a migratory network is broken into three main parts:</p>
+<p>This vignette outlines how to create migratory networks using the R package <code>mignette</code> (<strong>mig</strong>ratory <strong>net</strong>work <strong>t</strong>ools <strong>e</strong>nsemble). <code>mignette</code> was developed to facilitate conservation and management decision-making for migratory wildlife populations <span class="citation">Taylor and Norris (<a href="#ref-taylor2010population" role="doc-biblioref">2010</a>)</span>. The core function of <code>mignette</code> is to model the connectivity of populations across the annual cycle. <strong>To model these migratory networks in <code>mignette</code>, users need to provide:</strong></p>
 <ol style="list-style-type: decimal">
-<li>Delineating <a href="breeding.html#breeding">breeding nodes</a></li>
-<li>Delineating <a href="wintering.html#wintering">non-breeding nodes</a></li>
-<li>Create <a href="connectivity.html#connectivity">migratory network</a></li>
+<li>Assignment (or connectivity) data for the number of individuals connecting migratory populations from different stages of the annual cycle</li>
+<li>Relative abundance data for the populations</li>
 </ol>
-<p>Users with pre-existing data specifying breeding and non-breeding populations, population assignment, and habitat suitability metrics for the populations can use their data directly for the <a href="connectivity.html#connectivity">creation of migratory network steps</a> in <code>Mignette</code>. We also provide tools within <code>Mignette</code> to facilitate the <a href="breeding.html#breeding">delineation of breeding nodes</a> and <a href="wintering.html#wintering">non-breeding nodes</a>, and provide examples with migratory bird species.</p>
+<p>We designed <code>mignette</code> specifically for use with population assignment data from genetic markers, and we use genetic markers to delineate breeding populations (i.e., nodes in the breeding nodes in the migratory network model). We have since extended <code>mignette</code> to be able to model migratory networks that include geolocator data for assignment. While it is out of the scope of <code>mignette</code> for providing an exhaustive tool set of methods to delineate these nodes, given our focus on the use of genetic data, we provide examples and resources for users to delineate breeding populations from genetic data. For nonbreeding populations, we delineate these spatially by <em>ecoregions</em> ADD LINK TO ECOREGION DATA SOURCE.</p>
+<p>We anticipate users of <code>mignette</code> to be interested in modelling migratory networks for a wide-range of taxa, therefore users can provide relative abundance information from any data source. However, we also provide information on obtaining relative abundance for bird data from <a href="https://ebird.org/science/status-and-trends">eBird</a> and have developed tools in <code>mignette</code> to facilitate the calculation of relative abundance values.</p>
+<p>For a brief demonstration of creating a migratory network from assignment and relative abundance data, see the <a href="quickstart.html#quickstart">quick start example</a>. Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.</p>
 <div id="installation" class="section level2 hasAnchor" number="1.1">
 <h2><span class="header-section-number">1.1</span> Installation<a href="index.html#installation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>You can install the development version of Mignette from GitHub with:</p>
+<p>You can install the development version of <code>mignette</code> from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
-<span id="cb1-2"><a href="index.html#cb1-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;mgdesaix/Mignette&quot;</span>)</span></code></pre></div>
+<span id="cb1-2"><a href="index.html#cb1-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;mgdesaix/mignette&quot;</span>)</span></code></pre></div>
+<p>The migratory network model will be run using R packages that run JAGS (Just Another Gibbs Sampler). JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS can be <a href="https://mcmc-jags.sourceforge.io/">downloaded here</a></p>
+<p>The primary packages for this vignette are:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="index.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mignette)</span>
+<span id="cb2-2"><a href="index.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb2-3"><a href="index.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb2-4"><a href="index.html#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-5"><a href="index.html#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ebirdst)</span>
+<span id="cb2-6"><a href="index.html#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rjags)</span>
+<span id="cb2-7"><a href="index.html#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jagsUI)</span>
+<span id="cb2-8"><a href="index.html#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggnewscale) <span class="co"># for network visualization</span></span></code></pre></div>
 
+</div>
+</div>
+<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-taylor2010population" class="csl-entry">
+Taylor, Caz M, and D Ryan Norris. 2010. <span>“Population Dynamics in Migratory Networks.”</span> <em>Theoretical Ecology</em> 3: 65–73.
 </div>
 </div>
             </section>
@@ -225,7 +258,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 
-<a href="breeding.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="quickstart.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

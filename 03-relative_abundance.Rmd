@@ -1,0 +1,24 @@
+# Relative Abundance {#abundance}
+
+Here, we calculate the relative abundance for the different nodes of the migratory network. The input data for this step are:
+
+* Abundance data (Raster)
+* Population ranges (Raster or Vector)
+
+Typically, the geographic range of a population will be stored as a vector (e.g., polygon), but in the case of a genoscape, the population ranges can be specified by a raster with q-values. For abundance data, we will use the [eBird Status and Trends](https://science.ebird.org/en/status-and-trends) data, but any abundance data in a raster object can be used.
+
+## Get relative abundance for a genoscape (raster)
+
+In the case of a *genoscape* raster with q-values, we will convert the q-values to probabilities of a pixel belonging to that population which is used to weight the abundance values. This is done with a single function `get_genoscape_abunds()`, and outputs a two-column matrix with the population names and the relative abundance of each population.
+
+```r
+genoscape_abunds <- get_genoscape_abunds(genoscape = genoscape, abunds = abunds)
+```
+
+## Get relative abundance for a vector
+
+In the case of vector file delineating populations, we sum abundance across the range of each population. This is done with a single function `get_genoscape_abunds()`, and outputs a two-column matrix with the population names and the relative abundance of each population.
+
+```r
+winter_abunds <- get_vector_abunds(populations = winter_regions, abunds = abunds)
+```

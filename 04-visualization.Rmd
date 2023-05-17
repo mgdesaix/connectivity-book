@@ -1,3 +1,0 @@
-# Network visualization {#visualization}
-
-To be created...

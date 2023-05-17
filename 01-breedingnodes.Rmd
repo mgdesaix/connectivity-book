@@ -1,12 +1,12 @@
 # Breeding nodes {#breeding}
 
-Breeding nodes are delineated by the genetically distinct populations on the breeding grounds. In this example, we'll show how to use [eBird Status and Trends](https://ebird.org/science/status-and-trends) data to specify the breeding range and then use genetic data from admixture analyses to specify the spatial extent of the breeding nodes.
+Delineating breeding nodes is necessary for our migratory network model for both 1) assignment among populations, and 2) specifying a region for relative abundance. Here, we show how breeding nodes can be delineated by genetically distinct populations on the breeding grounds. In this example, we'll show how to use [eBird Status and Trends](https://ebird.org/science/status-and-trends) data to specify the breeding range and then use genetic data from admixture analyses to specify the spatial extent of the breeding nodes.
 
 ## ebirdst
 
-In the migratory network analyses, the `ebirdst` abundance data is used to delineate the different stages of the annual cycle. The `Mignette` package provides code for these first sections that function as a wrapper for the `ebirdst` package to streamline the process. If you would like to know more about the underlying `ebirdst` code and analyses, check out the [excellent tutorial](https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html) by Strimas-Mackey, Auer, and Fink.
+In our migratory network analyses, the [eBird Status and Trends](https://science.ebird.org/en/status-and-trends) data is used to delineate the different stages of the annual cycle. Prior to doing anything with eBird Status and Trends data, you will need to download the `ebirdst` package, and then get access to the data. **You will need to follow the most up-to-date instructions from the `ebirdst` developers for getting the abundance data. Currently, that information is here: [https://ebird.github.io/ebirdst/](https://ebird.github.io/ebirdst/)**
 
-Prior to doing anything with eBird Status and Trends data, you will need to download the `ebirdst` package, and then get access to the data. To download the package:
+To download the package:
 
 ``` r
 # install.packages("remotes")
@@ -21,82 +21,19 @@ ebirdst::set_ebirdst_access_key("XXXXX")
 
 where `"XXXXX"` is the key.
 
-The primary packages for this vignette are:
-
-``` r
-library(Mignette)
-library(sf)
-library(terra)
-library(tidyverse)
-library(ebirdst)
-```
-
-## Seasonal abundance
-
-### WARNING: This section is currently deprecated. Please use the [ebirdst tutorial](https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html) to generate seasonal abundance polygons and continue to section 2.4 below
-
-The first function, `get_ebirdst_abd_season()`, downloads species data and creates a multi-layered raster of seasonal abundance data (nonbreeding, prebreeding migration, breeding, and postbreeding migration). The function currently takes two inputs, `species` and `path`. `ebirdst` data download is based on the six-letter species code, thus, we use the same naming system. You can find the specific codes with the [get_species](https://rdrr.io/github/CornellLabofOrnithology/ebirdst/man/get_species.html) function from the `ebirdst` package. 
-
-Specify the species of interest for `get_ebirdst_abd_season()` with `species`.
-
-Below is an example for downloading data for the [Common Yellowthroat](https://ebird.org/species/comyel) and creating the seasonal abundance raster stack.
-
-``` r
-# This can take a while depending on the species (5-10 min.)
-abd_season <- get_ebirdst_abd_season(species = "comyel")
-```
-
-## Generating seasonal polygons
-
-### WARNING: This section is currently deprecated. Please use the [ebirdst tutorial](https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html) to generate seasonal abundance polygons and continue to section 2.4 below
-
-Using the previously created  seasonal abundance rasters, we will convert them to polygons of the range. The details can be found in the `ebirdst` [tutorial](https://cornelllabofornithology.github.io/ebirdst/articles/ebirdst-advanced-mapping.html), but the gist of it is that we'll distinguish non-zero abundance from non-predicted areas, and delineate nice *smooth* ranges for the different stages. 
-
-We also need land extent data. We will get land data from the `rnaturalearth` package using the following code. Depending on the organism's range, you will need to filter continent to the appropriate region. Here, we want both North and South America.
-
-``` r
-ne_scale <- 50
-# land polygon
-ne_land <- rnaturalearth::ne_countries(scale = ne_scale, returnclass = "sf") %>%
-  dplyr::filter(continent %in% c("North America", "South America")) %>%
-  sf::st_set_precision(1e6) %>%
-  sf::st_union() %>% 
-  sf::st_geometry()
-ne_land_proj <- sf::st_transform(ne_land, crs = sf::st_crs(abd_season))
-```
-
-Now we have all the input data we need to get the polygons of the range. The function `range_smooth()` in the `Mignette` package takes care of this. In the process of smoothing the polygon, small regions are dropped and holes in the polygon filled in based on the size ($km^2$) specified with the `smooth_area` parameter. Below it is set at 1000 $km^2$ (e.g. a 31.6 km * 31.6 km square), but you may want to increase or decrease depending on the organism.
-
-``` r
-# this fuction can take a while (~10 min.)
-comyel_range_smooth <- range_smooth(abd_season = abd_season, 
-                                  ne_land = ne_land_proj,
-                                  smooth_area = 1000,
-                                  split_migration = FALSE, 
-                                  show_yearround = FALSE)
-```
-
-Extracting a single polygon of a portion of the range is simple and quick! Here's an example of getting the *breeding* season range from the `range_smooth()` output.
-
-``` r
-comyel_breed_smooth <- dplyr::filter(comyel_range_smooth,
-                                season == "breeding") %>%
-                    sf::st_transform(crs = 4326)
-
-sf::st_write(comyel_breed_smooth, dsn = './comyel/shapefiles',
-          layer = "comyel_breed_smooth",
-          driver = "ESRI Shapefile")
-```
-
-
+By following instructions from the `ebirdst` developers, you can obtain polygons of the breeding and nonbreeding ranges of avian species (see [https://ebird.github.io/ebirdst/](https://ebird.github.io/ebirdst/) for details). 
 
 ## Creating the genoscape
 
-This is modified from Eric Anderson's [Github project](https://github.com/eriqande/make-a-BGP-map) that uses a matrix of individual Q-values to create a rasters of genetically distinct clusters - the **genoscape**. If you want to learn the ins and outs of making a *beautiful* genoscape map, check out Eric's awesome [tutorial](https://github.com/eriqande/make-a-BGP-map). We will use the breeding polygon created in the previous step to specify the breeding range for the genoscape. The input data we need are:
+A genoscape is the collection of genetically distinct populations that make up a species' range [@ruegg2021american]. Typically, for migratory species, the genoscape describes this population structure on the breeding range because the nonbreeding populations can can contain individuals from different breeding populations.
+
+We will outline the main genoscape creation steps here, but full instructions on creating a genoscape map can be found in Eric Anderson's Github project [Make a Bird Genoscape Project map](https://github.com/eriqande/make-a-BGP-map). The input data needed for a genoscape are:
 
 * Individual Q-value matrix
-* Lat/lon matrix of individual
+* Lat/lon matrix of individuals
 * Breeding range polygon
+
+The Q-value matrix is obtained from individual admixture analyses (e.g. Structure, Admixture, `snmf` fuction from the LEA R-package). Latitude/longitude coordinates are for the individual samples used in the Q-value matrix. Breeding range polygons can be obtained from `ebirdst` (see previous section). 
 
 The `comyel_breeding_data` data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.
 
@@ -139,7 +76,11 @@ out.files <- paste0("./comyel/genoscape/comyel_genoscape_cluster_", names(genosc
 terra::writeRaster(terra::rast(genoscape_brick), filename = out.files)
 ```
 
-## Genoscape polygons
+**STOP**
+
+The rasters for the genoscape are all that are needed for obtaining information on relative abundance for the different populations. You can continue on to the [relative abundance section](#abundance) if you are ready to do that with the genoscape. Or if you still need to create the wintering nodes, check out the [wintering nodes section](#wintering). The following section is not necessary for the migratory network but details how to covert genoscape rasters to polygons if the `mignette` user is interested in doing so.
+
+### Genoscape polygons
 
 Using the genoscape rasters we will convert them to polygons, using the handy `scape_to_shape()` function. The `prob_threshold` parameter specifies the value to determine if a raster cell is included in the polygon for that genoscape. This value should be customized for different species to check for overlap of genoscape polygons, which is not desirable. Setting too high of a threshold will create very small breeding nodes, while too low of a threshold will result in large, overlapping breeding nodes.
 
@@ -149,7 +90,7 @@ genoscape_files <- list.files("./comyel/genoscape",
                                      pattern = "*.tif")
 
 genoscape_raster_stack <- terra::rast(genoscape_files)
-genoscape_polygon_sf <- scape_to_shape(x = genoscape_raster_stack, prob_threshold = 0.5)
+genoscape_polygon_sf <- mignette::scape_to_shape(x = genoscape_raster_stack, prob_threshold = 0.5)
 ```
 
 Check out the polygons
@@ -157,8 +98,9 @@ Check out the polygons
 ```{r, echo = F, results = F, message = F}
 library(sf)
 library(ggplot2)
-library(Mignette)
-genoscape_polygon_sf <- st_read(dsn = "./data/comyel/genoscape/polygons", layer = "comyel_genoscape_polygon_sf")
+library(mignette)
+genoscape_polygon_sf <- st_read(dsn = "./data/comyel/genoscape/polygons", 
+                                layer = "comyel_genoscape_polygon_sf")
 cluster_colors <-  c(
   CA = "#CC0000",
   Midwest = "#3399FF",
@@ -176,7 +118,7 @@ ggplot() +
 Check which polygons are overlapping. Each row of the output provides a pair of overlapping polygons (if there are any).
 
 ```{r}
-check_genoscape_overlap(genoscape_polygon_sf)
+mignette::check_genoscape_overlap(genoscape_polygon_sf)
 ```
 
 Now on to creating the [wintering nodes](#wintering)

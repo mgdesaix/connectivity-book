@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>References | Creating Migratory Networks in R</title>
   <meta name="description" content="This provides examples and documentation of the Mignette package" />
-  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
 
   <meta property="og:title" content="References | Creating Migratory Networks in R" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="This provides examples and documentation of the Mignette package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
@@ -24,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2022-03-10" />
+<meta name="date" content="2023-05-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,6 @@
   
 <link rel="prev" href="visualization.html"/>
 
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -51,8 +49,9 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -93,7 +92,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -106,7 +105,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -120,6 +119,28 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -141,42 +162,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#installation"><i class="fa fa-check"></i><b>1.1</b> Installation</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="breeding.html"><a href="breeding.html"><i class="fa fa-check"></i><b>2</b> Breeding nodes</a>
+<li class="chapter" data-level="2" data-path="quickstart.html"><a href="quickstart.html"><i class="fa fa-check"></i><b>2</b> Quick start example</a></li>
+<li class="chapter" data-level="3" data-path="breeding.html"><a href="breeding.html"><i class="fa fa-check"></i><b>3</b> Breeding nodes</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="breeding.html"><a href="breeding.html#ebirdst"><i class="fa fa-check"></i><b>2.1</b> ebirdst</a></li>
-<li class="chapter" data-level="2.2" data-path="breeding.html"><a href="breeding.html#seasonal-abundance"><i class="fa fa-check"></i><b>2.2</b> Seasonal abundance</a>
+<li class="chapter" data-level="3.1" data-path="breeding.html"><a href="breeding.html#ebirdst"><i class="fa fa-check"></i><b>3.1</b> ebirdst</a></li>
+<li class="chapter" data-level="3.2" data-path="breeding.html"><a href="breeding.html#creating-the-genoscape"><i class="fa fa-check"></i><b>3.2</b> Creating the genoscape</a>
 <ul>
-<li class="chapter" data-level="2.2.1" data-path="breeding.html"><a href="breeding.html#warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below"><i class="fa fa-check"></i><b>2.2.1</b> WARNING: This section is currently deprecated. Please use the <span>ebirdst tutorial</span> to generate seasonal abundance polygons and continue to section 2.4 below</a></li>
-</ul></li>
-<li class="chapter" data-level="2.3" data-path="breeding.html"><a href="breeding.html#generating-seasonal-polygons"><i class="fa fa-check"></i><b>2.3</b> Generating seasonal polygons</a>
-<ul>
-<li class="chapter" data-level="2.3.1" data-path="breeding.html"><a href="breeding.html#warning-this-section-is-currently-deprecated.-please-use-the-ebirdst-tutorial-to-generate-seasonal-abundance-polygons-and-continue-to-section-2.4-below-1"><i class="fa fa-check"></i><b>2.3.1</b> WARNING: This section is currently deprecated. Please use the <span>ebirdst tutorial</span> to generate seasonal abundance polygons and continue to section 2.4 below</a></li>
-</ul></li>
-<li class="chapter" data-level="2.4" data-path="breeding.html"><a href="breeding.html#creating-the-genoscape"><i class="fa fa-check"></i><b>2.4</b> Creating the genoscape</a></li>
-<li class="chapter" data-level="2.5" data-path="breeding.html"><a href="breeding.html#genoscape-polygons"><i class="fa fa-check"></i><b>2.5</b> Genoscape polygons</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>3</b> Wintering nodes</a>
-<ul>
-<li class="chapter" data-level="3.1" data-path="wintering.html"><a href="wintering.html#subsetting-winter-ecoregions"><i class="fa fa-check"></i><b>3.1</b> Subsetting winter ecoregions</a></li>
-<li class="chapter" data-level="3.2" data-path="wintering.html"><a href="wintering.html#snap-points"><i class="fa fa-check"></i><b>3.2</b> Snap points</a></li>
-<li class="chapter" data-level="3.3" data-path="wintering.html"><a href="wintering.html#finalize-wintering-nodes"><i class="fa fa-check"></i><b>3.3</b> Finalize wintering nodes</a></li>
-</ul></li>
-<li class="chapter" data-level="4" data-path="connectivity.html"><a href="connectivity.html"><i class="fa fa-check"></i><b>4</b> Migratory Network Model</a>
-<ul>
-<li class="chapter" data-level="4.1" data-path="connectivity.html"><a href="connectivity.html#specifying-relative-abundance"><i class="fa fa-check"></i><b>4.1</b> Specifying relative abundance</a></li>
-<li class="chapter" data-level="4.2" data-path="connectivity.html"><a href="connectivity.html#preparing-model-data"><i class="fa fa-check"></i><b>4.2</b> Preparing model data</a>
-<ul>
-<li class="chapter" data-level="4.2.1" data-path="connectivity.html"><a href="connectivity.html#intersecting-sampling-point-data-with-wintering-nodes"><i class="fa fa-check"></i><b>4.2.1</b> Intersecting sampling point data with wintering nodes</a></li>
-<li class="chapter" data-level="4.2.2" data-path="connectivity.html"><a href="connectivity.html#refining-relative-abundance-metrics"><i class="fa fa-check"></i><b>4.2.2</b> Refining relative abundance metrics</a></li>
-</ul></li>
-<li class="chapter" data-level="4.3" data-path="connectivity.html"><a href="connectivity.html#jags-model"><i class="fa fa-check"></i><b>4.3</b> JAGS model</a>
-<ul>
-<li class="chapter" data-level="4.3.1" data-path="connectivity.html"><a href="connectivity.html#install-jags-and-jagsui-package"><i class="fa fa-check"></i><b>4.3.1</b> Install JAGS and jagsUI package</a></li>
-<li class="chapter" data-level="4.3.2" data-path="connectivity.html"><a href="connectivity.html#data-input"><i class="fa fa-check"></i><b>4.3.2</b> Data input</a></li>
-<li class="chapter" data-level="4.3.3" data-path="connectivity.html"><a href="connectivity.html#running-the-model"><i class="fa fa-check"></i><b>4.3.3</b> Running the model</a></li>
+<li class="chapter" data-level="3.2.1" data-path="breeding.html"><a href="breeding.html#genoscape-polygons"><i class="fa fa-check"></i><b>3.2.1</b> Genoscape polygons</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>5</b> Network visualization</a></li>
+<li class="chapter" data-level="4" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>4</b> Wintering nodes</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-winter-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting winter ecoregions</a></li>
+<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#snap-points"><i class="fa fa-check"></i><b>4.2</b> Snap points</a></li>
+<li class="chapter" data-level="4.3" data-path="wintering.html"><a href="wintering.html#finalize-wintering-nodes"><i class="fa fa-check"></i><b>4.3</b> Finalize wintering nodes</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>5</b> Relative Abundance</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="abundance.html"><a href="abundance.html#get-relative-abundance-for-a-genoscape-raster"><i class="fa fa-check"></i><b>5.1</b> Get relative abundance for a genoscape (raster)</a></li>
+<li class="chapter" data-level="5.2" data-path="abundance.html"><a href="abundance.html#get-relative-abundance-for-a-vector"><i class="fa fa-check"></i><b>5.2</b> Get relative abundance for a vector</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="connectivity.html"><a href="connectivity.html"><i class="fa fa-check"></i><b>6</b> Migratory Network Model</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="connectivity.html"><a href="connectivity.html#input-data"><i class="fa fa-check"></i><b>6.1</b> Input data</a></li>
+<li class="chapter" data-level="6.2" data-path="connectivity.html"><a href="connectivity.html#migratory-network-model-jags"><i class="fa fa-check"></i><b>6.2</b> Migratory network model (JAGS)</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="connectivity.html"><a href="connectivity.html#preparing-input-data"><i class="fa fa-check"></i><b>6.2.1</b> Preparing input data</a></li>
+<li class="chapter" data-level="6.2.2" data-path="connectivity.html"><a href="connectivity.html#running-the-model"><i class="fa fa-check"></i><b>6.2.2</b> Running the model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>7</b> Network visualization</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -198,9 +213,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="references" class="section level1 unnumbered">
-<h1>References</h1>
+<div id="references" class="section level1 unnumbered hasAnchor">
+<h1>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div class="csl-entry">
+Ruegg, Kristen C, Michaela Brinkmeyer, Christen M Bossu, Rachael A Bay, Eric C Anderson, Clint W Boal, Russell D Dawson, et al. 2021. <span>“The American Kestrel (Falco Sparverius) Genoscape: Implications for Monitoring, Management, and Subspecies Boundaries.”</span> <em>The Auk</em> 138 (2): ukaa051.
+</div>
+<div class="csl-entry">
+Ruegg, Kristen C, Ryan J Harrigan, James F Saracco, Thomas B Smith, and Caz M Taylor. 2020. <span>“A Genoscape-Network Model for Conservation Prioritization in a Migratory Bird.”</span> <em>Conservation Biology</em> 34 (6): 1482–91.
+</div>
+<div class="csl-entry">
+Taylor, Caz M, and D Ryan Norris. 2010. <span>“Population Dynamics in Migratory Networks.”</span> <em>Theoretical Ecology</em> 3: 65–73.
+</div>
+</div>
 </div>
             </section>
 
@@ -239,7 +265,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/USERNAME/REPO/edit/BRANCH/05-references.Rmd",
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/06-references.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -262,20 +288,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:")
-      if (/^https?:/.test(src))
-        src = src.replace(/^https?:/, '');
-    script.src = src;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 # Wintering nodes {#wintering}
 
-For the migratory networks, we will use ecoregions to define the nonbreeding nodes. However, other nonbreeding nodes could be defined by the user instead. If you already have polygons defining your nonbreeding of nodes interest, then move along to ...
+For the migratory networks, we will use ecoregions to define the nonbreeding nodes. However, other nonbreeding nodes could be defined by the user instead. If you already have polygons defining your nonbreeding of nodes interest, then continue to the [relative abundance section](#abundance).
 
 ## Subsetting winter ecoregions
 
@@ -10,22 +10,22 @@ The ecoregion data is provided by [provide link]. The ecoregions are provided in
 comyel_winter <- comyel_range_smooth %>%
   dplyr::filter(season == "nonbreeding") %>%
   sf::st_transform(crs = 4326) %>%
-  sf::st_intersection(MuSpTest::ecoregions_simple) %>%
+  sf::st_intersection(mignette::ecoregions_simple) %>%
   dplyr::select(Region)
 ```
 
 
 ## Snap points
 
-Sometimes individuals are not quite within the wintering nodes. Here, we will make sure all sampled individuals get assigned to the nearest ecoregion.
+Sometimes individuals are not quite within the wintering nodes. Here, we will make sure all sampled individuals get assigned to the nearest ecoregion with the `mignette` function `snap_points()`.
 
 ``` r
-winter.coords <- MuSpTest::comyel_wintering_data %>%
+winter.coords <- mignette::comyel_wintering_data %>%
   st_as_sf(coords=c("Long","Lat")) %>%
   st_cast("MULTIPOINT") %>%
   st_set_crs(4326)
   
-new.winter.coords <- snap_points(winter.coords, comyel_winter, 150000)
+new.winter.coords <- mignette::snap_points(winter.coords, comyel_winter, 150000)
 ```
 
 ## Finalize wintering nodes
@@ -38,5 +38,5 @@ poly_id <- which(unlist(lapply(winter_intersect, function(x) length(x) > 0)))
 comyel_winter_ecoregions <- comyel_winter[poly_id,]
 ```
 
-Now on to creating the [migratory network model](#connectivity)
+Now on to getting the [relative abundance](#abundance).
 
