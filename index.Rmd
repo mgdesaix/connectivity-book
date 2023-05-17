@@ -15,7 +15,7 @@ github-repo: rstudio/bookdown-demo
 
 # Introduction
 
-This vignette outlines how to create migratory networks using the R package `mignette` (**mig**ratory **net**work **t**ools **e**nsemble). `mignette` was developed to facilitate conservation and management decision-making for migratory wildlife populations [@ruegg2020genoscape, @taylor2010population]. The core function of `mignette` is to model the connectivity of populations across the annual cycle. **To model these migratory networks in `mignette`, users need to provide:**
+This vignette outlines how to create migratory networks using the R package `mignette` (**mig**ratory **net**work **t**ools **e**nsemble). `mignette` was developed to facilitate conservation and management decision-making for migratory wildlife populations [@ruegg2020genoscape; @taylor2010population]. The core function of `mignette` is to model the connectivity of populations across the annual cycle. **To model these migratory networks in `mignette`, users need to provide:**
 
 1. Assignment (or connectivity) data for the number of individuals connecting migratory populations from different stages of the annual cycle
 2. Relative abundance data for the populations
