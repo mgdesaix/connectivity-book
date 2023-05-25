@@ -6,9 +6,9 @@ ebirdst
 creating-the-genoscape
 genoscape-polygons
 wintering
-subsetting-winter-ecoregions
+subsetting-ecoregions
 snap-points
-finalize-wintering-nodes
+finalize-nonbreeding-nodes
 abundance
 get-relative-abundance-for-a-genoscape-raster
 get-relative-abundance-for-a-vector

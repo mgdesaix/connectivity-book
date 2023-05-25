@@ -4,26 +4,26 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 4 Wintering nodes | Creating Migratory Networks in R</title>
-  <meta name="description" content="This provides examples and documentation of the Mignette package" />
+  <title>Chapter 4 Nonbreeding nodes | Creating Migratory Networks in R</title>
+  <meta name="description" content="This provides examples and documentation of the Mignette R package" />
   <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 4 Wintering nodes | Creating Migratory Networks in R" />
+  <meta property="og:title" content="Chapter 4 Nonbreeding nodes | Creating Migratory Networks in R" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:description" content="This provides examples and documentation of the Mignette package" />
+  <meta property="og:description" content="This provides examples and documentation of the Mignette R package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 4 Wintering nodes | Creating Migratory Networks in R" />
+  <meta name="twitter:title" content="Chapter 4 Nonbreeding nodes | Creating Migratory Networks in R" />
   
-  <meta name="twitter:description" content="This provides examples and documentation of the Mignette package" />
+  <meta name="twitter:description" content="This provides examples and documentation of the Mignette R package" />
   
 
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-05-17" />
+<meta name="date" content="2023-05-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -171,11 +171,11 @@ div.csl-indent {
 <li class="chapter" data-level="3.2.1" data-path="breeding.html"><a href="breeding.html#genoscape-polygons"><i class="fa fa-check"></i><b>3.2.1</b> Genoscape polygons</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>4</b> Wintering nodes</a>
+<li class="chapter" data-level="4" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>4</b> Nonbreeding nodes</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-winter-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting winter ecoregions</a></li>
+<li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting ecoregions</a></li>
 <li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#snap-points"><i class="fa fa-check"></i><b>4.2</b> Snap points</a></li>
-<li class="chapter" data-level="4.3" data-path="wintering.html"><a href="wintering.html#finalize-wintering-nodes"><i class="fa fa-check"></i><b>4.3</b> Finalize wintering nodes</a></li>
+<li class="chapter" data-level="4.3" data-path="wintering.html"><a href="wintering.html#finalize-nonbreeding-nodes"><i class="fa fa-check"></i><b>4.3</b> Finalize nonbreeding nodes</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>5</b> Relative Abundance</a>
 <ul>
@@ -214,11 +214,11 @@ div.csl-indent {
 
             <section class="normal" id="section-">
 <div id="wintering" class="section level1 hasAnchor" number="4">
-<h1><span class="header-section-number">Chapter 4</span> Wintering nodes<a href="wintering.html#wintering" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>For the migratory networks, we will use ecoregions to define the nonbreeding nodes. However, other nonbreeding nodes could be defined by the user instead. If you already have polygons defining your nonbreeding of nodes interest, then continue to the <a href="abundance.html#abundance">relative abundance section</a>.</p>
-<div id="subsetting-winter-ecoregions" class="section level2 hasAnchor" number="4.1">
-<h2><span class="header-section-number">4.1</span> Subsetting winter ecoregions<a href="wintering.html#subsetting-winter-ecoregions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>The ecoregion data is provided by [provide link]. The ecoregions are provided in this this package as <code>ecoregions_simple</code>. We will intersect the ecoregions with the wintering range of the Common Yellowthroat to identify all the ecoregions that overlap with the wintering range.</p>
+<h1><span class="header-section-number">Chapter 4</span> Nonbreeding nodes<a href="wintering.html#wintering" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>For the migratory networks, we will use ecoregions to define the nonbreeding nodes. However, other nonbreeding nodes could be defined by the user instead. If you already have polygons defining your nodes interest, then continue to the <a href="abundance.html#abundance">relative abundance section</a>.</p>
+<div id="subsetting-ecoregions" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Subsetting ecoregions<a href="wintering.html#subsetting-ecoregions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The ecoregion data is provided by [provide link]. The ecoregions are provided in this this package as <code>ecoregions_simple</code>. We will intersect the ecoregions with the nonbreeding range of the Common Yellowthroat to identify all the ecoregions that overlap with the nonbreeding range.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="wintering.html#cb18-1" aria-hidden="true" tabindex="-1"></a>comyel_winter <span class="ot">&lt;-</span> comyel_range_smooth <span class="sc">%&gt;%</span></span>
 <span id="cb18-2"><a href="wintering.html#cb18-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(season <span class="sc">==</span> <span class="st">&quot;nonbreeding&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb18-3"><a href="wintering.html#cb18-3" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
@@ -235,8 +235,8 @@ div.csl-indent {
 <span id="cb19-5"><a href="wintering.html#cb19-5" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb19-6"><a href="wintering.html#cb19-6" aria-hidden="true" tabindex="-1"></a>new.winter.coords <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">snap_points</span>(winter.coords, comyel_winter, <span class="dv">150000</span>)</span></code></pre></div>
 </div>
-<div id="finalize-wintering-nodes" class="section level2 hasAnchor" number="4.3">
-<h2><span class="header-section-number">4.3</span> Finalize wintering nodes<a href="wintering.html#finalize-wintering-nodes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="finalize-nonbreeding-nodes" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Finalize nonbreeding nodes<a href="wintering.html#finalize-nonbreeding-nodes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Now that points have been <em>snapped</em> to the appropriate ecoregions, we can further subset all of the ecoregions in which we have actually sampled individuals from. If we haven’t sampled individuals from a region, we can’t use that region as a node in the migratory connectivity network!</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="wintering.html#cb20-1" aria-hidden="true" tabindex="-1"></a>winter_intersect <span class="ot">&lt;-</span> <span class="fu">st_intersects</span>(comyel_winter, new.winter.coords, <span class="at">sparse =</span> T)</span>
 <span id="cb20-2"><a href="wintering.html#cb20-2" aria-hidden="true" tabindex="-1"></a>poly_id <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(winter_intersect, <span class="cf">function</span>(x) <span class="fu">length</span>(x) <span class="sc">&gt;</span> <span class="dv">0</span>)))</span>

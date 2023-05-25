@@ -117,7 +117,7 @@
 
 \title{Creating Migratory Networks in R}
 \author{Matt DeSaix}
-\date{2023-05-17}
+\date{2023-05-24}
 
 \begin{document}
 \maketitle
@@ -129,18 +129,18 @@
 \hypertarget{introduction}{%
 \chapter{Introduction}\label{introduction}}
 
-This vignette outlines how to create migratory networks using the R package \texttt{mignette} (\textbf{mig}ratory \textbf{net}work \textbf{t}ools \textbf{e}nsemble). \texttt{mignette} was developed to facilitate conservation and management decision-making for migratory wildlife populations \citep{ruegg2020genoscape, taylor2010population}. The core function of \texttt{mignette} is to model the connectivity of populations across the annual cycle. \textbf{To model these migratory networks in \texttt{mignette}, users need to provide:}
+This vignette outlines how to create migratory networks using the R package \texttt{mignette} (\textbf{mig}ratory \textbf{net}work \textbf{t}ools \textbf{e}nsemble). \texttt{mignette} was developed to facilitate conservation and management decision-making for migratory wildlife populations using migratory networks \citep{ruegg2020genoscape, taylor2010population}. The core function of \texttt{mignette} is to model the connectivity of populations across different stages of the annual cycle. To model these migratory networks in \texttt{mignette}, users need to provide:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Assignment (or connectivity) data for the number of individuals connecting migratory populations from different stages of the annual cycle
+  The number of individuals connecting migratory populations from two stages of the annual cycle
 \item
   Relative abundance data for the populations
 \end{enumerate}
 
-We designed \texttt{mignette} specifically for use with population assignment data from genetic markers, and we use genetic markers to delineate breeding populations (i.e., nodes in the breeding nodes in the migratory network model). We have since extended \texttt{mignette} to be able to model migratory networks that include geolocator data for assignment. While it is out of the scope of \texttt{mignette} for providing an exhaustive tool set of methods to delineate these nodes, given our focus on the use of genetic data, we provide examples and resources for users to delineate breeding populations from genetic data. For nonbreeding populations, we delineate these spatially by \emph{ecoregions} ADD LINK TO ECOREGION DATA SOURCE.
+We designed \texttt{mignette} specifically for use with population assignment data from genetic markers \citep{ruegg2014mapping, desaix2019population}, and we use genetic markers to delineate breeding populations (i.e., nodes in the migratory network model). We have since extended \texttt{mignette} to be able to model migratory networks that include geolocator data for assignment. While it is outside the scope of \texttt{mignette} for providing an exhaustive tool set of methods to delineate these nodes, given our focus on the use of genetic data, we provide examples and resources for users to delineate breeding populations from genetic data. For nonbreeding populations, we delineate these spatially by \emph{ecoregions} ADD LINK TO ECOREGION DATA SOURCE.
 
 We anticipate users of \texttt{mignette} to be interested in modelling migratory networks for a wide-range of taxa, therefore users can provide relative abundance information from any data source. However, we also provide information on obtaining relative abundance for bird data from \href{https://ebird.org/science/status-and-trends}{eBird} and have developed tools in \texttt{mignette} to facilitate the calculation of relative abundance values.
 
@@ -174,6 +174,8 @@ The primary packages for this vignette are:
 \FunctionTok{library}\NormalTok{(ggnewscale) }\CommentTok{\# for network visualization}
 \end{Highlighting}
 \end{Shaded}
+
+As \texttt{mignette} makes use of the \texttt{terra} package, all raster and vector (e.g., polygons) are provided as \emph{SpatRaster} and \emph{SpatVector} objects. See the \texttt{terra} package for more details on these types of objects in R.
 
 \hypertarget{quickstart}{%
 \chapter{Quick start example}\label{quickstart}}
@@ -456,14 +458,14 @@ Check which polygons are overlapping. Each row of the output provides a pair of 
 Now on to creating the \protect\hyperlink{wintering}{wintering nodes}
 
 \hypertarget{wintering}{%
-\chapter{Wintering nodes}\label{wintering}}
+\chapter{Nonbreeding nodes}\label{wintering}}
 
-For the migratory networks, we will use ecoregions to define the nonbreeding nodes. However, other nonbreeding nodes could be defined by the user instead. If you already have polygons defining your nonbreeding of nodes interest, then continue to the \protect\hyperlink{abundance}{relative abundance section}.
+For the migratory networks, we will use ecoregions to define the nonbreeding nodes. However, other nonbreeding nodes could be defined by the user instead. If you already have polygons defining your nodes interest, then continue to the \protect\hyperlink{abundance}{relative abundance section}.
 
-\hypertarget{subsetting-winter-ecoregions}{%
-\section{Subsetting winter ecoregions}\label{subsetting-winter-ecoregions}}
+\hypertarget{subsetting-ecoregions}{%
+\section{Subsetting ecoregions}\label{subsetting-ecoregions}}
 
-The ecoregion data is provided by {[}provide link{]}. The ecoregions are provided in this this package as \texttt{ecoregions\_simple}. We will intersect the ecoregions with the wintering range of the Common Yellowthroat to identify all the ecoregions that overlap with the wintering range.
+The ecoregion data is provided by {[}provide link{]}. The ecoregions are provided in this this package as \texttt{ecoregions\_simple}. We will intersect the ecoregions with the nonbreeding range of the Common Yellowthroat to identify all the ecoregions that overlap with the nonbreeding range.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -491,8 +493,8 @@ Sometimes individuals are not quite within the wintering nodes. Here, we will ma
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{finalize-wintering-nodes}{%
-\section{Finalize wintering nodes}\label{finalize-wintering-nodes}}
+\hypertarget{finalize-nonbreeding-nodes}{%
+\section{Finalize nonbreeding nodes}\label{finalize-nonbreeding-nodes}}
 
 Now that points have been \emph{snapped} to the appropriate ecoregions, we can further subset all of the ecoregions in which we have actually sampled individuals from. If we haven't sampled individuals from a region, we can't use that region as a node in the migratory connectivity network!
 
@@ -524,7 +526,7 @@ Typically, the geographic range of a population will be stored as a vector (e.g.
 \hypertarget{get-relative-abundance-for-a-genoscape-raster}{%
 \section{Get relative abundance for a genoscape (raster)}\label{get-relative-abundance-for-a-genoscape-raster}}
 
-In the case of a \emph{genoscape} raster with q-values, we will convert the q-values to probabilities of a pixel belonging to that population which is used to weight the abundance values. This is done with a single function \texttt{get\_genoscape\_abunds()}, and outputs a two-column matrix with the population names and the relative abundance of each population.
+In the case of a \emph{genoscape} raster with q-values, we will convert the q-values to probabilities of a pixel belonging to that population which is used to weight the abundance values. This is done with a single function \texttt{get\_genoscape\_abunds()}, and outputs a two-column matrix with the population names and the relative abundance of each population. Below, we provide the genoscape as a SpatRaster (\texttt{genoscape}) and the ebirdst abundance data as a SpatRaster (\texttt{abunds}).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -535,7 +537,7 @@ In the case of a \emph{genoscape} raster with q-values, we will convert the q-va
 \hypertarget{get-relative-abundance-for-a-vector}{%
 \section{Get relative abundance for a vector}\label{get-relative-abundance-for-a-vector}}
 
-In the case of vector file delineating populations, we sum abundance across the range of each population. This is done with a single function \texttt{get\_genoscape\_abunds()}, and outputs a two-column matrix with the population names and the relative abundance of each population.
+In the case of vector file delineating populations, we sum abundance across the range of each population. This is done with a single function \texttt{get\_vector\_abunds()}, and outputs a two-column matrix with the population names and the relative abundance of each population. The example below provides the nonbreeding ecoregions file as a SpatVector (\texttt{winter\_regions}) and the ebirdst abundance data as a SpatRaster (\texttt{abunds})
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -708,7 +710,7 @@ We provide functions for basic visualization of the network (\texttt{net\_create
 
 \includegraphics{Mignette_files/figure-latex/unnamed-chunk-15-1.pdf}
 
-In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. By default, breeding populations are in the top row (red) and nonbreeding/wintering populations are in the bottom row (blue).
+In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. By default, breeding populations are in the top row (red) and nonbreeding populations are in the bottom row (blue).
 
 This sums up the basics of creating and visualizing a migratory network. We encourage users to explore and build upon the visualization tools we provide (e.g.~overlay the migratory networks on geographic ranges) - the options are endless, enjoy!
 

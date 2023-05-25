@@ -1,10 +1,10 @@
-# Wintering nodes {#wintering}
+# Nonbreeding nodes {#wintering}
 
-For the migratory networks, we will use ecoregions to define the nonbreeding nodes. However, other nonbreeding nodes could be defined by the user instead. If you already have polygons defining your nonbreeding of nodes interest, then continue to the [relative abundance section](#abundance).
+For the migratory networks, we will use ecoregions to define the nonbreeding nodes. However, other nonbreeding nodes could be defined by the user instead. If you already have polygons defining your nodes interest, then continue to the [relative abundance section](#abundance).
 
-## Subsetting winter ecoregions
+## Subsetting ecoregions
 
-The ecoregion data is provided by [provide link]. The ecoregions are provided in this this package as `ecoregions_simple`. We will intersect the ecoregions with the wintering range of the Common Yellowthroat to identify all the ecoregions that overlap with the wintering range.
+The ecoregion data is provided by [provide link]. The ecoregions are provided in this this package as `ecoregions_simple`. We will intersect the ecoregions with the nonbreeding range of the Common Yellowthroat to identify all the ecoregions that overlap with the nonbreeding range.
 
 ``` r
 comyel_winter <- comyel_range_smooth %>%
@@ -28,7 +28,7 @@ winter.coords <- mignette::comyel_wintering_data %>%
 new.winter.coords <- mignette::snap_points(winter.coords, comyel_winter, 150000)
 ```
 
-## Finalize wintering nodes
+## Finalize nonbreeding nodes
 
 Now that points have been *snapped* to the appropriate ecoregions, we can further subset all of the ecoregions in which we have actually sampled individuals from. If we haven't sampled individuals from a region, we can't use that region as a node in the migratory connectivity network! 
 

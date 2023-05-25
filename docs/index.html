@@ -5,25 +5,25 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Creating Migratory Networks in R</title>
-  <meta name="description" content="This provides examples and documentation of the Mignette package" />
+  <meta name="description" content="This provides examples and documentation of the Mignette R package" />
   <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Creating Migratory Networks in R" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:description" content="This provides examples and documentation of the Mignette package" />
+  <meta property="og:description" content="This provides examples and documentation of the Mignette R package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Creating Migratory Networks in R" />
   
-  <meta name="twitter:description" content="This provides examples and documentation of the Mignette package" />
+  <meta name="twitter:description" content="This provides examples and documentation of the Mignette R package" />
   
 
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-05-17" />
+<meta name="date" content="2023-05-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -171,11 +171,11 @@ div.csl-indent {
 <li class="chapter" data-level="3.2.1" data-path="breeding.html"><a href="breeding.html#genoscape-polygons"><i class="fa fa-check"></i><b>3.2.1</b> Genoscape polygons</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>4</b> Wintering nodes</a>
+<li class="chapter" data-level="4" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>4</b> Nonbreeding nodes</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-winter-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting winter ecoregions</a></li>
+<li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting ecoregions</a></li>
 <li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#snap-points"><i class="fa fa-check"></i><b>4.2</b> Snap points</a></li>
-<li class="chapter" data-level="4.3" data-path="wintering.html"><a href="wintering.html#finalize-wintering-nodes"><i class="fa fa-check"></i><b>4.3</b> Finalize wintering nodes</a></li>
+<li class="chapter" data-level="4.3" data-path="wintering.html"><a href="wintering.html#finalize-nonbreeding-nodes"><i class="fa fa-check"></i><b>4.3</b> Finalize nonbreeding nodes</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>5</b> Relative Abundance</a>
 <ul>
@@ -216,16 +216,16 @@ div.csl-indent {
 <div id="header">
 <h1 class="title">Creating Migratory Networks in R</h1>
 <p class="author"><em>Matt DeSaix</em></p>
-<p class="date"><em>2023-05-17</em></p>
+<p class="date"><em>2023-05-24</em></p>
 </div>
 <div id="introduction" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>This vignette outlines how to create migratory networks using the R package <code>mignette</code> (<strong>mig</strong>ratory <strong>net</strong>work <strong>t</strong>ools <strong>e</strong>nsemble). <code>mignette</code> was developed to facilitate conservation and management decision-making for migratory wildlife populations <span class="citation">(<a href="#ref-ruegg2020genoscape" role="doc-biblioref">Ruegg et al. 2020</a>; <a href="#ref-taylor2010population" role="doc-biblioref">Taylor and Norris 2010</a>)</span>. The core function of <code>mignette</code> is to model the connectivity of populations across the annual cycle. <strong>To model these migratory networks in <code>mignette</code>, users need to provide:</strong></p>
+<p>This vignette outlines how to create migratory networks using the R package <code>mignette</code> (<strong>mig</strong>ratory <strong>net</strong>work <strong>t</strong>ools <strong>e</strong>nsemble). <code>mignette</code> was developed to facilitate conservation and management decision-making for migratory wildlife populations using migratory networks <span class="citation">(<a href="#ref-ruegg2020genoscape" role="doc-biblioref">Ruegg et al. 2020</a>; <a href="#ref-taylor2010population" role="doc-biblioref">Taylor and Norris 2010</a>)</span>. The core function of <code>mignette</code> is to model the connectivity of populations across different stages of the annual cycle. To model these migratory networks in <code>mignette</code>, users need to provide:</p>
 <ol style="list-style-type: decimal">
-<li>Assignment (or connectivity) data for the number of individuals connecting migratory populations from different stages of the annual cycle</li>
+<li>The number of individuals connecting migratory populations from two stages of the annual cycle</li>
 <li>Relative abundance data for the populations</li>
 </ol>
-<p>We designed <code>mignette</code> specifically for use with population assignment data from genetic markers, and we use genetic markers to delineate breeding populations (i.e., nodes in the breeding nodes in the migratory network model). We have since extended <code>mignette</code> to be able to model migratory networks that include geolocator data for assignment. While it is out of the scope of <code>mignette</code> for providing an exhaustive tool set of methods to delineate these nodes, given our focus on the use of genetic data, we provide examples and resources for users to delineate breeding populations from genetic data. For nonbreeding populations, we delineate these spatially by <em>ecoregions</em> ADD LINK TO ECOREGION DATA SOURCE.</p>
+<p>We designed <code>mignette</code> specifically for use with population assignment data from genetic markers <span class="citation">(<a href="#ref-ruegg2014mapping" role="doc-biblioref">Ruegg et al. 2014</a>; <a href="#ref-desaix2019population" role="doc-biblioref">DeSaix et al. 2019</a>)</span>, and we use genetic markers to delineate breeding populations (i.e., nodes in the migratory network model). We have since extended <code>mignette</code> to be able to model migratory networks that include geolocator data for assignment. While it is outside the scope of <code>mignette</code> for providing an exhaustive tool set of methods to delineate these nodes, given our focus on the use of genetic data, we provide examples and resources for users to delineate breeding populations from genetic data. For nonbreeding populations, we delineate these spatially by <em>ecoregions</em> ADD LINK TO ECOREGION DATA SOURCE.</p>
 <p>We anticipate users of <code>mignette</code> to be interested in modelling migratory networks for a wide-range of taxa, therefore users can provide relative abundance information from any data source. However, we also provide information on obtaining relative abundance for bird data from <a href="https://ebird.org/science/status-and-trends">eBird</a> and have developed tools in <code>mignette</code> to facilitate the calculation of relative abundance values.</p>
 <p>For a brief demonstration of creating a migratory network from assignment and relative abundance data, see the <a href="quickstart.html#quickstart">quick start example</a>. Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.</p>
 <div id="installation" class="section level2 hasAnchor" number="1.1">
@@ -243,11 +243,18 @@ div.csl-indent {
 <span id="cb2-6"><a href="index.html#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rjags)</span>
 <span id="cb2-7"><a href="index.html#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jagsUI)</span>
 <span id="cb2-8"><a href="index.html#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggnewscale) <span class="co"># for network visualization</span></span></code></pre></div>
+<p>As <code>mignette</code> makes use of the <code>terra</code> package, all raster and vector (e.g., polygons) are provided as <em>SpatRaster</em> and <em>SpatVector</em> objects. See the <code>terra</code> package for more details on these types of objects in R.</p>
 
 </div>
 </div>
 <h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-desaix2019population" class="csl-entry">
+DeSaix, Matthew G, Lesley P Bulluck, Andrew J Eckert, Catherine B Viverette, Than J Boves, Jessica A Reese, Christopher M Tonra, and Rodney J Dyer. 2019. <span>“Population Assignment Reveals Low Migratory Connectivity in a Weakly Structured Songbird.”</span> <em>Molecular Ecology</em> 28 (9): 2122–35.
+</div>
+<div id="ref-ruegg2014mapping" class="csl-entry">
+Ruegg, Kristen C, Eric C Anderson, Kristina L Paxton, Vanessa Apkenas, Sirena Lao, Rodney B Siegel, David F DeSante, Frank Moore, and Thomas B Smith. 2014. <span>“Mapping Migration in a Songbird Using High-Resolution Genetic Markers.”</span> <em>Molecular Ecology</em> 23 (23): 5726–39.
+</div>
 <div id="ref-ruegg2020genoscape" class="csl-entry">
 Ruegg, Kristen C, Ryan J Harrigan, James F Saracco, Thomas B Smith, and Caz M Taylor. 2020. <span>“A Genoscape-Network Model for Conservation Prioritization in a Migratory Bird.”</span> <em>Conservation Biology</em> 34 (6): 1482–91.
 </div>
