@@ -1,5 +1,5 @@
 --- 
-title: "Creating Migratory Networks in R"
+title: "Creating Migratory Networks in R: mignette"
 author: "Matt DeSaix"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -24,7 +24,7 @@ We designed `mignette` specifically for use with population assignment data from
 
 We anticipate users of `mignette` to be interested in modelling migratory networks for a wide-range of taxa, therefore users can provide relative abundance information from any data source. However, we also provide information on obtaining relative abundance for bird data from [eBird](https://ebird.org/science/status-and-trends) and have developed tools in `mignette` to facilitate the calculation of relative abundance values.
 
-For a brief demonstration of creating a migratory network from assignment and relative abundance data, see the [quick start example](#quickstart). Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.
+For an introductory demonstration of creating a migratory network with `mignette`, see the [quick start example](#quickstart). Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.
 
 ## Installation 
 
@@ -44,10 +44,11 @@ library(mignette)
 library(sf)
 library(terra)
 library(tidyverse)
-library(ebirdst)
-library(rjags)
-library(jagsUI)
+library(ebirdst) # for avian abundance data from eBird Status and Trends
+library(rjags) # for network model
+library(jagsUI) # for network model
 library(ggnewscale) # for network visualization
+library(tidyterra) # for plotting terra objects with ggplot
 ```
 
 As `mignette` makes use of the `terra` package, all raster and vector (e.g., polygons) are provided as *SpatRaster* and *SpatVector* objects. See the `terra` package for more details on these types of objects in R.

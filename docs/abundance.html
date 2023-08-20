@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 5 Relative Abundance | Creating Migratory Networks in R</title>
+  <title>Chapter 5 Relative Abundance | Creating Migratory Networks in R: mignette</title>
   <meta name="description" content="This provides examples and documentation of the Mignette R package" />
-  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 5 Relative Abundance | Creating Migratory Networks in R" />
+  <meta property="og:title" content="Chapter 5 Relative Abundance | Creating Migratory Networks in R: mignette" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This provides examples and documentation of the Mignette R package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Relative Abundance | Creating Migratory Networks in R" />
+  <meta name="twitter:title" content="Chapter 5 Relative Abundance | Creating Migratory Networks in R: mignette" />
   
   <meta name="twitter:description" content="This provides examples and documentation of the Mignette R package" />
   
@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-05-24" />
+<meta name="date" content="2023-08-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -120,6 +120,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
 /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
 div.csl-bib-body { }
 div.csl-entry {
@@ -174,8 +178,7 @@ div.csl-indent {
 <li class="chapter" data-level="4" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>4</b> Nonbreeding nodes</a>
 <ul>
 <li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting ecoregions</a></li>
-<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#snap-points"><i class="fa fa-check"></i><b>4.2</b> Snap points</a></li>
-<li class="chapter" data-level="4.3" data-path="wintering.html"><a href="wintering.html#finalize-nonbreeding-nodes"><i class="fa fa-check"></i><b>4.3</b> Finalize nonbreeding nodes</a></li>
+<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#select-sampled-regions"><i class="fa fa-check"></i><b>4.2</b> Select sampled regions</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>5</b> Relative Abundance</a>
 <ul>
@@ -205,7 +208,7 @@ div.csl-indent {
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R: mignette</a>
           </h1>
         </div>
 
@@ -224,12 +227,12 @@ div.csl-indent {
 <div id="get-relative-abundance-for-a-genoscape-raster" class="section level2 hasAnchor" number="5.1">
 <h2><span class="header-section-number">5.1</span> Get relative abundance for a genoscape (raster)<a href="abundance.html#get-relative-abundance-for-a-genoscape-raster" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>In the case of a <em>genoscape</em> raster with q-values, we will convert the q-values to probabilities of a pixel belonging to that population which is used to weight the abundance values. This is done with a single function <code>get_genoscape_abunds()</code>, and outputs a two-column matrix with the population names and the relative abundance of each population. Below, we provide the genoscape as a SpatRaster (<code>genoscape</code>) and the ebirdst abundance data as a SpatRaster (<code>abunds</code>).</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="abundance.html#cb21-1" aria-hidden="true" tabindex="-1"></a>genoscape_abunds <span class="ot">&lt;-</span> <span class="fu">get_genoscape_abunds</span>(<span class="at">genoscape =</span> genoscape, <span class="at">abunds =</span> abunds)</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="abundance.html#cb26-1" tabindex="-1"></a>genoscape_abunds <span class="ot">&lt;-</span> <span class="fu">get_genoscape_abunds</span>(<span class="at">genoscape =</span> genoscape, <span class="at">abunds =</span> abunds)</span></code></pre></div>
 </div>
 <div id="get-relative-abundance-for-a-vector" class="section level2 hasAnchor" number="5.2">
 <h2><span class="header-section-number">5.2</span> Get relative abundance for a vector<a href="abundance.html#get-relative-abundance-for-a-vector" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>In the case of vector file delineating populations, we sum abundance across the range of each population. This is done with a single function <code>get_vector_abunds()</code>, and outputs a two-column matrix with the population names and the relative abundance of each population. The example below provides the nonbreeding ecoregions file as a SpatVector (<code>winter_regions</code>) and the ebirdst abundance data as a SpatRaster (<code>abunds</code>)</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="abundance.html#cb22-1" aria-hidden="true" tabindex="-1"></a>winter_abunds <span class="ot">&lt;-</span> <span class="fu">get_vector_abunds</span>(<span class="at">populations =</span> winter_regions, <span class="at">abunds =</span> abunds)</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="abundance.html#cb27-1" tabindex="-1"></a>winter_abunds <span class="ot">&lt;-</span> <span class="fu">get_vector_abunds</span>(<span class="at">populations =</span> winter_regions, <span class="at">abunds =</span> abunds)</span></code></pre></div>
 
 </div>
 </div>

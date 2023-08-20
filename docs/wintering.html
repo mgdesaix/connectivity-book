@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 4 Nonbreeding nodes | Creating Migratory Networks in R</title>
+  <title>Chapter 4 Nonbreeding nodes | Creating Migratory Networks in R: mignette</title>
   <meta name="description" content="This provides examples and documentation of the Mignette R package" />
-  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 4 Nonbreeding nodes | Creating Migratory Networks in R" />
+  <meta property="og:title" content="Chapter 4 Nonbreeding nodes | Creating Migratory Networks in R: mignette" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This provides examples and documentation of the Mignette R package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 4 Nonbreeding nodes | Creating Migratory Networks in R" />
+  <meta name="twitter:title" content="Chapter 4 Nonbreeding nodes | Creating Migratory Networks in R: mignette" />
   
   <meta name="twitter:description" content="This provides examples and documentation of the Mignette R package" />
   
@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-05-24" />
+<meta name="date" content="2023-08-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -120,6 +120,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
 /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
 div.csl-bib-body { }
 div.csl-entry {
@@ -174,8 +178,7 @@ div.csl-indent {
 <li class="chapter" data-level="4" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>4</b> Nonbreeding nodes</a>
 <ul>
 <li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting ecoregions</a></li>
-<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#snap-points"><i class="fa fa-check"></i><b>4.2</b> Snap points</a></li>
-<li class="chapter" data-level="4.3" data-path="wintering.html"><a href="wintering.html#finalize-nonbreeding-nodes"><i class="fa fa-check"></i><b>4.3</b> Finalize nonbreeding nodes</a></li>
+<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#select-sampled-regions"><i class="fa fa-check"></i><b>4.2</b> Select sampled regions</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>5</b> Relative Abundance</a>
 <ul>
@@ -205,7 +208,7 @@ div.csl-indent {
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R: mignette</a>
           </h1>
         </div>
 
@@ -218,29 +221,63 @@ div.csl-indent {
 <p>For the migratory networks, we will use ecoregions to define the nonbreeding nodes. However, other nonbreeding nodes could be defined by the user instead. If you already have polygons defining your nodes interest, then continue to the <a href="abundance.html#abundance">relative abundance section</a>.</p>
 <div id="subsetting-ecoregions" class="section level2 hasAnchor" number="4.1">
 <h2><span class="header-section-number">4.1</span> Subsetting ecoregions<a href="wintering.html#subsetting-ecoregions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>The ecoregion data is provided by [provide link]. The ecoregions are provided in this this package as <code>ecoregions_simple</code>. We will intersect the ecoregions with the nonbreeding range of the Common Yellowthroat to identify all the ecoregions that overlap with the nonbreeding range.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="wintering.html#cb18-1" aria-hidden="true" tabindex="-1"></a>comyel_winter <span class="ot">&lt;-</span> comyel_range_smooth <span class="sc">%&gt;%</span></span>
-<span id="cb18-2"><a href="wintering.html#cb18-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(season <span class="sc">==</span> <span class="st">&quot;nonbreeding&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb18-3"><a href="wintering.html#cb18-3" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb18-4"><a href="wintering.html#cb18-4" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_intersection</span>(mignette<span class="sc">::</span>ecoregions_simple) <span class="sc">%&gt;%</span></span>
-<span id="cb18-5"><a href="wintering.html#cb18-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Region)</span></code></pre></div>
+<p>The ecoregion data is derived from [provide link] and defines biogeographic regions in the Western Hemisphere. We provide these as external data stored as a SpatVector. We will intersect the ecoregions with the nonbreeding range of the American Redstart to identify all the ecoregions for this region.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="wintering.html#cb20-1" tabindex="-1"></a><span class="fu">library</span>(mignette)</span>
+<span id="cb20-2"><a href="wintering.html#cb20-2" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb20-3"><a href="wintering.html#cb20-3" tabindex="-1"></a><span class="fu">library</span>(tidyterra)</span>
+<span id="cb20-4"><a href="wintering.html#cb20-4" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="wintering.html#cb21-1" tabindex="-1"></a>ecoregions <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;ecoregions.Rds&quot;</span>,</span>
+<span id="cb21-2"><a href="wintering.html#cb21-2" tabindex="-1"></a>                          <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="wintering.html#cb21-3" tabindex="-1"></a>  terra<span class="sc">::</span><span class="fu">vect</span>()</span>
+<span id="cb21-4"><a href="wintering.html#cb21-4" tabindex="-1"></a>amre_nonbreeding_range <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;amre_nonbreeding_range.Rds&quot;</span>,</span>
+<span id="cb21-5"><a href="wintering.html#cb21-5" tabindex="-1"></a>                                      <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-6"><a href="wintering.html#cb21-6" tabindex="-1"></a>  terra<span class="sc">::</span><span class="fu">vect</span>()</span>
+<span id="cb21-7"><a href="wintering.html#cb21-7" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="wintering.html#cb21-8" tabindex="-1"></a>amre_nonbreeding_ecoregions <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">intersect</span>(amre_nonbreeding_range, ecoregions)</span>
+<span id="cb21-9"><a href="wintering.html#cb21-9" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="wintering.html#cb21-10" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb21-11"><a href="wintering.html#cb21-11" tabindex="-1"></a>  tidyterra<span class="sc">::</span><span class="fu">geom_spatvector</span>(<span class="at">data =</span> amre_nonbreeding_ecoregions, </span>
+<span id="cb21-12"><a href="wintering.html#cb21-12" tabindex="-1"></a>                  <span class="fu">aes</span>(<span class="at">fill =</span> Region)) <span class="sc">+</span></span>
+<span id="cb21-13"><a href="wintering.html#cb21-13" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<p><img src="Mignette_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
-<div id="snap-points" class="section level2 hasAnchor" number="4.2">
-<h2><span class="header-section-number">4.2</span> Snap points<a href="wintering.html#snap-points" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Sometimes individuals are not quite within the wintering nodes. Here, we will make sure all sampled individuals get assigned to the nearest ecoregion with the <code>mignette</code> function <code>snap_points()</code>.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="wintering.html#cb19-1" aria-hidden="true" tabindex="-1"></a>winter.coords <span class="ot">&lt;-</span> mignette<span class="sc">::</span>comyel_wintering_data <span class="sc">%&gt;%</span></span>
-<span id="cb19-2"><a href="wintering.html#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords=</span><span class="fu">c</span>(<span class="st">&quot;Long&quot;</span>,<span class="st">&quot;Lat&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-3"><a href="wintering.html#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_cast</span>(<span class="st">&quot;MULTIPOINT&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-4"><a href="wintering.html#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_set_crs</span>(<span class="dv">4326</span>)</span>
-<span id="cb19-5"><a href="wintering.html#cb19-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-6"><a href="wintering.html#cb19-6" aria-hidden="true" tabindex="-1"></a>new.winter.coords <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">snap_points</span>(winter.coords, comyel_winter, <span class="dv">150000</span>)</span></code></pre></div>
-</div>
-<div id="finalize-nonbreeding-nodes" class="section level2 hasAnchor" number="4.3">
-<h2><span class="header-section-number">4.3</span> Finalize nonbreeding nodes<a href="wintering.html#finalize-nonbreeding-nodes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Now that points have been <em>snapped</em> to the appropriate ecoregions, we can further subset all of the ecoregions in which we have actually sampled individuals from. If we haven’t sampled individuals from a region, we can’t use that region as a node in the migratory connectivity network!</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="wintering.html#cb20-1" aria-hidden="true" tabindex="-1"></a>winter_intersect <span class="ot">&lt;-</span> <span class="fu">st_intersects</span>(comyel_winter, new.winter.coords, <span class="at">sparse =</span> T)</span>
-<span id="cb20-2"><a href="wintering.html#cb20-2" aria-hidden="true" tabindex="-1"></a>poly_id <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(winter_intersect, <span class="cf">function</span>(x) <span class="fu">length</span>(x) <span class="sc">&gt;</span> <span class="dv">0</span>)))</span>
-<span id="cb20-3"><a href="wintering.html#cb20-3" aria-hidden="true" tabindex="-1"></a>comyel_winter_ecoregions <span class="ot">&lt;-</span> comyel_winter[poly_id,]</span></code></pre></div>
+<div id="select-sampled-regions" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Select sampled regions<a href="wintering.html#select-sampled-regions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>For the purpose of the migratory network, we are only interested in nonbreeding nodes for which we have sampled data. To identify these nodes, we will intersect our sampled nonbreeding individuals locations with the ecoregion data. Additionally, since sampling locations may fall just outside an ecoregion boundary (for example, imprecise coordinates along a coast) we will identify the ecoregions by selecting the <em>nearest</em> ecoregion to a point.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="wintering.html#cb22-1" tabindex="-1"></a>winter_coords <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">vect</span>(mignette<span class="sc">::</span>amre_nonbreeding_data, </span>
+<span id="cb22-2"><a href="wintering.html#cb22-2" tabindex="-1"></a>                             <span class="at">geom=</span><span class="fu">c</span>(<span class="st">&quot;Lon&quot;</span>, <span class="st">&quot;Lat&quot;</span>),</span>
+<span id="cb22-3"><a href="wintering.html#cb22-3" tabindex="-1"></a>                             <span class="at">crs =</span> <span class="st">&quot;EPSG:4326&quot;</span>)</span>
+<span id="cb22-4"><a href="wintering.html#cb22-4" tabindex="-1"></a>winter_coords_nearest <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">nearest</span>(winter_coords,</span>
+<span id="cb22-5"><a href="wintering.html#cb22-5" tabindex="-1"></a>                                        ecoregions,</span>
+<span id="cb22-6"><a href="wintering.html#cb22-6" tabindex="-1"></a>                                        <span class="at">centroids =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb22-7"><a href="wintering.html#cb22-7" tabindex="-1"></a><span class="co"># Add Region ID from original file for easier interpretation</span></span>
+<span id="cb22-8"><a href="wintering.html#cb22-8" tabindex="-1"></a>winter_coords_nearest<span class="sc">$</span>Region <span class="ot">&lt;-</span> ecoregions<span class="sc">$</span>Region[winter_coords_nearest<span class="sc">$</span>to_id]</span>
+<span id="cb22-9"><a href="wintering.html#cb22-9" tabindex="-1"></a><span class="fu">table</span>(winter_coords_nearest<span class="sc">$</span>Region)</span></code></pre></div>
+<pre><code>## 
+## Amazon/Orinoco-Northern Uplands         Atlantic Lowland Mexico 
+##                              21                              22 
+##                       Caribbean        Highland Central America 
+##                              69                               5 
+##        Highland/Interior Mexico         Lowland Central America 
+##                               1                              14 
+##                  Northern Andes 
+##                               3</code></pre>
+<p>For the migratory network, we also want sufficient sampling of a node for the model to be able to reach convergence. In the example above, we see “Highland/Interior Mexico” only has 1 sample and the “Northern Andes” only have 3 samples. Below, we use a cut off of a minimum of 4 samples to remove those ecoregions</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="wintering.html#cb24-1" tabindex="-1"></a>cutoff <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb24-2"><a href="wintering.html#cb24-2" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="wintering.html#cb24-3" tabindex="-1"></a>ecoregions_keep <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">table</span>(winter_coords_nearest<span class="sc">$</span>Region)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-4"><a href="wintering.html#cb24-4" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>.[<span class="dv">2</span>] <span class="sc">&lt;</span> cutoff) <span class="sc">%&gt;%</span></span>
+<span id="cb24-5"><a href="wintering.html#cb24-5" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-6"><a href="wintering.html#cb24-6" tabindex="-1"></a>  <span class="fu">as.character</span>()</span>
+<span id="cb24-7"><a href="wintering.html#cb24-7" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="wintering.html#cb24-8" tabindex="-1"></a>winter_coords_nearest_subset <span class="ot">&lt;-</span> winter_coords_nearest[winter_coords_nearest<span class="sc">$</span>Region <span class="sc">%in%</span> ecoregions_keep]</span>
+<span id="cb24-9"><a href="wintering.html#cb24-9" tabindex="-1"></a>winter_regions_subset <span class="ot">&lt;-</span> ecoregions[winter_coords_nearest_subset]</span></code></pre></div>
+<p>This leaves us with a final set of our nonbreeding nodes and the samples associated with them:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="wintering.html#cb25-1" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb25-2"><a href="wintering.html#cb25-2" tabindex="-1"></a>  <span class="fu">geom_spatvector</span>(<span class="at">data =</span> winter_regions_subset, <span class="fu">aes</span>(<span class="at">fill =</span> Region)) <span class="sc">+</span></span>
+<span id="cb25-3"><a href="wintering.html#cb25-3" tabindex="-1"></a>  <span class="fu">geom_spatvector</span>(<span class="at">data =</span> winter_coords_nearest_subset) <span class="sc">+</span></span>
+<span id="cb25-4"><a href="wintering.html#cb25-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<p><img src="Mignette_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>Now on to getting the <a href="abundance.html#abundance">relative abundance</a>.</p>
 
 </div>

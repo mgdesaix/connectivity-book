@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 7 Network visualization | Creating Migratory Networks in R</title>
+  <title>Chapter 7 Network visualization | Creating Migratory Networks in R: mignette</title>
   <meta name="description" content="This provides examples and documentation of the Mignette R package" />
-  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 7 Network visualization | Creating Migratory Networks in R" />
+  <meta property="og:title" content="Chapter 7 Network visualization | Creating Migratory Networks in R: mignette" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This provides examples and documentation of the Mignette R package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 7 Network visualization | Creating Migratory Networks in R" />
+  <meta name="twitter:title" content="Chapter 7 Network visualization | Creating Migratory Networks in R: mignette" />
   
   <meta name="twitter:description" content="This provides examples and documentation of the Mignette R package" />
   
@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-05-24" />
+<meta name="date" content="2023-08-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -120,6 +120,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
 /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
 div.csl-bib-body { }
 div.csl-entry {
@@ -174,8 +178,7 @@ div.csl-indent {
 <li class="chapter" data-level="4" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>4</b> Nonbreeding nodes</a>
 <ul>
 <li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting ecoregions</a></li>
-<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#snap-points"><i class="fa fa-check"></i><b>4.2</b> Snap points</a></li>
-<li class="chapter" data-level="4.3" data-path="wintering.html"><a href="wintering.html#finalize-nonbreeding-nodes"><i class="fa fa-check"></i><b>4.3</b> Finalize nonbreeding nodes</a></li>
+<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#select-sampled-regions"><i class="fa fa-check"></i><b>4.2</b> Select sampled regions</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>5</b> Relative Abundance</a>
 <ul>
@@ -205,7 +208,7 @@ div.csl-indent {
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R: mignette</a>
           </h1>
         </div>
 
@@ -216,19 +219,19 @@ div.csl-indent {
 <div id="visualization" class="section level1 hasAnchor" number="7">
 <h1><span class="header-section-number">Chapter 7</span> Network visualization<a href="visualization.html#visualization" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>We provide functions for basic visualization of the network (<code>net_create()</code> and <code>net_draw()</code>). A threshold can be set to remove very weak connectivity for better visualizing the network as shown below.</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="visualization.html#cb28-1" aria-hidden="true" tabindex="-1"></a>bnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;WB&quot;</span>, <span class="st">&quot;NT&quot;</span>, <span class="st">&quot;ST&quot;</span>)</span>
-<span id="cb28-2"><a href="visualization.html#cb28-2" aria-hidden="true" tabindex="-1"></a>wnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ALM&quot;</span>, <span class="st">&quot;CAR&quot;</span>, <span class="st">&quot;AONU&quot;</span>)</span>
-<span id="cb28-3"><a href="visualization.html#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># set threshold for not visualizing minimal connectivity</span></span>
-<span id="cb28-4"><a href="visualization.html#cb28-4" aria-hidden="true" tabindex="-1"></a>amre_conn_test <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_conn</span>
-<span id="cb28-5"><a href="visualization.html#cb28-5" aria-hidden="true" tabindex="-1"></a>amre_conn_test[amre_conn_test <span class="sc">&lt;</span> <span class="fl">0.01</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb28-6"><a href="visualization.html#cb28-6" aria-hidden="true" tabindex="-1"></a>net <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">net_create</span>(amre_conn_test, </span>
-<span id="cb28-7"><a href="visualization.html#cb28-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">node.names =</span> <span class="fu">list</span>(bnode_names, wnode_names))</span>
-<span id="cb28-8"><a href="visualization.html#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co">#set the display size range for nodes (min and max), default 1-10</span></span>
-<span id="cb28-9"><a href="visualization.html#cb28-9" aria-hidden="true" tabindex="-1"></a>net<span class="sc">$</span>display_par<span class="sc">$</span>node_size_scale<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">20</span>)</span>
-<span id="cb28-10"><a href="visualization.html#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co">#set the display size range for edges (min and max), default 1-10</span></span>
-<span id="cb28-11"><a href="visualization.html#cb28-11" aria-hidden="true" tabindex="-1"></a>net<span class="sc">$</span>display_par<span class="sc">$</span>edge_size_scale<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>)</span>
-<span id="cb28-12"><a href="visualization.html#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mignette<span class="sc">::</span><span class="fu">net_draw</span>(net))</span></code></pre></div>
-<p><img src="Mignette_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="visualization.html#cb33-1" tabindex="-1"></a>bnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;WB&quot;</span>, <span class="st">&quot;NT&quot;</span>, <span class="st">&quot;ST&quot;</span>)</span>
+<span id="cb33-2"><a href="visualization.html#cb33-2" tabindex="-1"></a>wnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ALM&quot;</span>, <span class="st">&quot;CAR&quot;</span>, <span class="st">&quot;AONU&quot;</span>)</span>
+<span id="cb33-3"><a href="visualization.html#cb33-3" tabindex="-1"></a><span class="co"># set threshold for not visualizing minimal connectivity</span></span>
+<span id="cb33-4"><a href="visualization.html#cb33-4" tabindex="-1"></a>amre_conn_test <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_conn</span>
+<span id="cb33-5"><a href="visualization.html#cb33-5" tabindex="-1"></a>amre_conn_test[amre_conn_test <span class="sc">&lt;</span> <span class="fl">0.01</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb33-6"><a href="visualization.html#cb33-6" tabindex="-1"></a>net <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">net_create</span>(amre_conn_test, </span>
+<span id="cb33-7"><a href="visualization.html#cb33-7" tabindex="-1"></a>                            <span class="at">node.names =</span> <span class="fu">list</span>(bnode_names, wnode_names))</span>
+<span id="cb33-8"><a href="visualization.html#cb33-8" tabindex="-1"></a><span class="co">#set the display size range for nodes (min and max), default 1-10</span></span>
+<span id="cb33-9"><a href="visualization.html#cb33-9" tabindex="-1"></a>net<span class="sc">$</span>display_par<span class="sc">$</span>node_size_scale<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">20</span>)</span>
+<span id="cb33-10"><a href="visualization.html#cb33-10" tabindex="-1"></a><span class="co">#set the display size range for edges (min and max), default 1-10</span></span>
+<span id="cb33-11"><a href="visualization.html#cb33-11" tabindex="-1"></a>net<span class="sc">$</span>display_par<span class="sc">$</span>edge_size_scale<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>)</span>
+<span id="cb33-12"><a href="visualization.html#cb33-12" tabindex="-1"></a><span class="fu">plot</span>(mignette<span class="sc">::</span><span class="fu">net_draw</span>(net))</span></code></pre></div>
+<p><img src="Mignette_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p>In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. By default, breeding populations are in the top row (red) and nonbreeding populations are in the bottom row (blue).</p>
 <p>This sums up the basics of creating and visualizing a migratory network. We encourage users to explore and build upon the visualization tools we provide (e.g. overlay the migratory networks on geographic ranges) - the options are endless, enjoy!</p>
 

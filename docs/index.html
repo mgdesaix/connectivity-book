@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Creating Migratory Networks in R</title>
+  <title>Creating Migratory Networks in R: mignette</title>
   <meta name="description" content="This provides examples and documentation of the Mignette R package" />
-  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Creating Migratory Networks in R" />
+  <meta property="og:title" content="Creating Migratory Networks in R: mignette" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This provides examples and documentation of the Mignette R package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Creating Migratory Networks in R" />
+  <meta name="twitter:title" content="Creating Migratory Networks in R: mignette" />
   
   <meta name="twitter:description" content="This provides examples and documentation of the Mignette R package" />
   
@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-05-24" />
+<meta name="date" content="2023-08-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -120,6 +120,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
 /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
 div.csl-bib-body { }
 div.csl-entry {
@@ -174,8 +178,7 @@ div.csl-indent {
 <li class="chapter" data-level="4" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>4</b> Nonbreeding nodes</a>
 <ul>
 <li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting ecoregions</a></li>
-<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#snap-points"><i class="fa fa-check"></i><b>4.2</b> Snap points</a></li>
-<li class="chapter" data-level="4.3" data-path="wintering.html"><a href="wintering.html#finalize-nonbreeding-nodes"><i class="fa fa-check"></i><b>4.3</b> Finalize nonbreeding nodes</a></li>
+<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#select-sampled-regions"><i class="fa fa-check"></i><b>4.2</b> Select sampled regions</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>5</b> Relative Abundance</a>
 <ul>
@@ -205,7 +208,7 @@ div.csl-indent {
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R: mignette</a>
           </h1>
         </div>
 
@@ -214,35 +217,36 @@ div.csl-indent {
 
             <section class="normal" id="section-">
 <div id="header">
-<h1 class="title">Creating Migratory Networks in R</h1>
+<h1 class="title">Creating Migratory Networks in R: mignette</h1>
 <p class="author"><em>Matt DeSaix</em></p>
-<p class="date"><em>2023-05-24</em></p>
+<p class="date"><em>2023-08-20</em></p>
 </div>
 <div id="introduction" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>This vignette outlines how to create migratory networks using the R package <code>mignette</code> (<strong>mig</strong>ratory <strong>net</strong>work <strong>t</strong>ools <strong>e</strong>nsemble). <code>mignette</code> was developed to facilitate conservation and management decision-making for migratory wildlife populations using migratory networks <span class="citation">(<a href="#ref-ruegg2020genoscape" role="doc-biblioref">Ruegg et al. 2020</a>; <a href="#ref-taylor2010population" role="doc-biblioref">Taylor and Norris 2010</a>)</span>. The core function of <code>mignette</code> is to model the connectivity of populations across different stages of the annual cycle. To model these migratory networks in <code>mignette</code>, users need to provide:</p>
+<p>This vignette outlines how to create migratory networks using the R package <code>mignette</code> (<strong>mig</strong>ratory <strong>net</strong>work <strong>t</strong>ools <strong>e</strong>nsemble). <code>mignette</code> was developed to facilitate conservation and management decision-making for migratory wildlife populations using migratory networks <span class="citation">(<a href="#ref-ruegg2020genoscape">Ruegg et al. 2020</a>; <a href="#ref-taylor2010population">Taylor and Norris 2010</a>)</span>. The core function of <code>mignette</code> is to model the connectivity of populations across different stages of the annual cycle. To model these migratory networks in <code>mignette</code>, users need to provide:</p>
 <ol style="list-style-type: decimal">
 <li>The number of individuals connecting migratory populations from two stages of the annual cycle</li>
 <li>Relative abundance data for the populations</li>
 </ol>
-<p>We designed <code>mignette</code> specifically for use with population assignment data from genetic markers <span class="citation">(<a href="#ref-ruegg2014mapping" role="doc-biblioref">Ruegg et al. 2014</a>; <a href="#ref-desaix2019population" role="doc-biblioref">DeSaix et al. 2019</a>)</span>, and we use genetic markers to delineate breeding populations (i.e., nodes in the migratory network model). We have since extended <code>mignette</code> to be able to model migratory networks that include geolocator data for assignment. While it is outside the scope of <code>mignette</code> for providing an exhaustive tool set of methods to delineate these nodes, given our focus on the use of genetic data, we provide examples and resources for users to delineate breeding populations from genetic data. For nonbreeding populations, we delineate these spatially by <em>ecoregions</em> ADD LINK TO ECOREGION DATA SOURCE.</p>
+<p>We designed <code>mignette</code> specifically for use with population assignment data from genetic markers <span class="citation">(<a href="#ref-ruegg2014mapping">Ruegg et al. 2014</a>; <a href="#ref-desaix2019population">DeSaix et al. 2019</a>)</span>, and we use genetic markers to delineate breeding populations (i.e., nodes in the migratory network model). We have since extended <code>mignette</code> to be able to model migratory networks that include geolocator data for assignment. While it is outside the scope of <code>mignette</code> for providing an exhaustive tool set of methods to delineate these nodes, given our focus on the use of genetic data, we provide examples and resources for users to delineate breeding populations from genetic data. For nonbreeding populations, we delineate these spatially by <em>ecoregions</em> ADD LINK TO ECOREGION DATA SOURCE.</p>
 <p>We anticipate users of <code>mignette</code> to be interested in modelling migratory networks for a wide-range of taxa, therefore users can provide relative abundance information from any data source. However, we also provide information on obtaining relative abundance for bird data from <a href="https://ebird.org/science/status-and-trends">eBird</a> and have developed tools in <code>mignette</code> to facilitate the calculation of relative abundance values.</p>
-<p>For a brief demonstration of creating a migratory network from assignment and relative abundance data, see the <a href="quickstart.html#quickstart">quick start example</a>. Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.</p>
+<p>For an introductory demonstration of creating a migratory network with <code>mignette</code>, see the <a href="quickstart.html#quickstart">quick start example</a>. Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.</p>
 <div id="installation" class="section level2 hasAnchor" number="1.1">
 <h2><span class="header-section-number">1.1</span> Installation<a href="index.html#installation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>You can install the development version of <code>mignette</code> from GitHub with:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
-<span id="cb1-2"><a href="index.html#cb1-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;mgdesaix/mignette&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
+<span id="cb1-2"><a href="index.html#cb1-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;mgdesaix/mignette&quot;</span>)</span></code></pre></div>
 <p>The migratory network model will be run using R packages that run JAGS (Just Another Gibbs Sampler). JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS can be <a href="https://mcmc-jags.sourceforge.io/">downloaded here</a></p>
 <p>The primary packages for this vignette are:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="index.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mignette)</span>
-<span id="cb2-2"><a href="index.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb2-3"><a href="index.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
-<span id="cb2-4"><a href="index.html#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb2-5"><a href="index.html#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ebirdst)</span>
-<span id="cb2-6"><a href="index.html#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rjags)</span>
-<span id="cb2-7"><a href="index.html#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jagsUI)</span>
-<span id="cb2-8"><a href="index.html#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggnewscale) <span class="co"># for network visualization</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="index.html#cb2-1" tabindex="-1"></a><span class="fu">library</span>(mignette)</span>
+<span id="cb2-2"><a href="index.html#cb2-2" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb2-3"><a href="index.html#cb2-3" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb2-4"><a href="index.html#cb2-4" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-5"><a href="index.html#cb2-5" tabindex="-1"></a><span class="fu">library</span>(ebirdst) <span class="co"># for avian abundance data from eBird Status and Trends</span></span>
+<span id="cb2-6"><a href="index.html#cb2-6" tabindex="-1"></a><span class="fu">library</span>(rjags) <span class="co"># for network model</span></span>
+<span id="cb2-7"><a href="index.html#cb2-7" tabindex="-1"></a><span class="fu">library</span>(jagsUI) <span class="co"># for network model</span></span>
+<span id="cb2-8"><a href="index.html#cb2-8" tabindex="-1"></a><span class="fu">library</span>(ggnewscale) <span class="co"># for network visualization</span></span>
+<span id="cb2-9"><a href="index.html#cb2-9" tabindex="-1"></a><span class="fu">library</span>(tidyterra) <span class="co"># for plotting terra objects with ggplot</span></span></code></pre></div>
 <p>As <code>mignette</code> makes use of the <code>terra</code> package, all raster and vector (e.g., polygons) are provided as <em>SpatRaster</em> and <em>SpatVector</em> objects. See the <code>terra</code> package for more details on these types of objects in R.</p>
 
 </div>

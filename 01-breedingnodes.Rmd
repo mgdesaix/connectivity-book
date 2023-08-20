@@ -35,32 +35,48 @@ We will outline the main genoscape creation steps here, but full instructions on
 
 The Q-value matrix is obtained from individual admixture analyses (e.g. Structure, Admixture, `snmf` fuction from the LEA R-package). Latitude/longitude coordinates are for the individual samples used in the Q-value matrix. Breeding range polygons can be obtained from `ebirdst` (see previous section). 
 
-The `comyel_breeding_data` data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.
+The `amre_breeding_data` data set provides admixture results (Q-values) for five genetic clusters for American Redstart (DeSaix et al. 2023) and metadata for the sampled individuals.
 
 ``` r
-Q_matrix <- Mignette::comyel_breeding_data %>%
-  dplyr::select(CA, Midwest, NewEngland, West, Southwest) %>%
+Q_matrix <- mignette::amre_breeding_data %>%
+  dplyr::select(WB, BR, NT, ST, MP) %>%
   as.matrix()
-long_lat_matrix <- Mignette::comyel_breeding_data %>%
-  dplyr::select(Long, Lat) %>%
+
+coords <- mignette::amre_breeding_data %>%
+  dplyr::select(Lon, Lat) %>%
   as.matrix()
+```
+
+The larger data objects in `mignette` are stored in `extdata`:
+
+```r
+breeding_range <- system.file("extdata", "amre_breeding_range.Rds", package = "mignette") %>%
+  terra::vect()
+  
+breeding_range_st <- sf::st_as_sf(mignette::amre_breeding_range) # tess3Q_map_rasters function requires sf objects, not terra
+```
+
+We will also specify custom colors to correspond to the published genoscape.
+
+```r
 cluster_colors <-  c(
-  CA = "#CC0000",
-  Midwest = "#3399FF",
-  NewEngland = "#9933CC",
-  West = "#009933",
-  Southwest = "#FF6600") 
+  `ST` = "#FF99FF", # pink/Southern Temperate
+  `BR` = "#3399FF", # blue/Basin Rockies
+  `NT` = "#FFFF33", # yellow/Northern Temperate
+  `WB` = "#339933", # green/Western Boreal
+  `MP` = "#CC0033" # red/Maritime Provinces
+) 
 ```
 
 We will use a [modified version](https://github.com/eriqande/TESS3_encho_sen) of the `tess3r` package to create the genoscape rasters.
 
 ``` r
 # remotes::install_github("eriqande/TESS3_encho_sen")
-genoscape_brick <- tess3r::tess3Q_map_rasters(
-  x = Q_matrix, 
-  coord = long_lat_matrix,  
-  map.polygon = breed_smooth,
-  window = terra::ext(breed_smooth)[1:4],
+amre_genoscape <- tess3r::tess3Q_map_rasters(
+  x = Q_matrix,
+  coord = coords,
+  map.polygon = breeding_range_st,
+  window = sf::st_bbox(breeding_range_st),
   resolution = c(300,300), # if you want more cells in your raster, set higher
   col.palette = tess3r::CreatePalette(cluster_colors, length(cluster_colors)), 
   method = "map.max", 
@@ -70,28 +86,31 @@ genoscape_brick <- tess3r::tess3Q_map_rasters(
   ylab = "Latitude", 
   cex = .4
 )
-names(genoscape_brick) <- colnames(Q_matrix)
+names(amre_genoscape) <- colnames(Q_matrix)
+amre_genoscape <- terra::rast(amre_genoscape) # convert from rasterbrick to spatRaster
+crs(amre_genoscape) <- "EPSG:4326" # Set CRS projection
+```
 
-out.files <- paste0("./comyel/genoscape/comyel_genoscape_cluster_", names(genoscape_brick), ".tif")
-terra::writeRaster(terra::rast(genoscape_brick), filename = out.files)
+Check out the resulting genoscape:
+
+```{r, echo = F, results = F, message = F}
+library(terra)
+library(mignette)
+amre_genoscape <- system.file("extdata", "amre_genoscape.Rds", package = "mignette") %>%
+  terra::rast()
+```
+
+```{r}
+plot(amre_genoscape)
 ```
 
 **STOP**
 
-The rasters for the genoscape are all that are needed for obtaining information on relative abundance for the different populations. You can continue on to the [relative abundance section](#abundance) if you are ready to do that with the genoscape. Or if you still need to create the wintering nodes, check out the [wintering nodes section](#wintering). The following section is not necessary for the migratory network but details how to covert genoscape rasters to polygons if the `mignette` user is interested in doing so.
+The rasters for the genoscape are all that are needed for obtaining information on relative abundance for the different populations. You can continue on to the [relative abundance chapter](#abundance) if you are ready to do that with the genoscape. Or if you still need to create the wintering nodes, check out the next chapter on [wintering nodes](#wintering). The following section is not necessary for the migratory network but details how to covert genoscape rasters to polygons if the `mignette` user is interested in doing so.
 
 ### Genoscape polygons
 
 Using the genoscape rasters we will convert them to polygons, using the handy `scape_to_shape()` function. The `prob_threshold` parameter specifies the value to determine if a raster cell is included in the polygon for that genoscape. This value should be customized for different species to check for overlap of genoscape polygons, which is not desirable. Setting too high of a threshold will create very small breeding nodes, while too low of a threshold will result in large, overlapping breeding nodes.
-
-``` r
-genoscape_files <- list.files("./comyel/genoscape", 
-                                     full.names = T,
-                                     pattern = "*.tif")
-
-genoscape_raster_stack <- terra::rast(genoscape_files)
-genoscape_polygon_sf <- mignette::scape_to_shape(x = genoscape_raster_stack, prob_threshold = 0.5)
-```
 
 Check out the polygons
 
@@ -99,26 +118,28 @@ Check out the polygons
 library(sf)
 library(ggplot2)
 library(mignette)
-genoscape_polygon_sf <- st_read(dsn = "./data/comyel/genoscape/polygons", 
-                                layer = "comyel_genoscape_polygon_sf")
+library(terra)
+
 cluster_colors <-  c(
-  CA = "#CC0000",
-  Midwest = "#3399FF",
-  NewEngland = "#9933CC",
-  West = "#009933",
-  Southwest = "#FF6600") 
+  `ST` = "#FF99FF", # pink/Southern Temperate
+  `BR` = "#3399FF", # blue/Basin Rockies
+  `NT` = "#FFFF33", # yellow/Northern Temperate
+  `WB` = "#339933", # green/Western Boreal
+  `MP` = "#CC0033" # red/Maritime Provinces
+) 
+
 ```
 
 ```{r, out.width='70%'}
+genoscape_polygons <- mignette::scape_to_shape(x = amre_genoscape, 
+                                               prob_threshold = 0.5)
+
 ggplot() +
-  geom_sf(data = genoscape_polygon_sf,alpha = 0.75, aes(fill = Cluster)) +
-  scale_fill_manual(values = cluster_colors)
+  geom_sf(data = genoscape_polygons,alpha = 0.75, aes(fill = Cluster)) +
+  scale_fill_manual(values = cluster_colors) +
+  theme_bw()
 ```
 
-Check which polygons are overlapping. Each row of the output provides a pair of overlapping polygons (if there are any).
-
-```{r}
-mignette::check_genoscape_overlap(genoscape_polygon_sf)
-```
+Note that the lower population membership probabilities occur at the boundaries of different populations, thereby making the polygons discontinuous compared to the entire range
 
 Now on to creating the [wintering nodes](#wintering)

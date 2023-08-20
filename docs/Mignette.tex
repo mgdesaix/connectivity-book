@@ -5,16 +5,19 @@
 \documentclass[
 ]{book}
 \usepackage{amsmath,amssymb}
-\usepackage{lmodern}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -44,13 +47,13 @@
 \newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
 \newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
 \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
 \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
 \newcommand{\BuiltInTok}[1]{#1}
 \newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
 \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
 \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
 \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
 \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
@@ -58,7 +61,7 @@
 \newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
 \newcommand{\ExtensionTok}[1]{#1}
 \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
 \newcommand{\ImportTok}[1]{#1}
 \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
@@ -67,7 +70,7 @@
 \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
 \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
 \newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
 \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
@@ -108,16 +111,16 @@
 \bibliographystyle{plainnat}
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
-  pdftitle={Creating Migratory Networks in R},
+  pdftitle={Creating Migratory Networks in R: mignette},
   pdfauthor={Matt DeSaix},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
-\title{Creating Migratory Networks in R}
+\title{Creating Migratory Networks in R: mignette}
 \author{Matt DeSaix}
-\date{2023-05-24}
+\date{2023-08-20}
 
 \begin{document}
 \maketitle
@@ -144,7 +147,7 @@ We designed \texttt{mignette} specifically for use with population assignment da
 
 We anticipate users of \texttt{mignette} to be interested in modelling migratory networks for a wide-range of taxa, therefore users can provide relative abundance information from any data source. However, we also provide information on obtaining relative abundance for bird data from \href{https://ebird.org/science/status-and-trends}{eBird} and have developed tools in \texttt{mignette} to facilitate the calculation of relative abundance values.
 
-For a brief demonstration of creating a migratory network from assignment and relative abundance data, see the \protect\hyperlink{quickstart}{quick start example}. Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.
+For an introductory demonstration of creating a migratory network with \texttt{mignette}, see the \protect\hyperlink{quickstart}{quick start example}. Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.
 
 \hypertarget{installation}{%
 \section{Installation}\label{installation}}
@@ -168,10 +171,11 @@ The primary packages for this vignette are:
 \FunctionTok{library}\NormalTok{(sf)}
 \FunctionTok{library}\NormalTok{(terra)}
 \FunctionTok{library}\NormalTok{(tidyverse)}
-\FunctionTok{library}\NormalTok{(ebirdst)}
-\FunctionTok{library}\NormalTok{(rjags)}
-\FunctionTok{library}\NormalTok{(jagsUI)}
+\FunctionTok{library}\NormalTok{(ebirdst) }\CommentTok{\# for avian abundance data from eBird Status and Trends}
+\FunctionTok{library}\NormalTok{(rjags) }\CommentTok{\# for network model}
+\FunctionTok{library}\NormalTok{(jagsUI) }\CommentTok{\# for network model}
 \FunctionTok{library}\NormalTok{(ggnewscale) }\CommentTok{\# for network visualization}
+\FunctionTok{library}\NormalTok{(tidyterra) }\CommentTok{\# for plotting terra objects with ggplot}
 \end{Highlighting}
 \end{Shaded}
 
@@ -363,22 +367,42 @@ We will outline the main genoscape creation steps here, but full instructions on
 
 The Q-value matrix is obtained from individual admixture analyses (e.g.~Structure, Admixture, \texttt{snmf} fuction from the LEA R-package). Latitude/longitude coordinates are for the individual samples used in the Q-value matrix. Breeding range polygons can be obtained from \texttt{ebirdst} (see previous section).
 
-The \texttt{comyel\_breeding\_data} data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.
+The \texttt{amre\_breeding\_data} data set provides admixture results (Q-values) for five genetic clusters for American Redstart (DeSaix et al.~2023) and metadata for the sampled individuals.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{Q\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ Mignette}\SpecialCharTok{::}\NormalTok{comyel\_breeding\_data }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(CA, Midwest, NewEngland, West, Southwest) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{Q\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_breeding\_data }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(WB, BR, NT, ST, MP) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{as.matrix}\NormalTok{()}
-\NormalTok{long\_lat\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ Mignette}\SpecialCharTok{::}\NormalTok{comyel\_breeding\_data }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(Long, Lat) }\SpecialCharTok{\%\textgreater{}\%}
+
+\NormalTok{coords }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_breeding\_data }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(Lon, Lat) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{as.matrix}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+The larger data objects in \texttt{mignette} are stored in \texttt{extdata}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{breeding\_range }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"amre\_breeding\_range.Rds"}\NormalTok{, }\AttributeTok{package =} \StringTok{"mignette"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{()}
+  
+\NormalTok{breeding\_range\_st }\OtherTok{\textless{}{-}}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sf}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_breeding\_range) }\CommentTok{\# tess3Q\_map\_rasters function requires sf objects, not terra}
+\end{Highlighting}
+\end{Shaded}
+
+We will also specify custom colors to correspond to the published genoscape.
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{cluster\_colors }\OtherTok{\textless{}{-}}  \FunctionTok{c}\NormalTok{(}
-  \AttributeTok{CA =} \StringTok{"\#CC0000"}\NormalTok{,}
-  \AttributeTok{Midwest =} \StringTok{"\#3399FF"}\NormalTok{,}
-  \AttributeTok{NewEngland =} \StringTok{"\#9933CC"}\NormalTok{,}
-  \AttributeTok{West =} \StringTok{"\#009933"}\NormalTok{,}
-  \AttributeTok{Southwest =} \StringTok{"\#FF6600"}\NormalTok{) }
+  \StringTok{\textasciigrave{}}\AttributeTok{ST}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#FF99FF"}\NormalTok{, }\CommentTok{\# pink/Southern Temperate}
+  \StringTok{\textasciigrave{}}\AttributeTok{BR}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#3399FF"}\NormalTok{, }\CommentTok{\# blue/Basin Rockies}
+  \StringTok{\textasciigrave{}}\AttributeTok{NT}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#FFFF33"}\NormalTok{, }\CommentTok{\# yellow/Northern Temperate}
+  \StringTok{\textasciigrave{}}\AttributeTok{WB}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#339933"}\NormalTok{, }\CommentTok{\# green/Western Boreal}
+  \StringTok{\textasciigrave{}}\AttributeTok{MP}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#CC0033"} \CommentTok{\# red/Maritime Provinces}
+\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
 
@@ -387,11 +411,11 @@ We will use a \href{https://github.com/eriqande/TESS3_encho_sen}{modified versio
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# remotes::install\_github("eriqande/TESS3\_encho\_sen")}
-\NormalTok{genoscape\_brick }\OtherTok{\textless{}{-}}\NormalTok{ tess3r}\SpecialCharTok{::}\FunctionTok{tess3Q\_map\_rasters}\NormalTok{(}
-  \AttributeTok{x =}\NormalTok{ Q\_matrix, }
-  \AttributeTok{coord =}\NormalTok{ long\_lat\_matrix,  }
-  \AttributeTok{map.polygon =}\NormalTok{ breed\_smooth,}
-  \AttributeTok{window =}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{ext}\NormalTok{(breed\_smooth)[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{],}
+\NormalTok{amre\_genoscape }\OtherTok{\textless{}{-}}\NormalTok{ tess3r}\SpecialCharTok{::}\FunctionTok{tess3Q\_map\_rasters}\NormalTok{(}
+  \AttributeTok{x =}\NormalTok{ Q\_matrix,}
+  \AttributeTok{coord =}\NormalTok{ coords,}
+  \AttributeTok{map.polygon =}\NormalTok{ breeding\_range\_st,}
+  \AttributeTok{window =}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_bbox}\NormalTok{(breeding\_range\_st),}
   \AttributeTok{resolution =} \FunctionTok{c}\NormalTok{(}\DecValTok{300}\NormalTok{,}\DecValTok{300}\NormalTok{), }\CommentTok{\# if you want more cells in your raster, set higher}
   \AttributeTok{col.palette =}\NormalTok{ tess3r}\SpecialCharTok{::}\FunctionTok{CreatePalette}\NormalTok{(cluster\_colors, }\FunctionTok{length}\NormalTok{(cluster\_colors)), }
   \AttributeTok{method =} \StringTok{"map.max"}\NormalTok{, }
@@ -401,59 +425,56 @@ We will use a \href{https://github.com/eriqande/TESS3_encho_sen}{modified versio
   \AttributeTok{ylab =} \StringTok{"Latitude"}\NormalTok{, }
   \AttributeTok{cex =}\NormalTok{ .}\DecValTok{4}
 \NormalTok{)}
-\FunctionTok{names}\NormalTok{(genoscape\_brick) }\OtherTok{\textless{}{-}} \FunctionTok{colnames}\NormalTok{(Q\_matrix)}
-
-\NormalTok{out.files }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"./comyel/genoscape/comyel\_genoscape\_cluster\_"}\NormalTok{, }\FunctionTok{names}\NormalTok{(genoscape\_brick), }\StringTok{".tif"}\NormalTok{)}
-\NormalTok{terra}\SpecialCharTok{::}\FunctionTok{writeRaster}\NormalTok{(terra}\SpecialCharTok{::}\FunctionTok{rast}\NormalTok{(genoscape\_brick), }\AttributeTok{filename =}\NormalTok{ out.files)}
+\FunctionTok{names}\NormalTok{(amre\_genoscape) }\OtherTok{\textless{}{-}} \FunctionTok{colnames}\NormalTok{(Q\_matrix)}
+\NormalTok{amre\_genoscape }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{rast}\NormalTok{(amre\_genoscape) }\CommentTok{\# convert from rasterbrick to spatRaster}
+\FunctionTok{crs}\NormalTok{(amre\_genoscape) }\OtherTok{\textless{}{-}} \StringTok{"EPSG:4326"} \CommentTok{\# Set CRS projection}
 \end{Highlighting}
 \end{Shaded}
 
+Check out the resulting genoscape:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(amre\_genoscape)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-7-1.pdf}
+
 \textbf{STOP}
 
-The rasters for the genoscape are all that are needed for obtaining information on relative abundance for the different populations. You can continue on to the \protect\hyperlink{abundance}{relative abundance section} if you are ready to do that with the genoscape. Or if you still need to create the wintering nodes, check out the \protect\hyperlink{wintering}{wintering nodes section}. The following section is not necessary for the migratory network but details how to covert genoscape rasters to polygons if the \texttt{mignette} user is interested in doing so.
+The rasters for the genoscape are all that are needed for obtaining information on relative abundance for the different populations. You can continue on to the \protect\hyperlink{abundance}{relative abundance chapter} if you are ready to do that with the genoscape. Or if you still need to create the wintering nodes, check out the next chapter on \protect\hyperlink{wintering}{wintering nodes}. The following section is not necessary for the migratory network but details how to covert genoscape rasters to polygons if the \texttt{mignette} user is interested in doing so.
 
 \hypertarget{genoscape-polygons}{%
 \subsection{Genoscape polygons}\label{genoscape-polygons}}
 
 Using the genoscape rasters we will convert them to polygons, using the handy \texttt{scape\_to\_shape()} function. The \texttt{prob\_threshold} parameter specifies the value to determine if a raster cell is included in the polygon for that genoscape. This value should be customized for different species to check for overlap of genoscape polygons, which is not desirable. Setting too high of a threshold will create very small breeding nodes, while too low of a threshold will result in large, overlapping breeding nodes.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{genoscape\_files }\OtherTok{\textless{}{-}} \FunctionTok{list.files}\NormalTok{(}\StringTok{"./comyel/genoscape"}\NormalTok{, }
-                                     \AttributeTok{full.names =}\NormalTok{ T,}
-                                     \AttributeTok{pattern =} \StringTok{"*.tif"}\NormalTok{)}
-
-\NormalTok{genoscape\_raster\_stack }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{rast}\NormalTok{(genoscape\_files)}
-\NormalTok{genoscape\_polygon\_sf }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{scape\_to\_shape}\NormalTok{(}\AttributeTok{x =}\NormalTok{ genoscape\_raster\_stack, }\AttributeTok{prob\_threshold =} \FloatTok{0.5}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 Check out the polygons
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
-  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ genoscape\_polygon\_sf,}\AttributeTok{alpha =} \FloatTok{0.75}\NormalTok{, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Cluster)) }\SpecialCharTok{+}
-  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =}\NormalTok{ cluster\_colors)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics[width=0.7\linewidth]{Mignette_files/figure-latex/unnamed-chunk-7-1}
-
-Check which polygons are overlapping. Each row of the output provides a pair of overlapping polygons (if there are any).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{mignette}\SpecialCharTok{::}\FunctionTok{check\_genoscape\_overlap}\NormalTok{(genoscape\_polygon\_sf)}
+\NormalTok{genoscape\_polygons }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{scape\_to\_shape}\NormalTok{(}\AttributeTok{x =}\NormalTok{ amre\_genoscape, }
+                                               \AttributeTok{prob\_threshold =} \FloatTok{0.5}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##      [,1]      [,2]        
-## [1,] "CA"      "West"      
-## [2,] "Midwest" "NewEngland"
-## [3,] "Midwest" "West"
+## Spherical geometry (s2) switched off
 \end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ genoscape\_polygons,}\AttributeTok{alpha =} \FloatTok{0.75}\NormalTok{, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Cluster)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =}\NormalTok{ cluster\_colors) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[width=0.7\linewidth]{Mignette_files/figure-latex/unnamed-chunk-9-1}
+
+Note that the lower population membership probabilities occur at the boundaries of different populations, thereby making the polygons discontinuous compared to the entire range
 
 Now on to creating the \protect\hyperlink{wintering}{wintering nodes}
 
@@ -465,46 +486,96 @@ For the migratory networks, we will use ecoregions to define the nonbreeding nod
 \hypertarget{subsetting-ecoregions}{%
 \section{Subsetting ecoregions}\label{subsetting-ecoregions}}
 
-The ecoregion data is provided by {[}provide link{]}. The ecoregions are provided in this this package as \texttt{ecoregions\_simple}. We will intersect the ecoregions with the nonbreeding range of the Common Yellowthroat to identify all the ecoregions that overlap with the nonbreeding range.
+The ecoregion data is derived from {[}provide link{]} and defines biogeographic regions in the Western Hemisphere. We provide these as external data stored as a SpatVector. We will intersect the ecoregions with the nonbreeding range of the American Redstart to identify all the ecoregions for this region.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{comyel\_winter }\OtherTok{\textless{}{-}}\NormalTok{ comyel\_range\_smooth }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(season }\SpecialCharTok{==} \StringTok{"nonbreeding"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_transform}\NormalTok{(}\AttributeTok{crs =} \DecValTok{4326}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_intersection}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{ecoregions\_simple) }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(Region)}
+\FunctionTok{library}\NormalTok{(mignette)}
+\FunctionTok{library}\NormalTok{(terra)}
+\FunctionTok{library}\NormalTok{(tidyterra)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
 \end{Highlighting}
 \end{Shaded}
-
-\hypertarget{snap-points}{%
-\section{Snap points}\label{snap-points}}
-
-Sometimes individuals are not quite within the wintering nodes. Here, we will make sure all sampled individuals get assigned to the nearest ecoregion with the \texttt{mignette} function \texttt{snap\_points()}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{winter.coords }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{comyel\_wintering\_data }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{st\_as\_sf}\NormalTok{(}\AttributeTok{coords=}\FunctionTok{c}\NormalTok{(}\StringTok{"Long"}\NormalTok{,}\StringTok{"Lat"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{st\_cast}\NormalTok{(}\StringTok{"MULTIPOINT"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{st\_set\_crs}\NormalTok{(}\DecValTok{4326}\NormalTok{)}
-  
-\NormalTok{new.winter.coords }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{snap\_points}\NormalTok{(winter.coords, comyel\_winter, }\DecValTok{150000}\NormalTok{)}
+\NormalTok{ecoregions }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"ecoregions.Rds"}\NormalTok{,}
+                          \AttributeTok{package =} \StringTok{"mignette"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{()}
+\NormalTok{amre\_nonbreeding\_range }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"amre\_nonbreeding\_range.Rds"}\NormalTok{,}
+                                      \AttributeTok{package =} \StringTok{"mignette"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{()}
+
+\NormalTok{amre\_nonbreeding\_ecoregions }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{intersect}\NormalTok{(amre\_nonbreeding\_range, ecoregions)}
+
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+\NormalTok{  tidyterra}\SpecialCharTok{::}\FunctionTok{geom\_spatvector}\NormalTok{(}\AttributeTok{data =}\NormalTok{ amre\_nonbreeding\_ecoregions, }
+                  \FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Region)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{finalize-nonbreeding-nodes}{%
-\section{Finalize nonbreeding nodes}\label{finalize-nonbreeding-nodes}}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-11-1.pdf}
 
-Now that points have been \emph{snapped} to the appropriate ecoregions, we can further subset all of the ecoregions in which we have actually sampled individuals from. If we haven't sampled individuals from a region, we can't use that region as a node in the migratory connectivity network!
+\hypertarget{select-sampled-regions}{%
+\section{Select sampled regions}\label{select-sampled-regions}}
+
+For the purpose of the migratory network, we are only interested in nonbreeding nodes for which we have sampled data. To identify these nodes, we will intersect our sampled nonbreeding individuals locations with the ecoregion data. Additionally, since sampling locations may fall just outside an ecoregion boundary (for example, imprecise coordinates along a coast) we will identify the ecoregions by selecting the \emph{nearest} ecoregion to a point.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{winter\_intersect }\OtherTok{\textless{}{-}} \FunctionTok{st\_intersects}\NormalTok{(comyel\_winter, new.winter.coords, }\AttributeTok{sparse =}\NormalTok{ T)}
-\NormalTok{poly\_id }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(}\FunctionTok{unlist}\NormalTok{(}\FunctionTok{lapply}\NormalTok{(winter\_intersect, }\ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{length}\NormalTok{(x) }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{)))}
-\NormalTok{comyel\_winter\_ecoregions }\OtherTok{\textless{}{-}}\NormalTok{ comyel\_winter[poly\_id,]}
+\NormalTok{winter\_coords }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_nonbreeding\_data, }
+                             \AttributeTok{geom=}\FunctionTok{c}\NormalTok{(}\StringTok{"Lon"}\NormalTok{, }\StringTok{"Lat"}\NormalTok{),}
+                             \AttributeTok{crs =} \StringTok{"EPSG:4326"}\NormalTok{)}
+\NormalTok{winter\_coords\_nearest }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{nearest}\NormalTok{(winter\_coords,}
+\NormalTok{                                        ecoregions,}
+                                        \AttributeTok{centroids =} \ConstantTok{FALSE}\NormalTok{)}
+\CommentTok{\# Add Region ID from original file for easier interpretation}
+\NormalTok{winter\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region }\OtherTok{\textless{}{-}}\NormalTok{ ecoregions}\SpecialCharTok{$}\NormalTok{Region[winter\_coords\_nearest}\SpecialCharTok{$}\NormalTok{to\_id]}
+\FunctionTok{table}\NormalTok{(winter\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## 
+## Amazon/Orinoco-Northern Uplands         Atlantic Lowland Mexico 
+##                              21                              22 
+##                       Caribbean        Highland Central America 
+##                              69                               5 
+##        Highland/Interior Mexico         Lowland Central America 
+##                               1                              14 
+##                  Northern Andes 
+##                               3
+\end{verbatim}
+
+For the migratory network, we also want sufficient sampling of a node for the model to be able to reach convergence. In the example above, we see ``Highland/Interior Mexico'' only has 1 sample and the ``Northern Andes'' only have 3 samples. Below, we use a cut off of a minimum of 4 samples to remove those ecoregions
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cutoff }\OtherTok{\textless{}{-}} \DecValTok{4}
+
+\NormalTok{ecoregions\_keep }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\FunctionTok{table}\NormalTok{(winter\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\NormalTok{.[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{\textless{}}\NormalTok{ cutoff) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pull}\NormalTok{(}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as.character}\NormalTok{()}
+
+\NormalTok{winter\_coords\_nearest\_subset }\OtherTok{\textless{}{-}}\NormalTok{ winter\_coords\_nearest[winter\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region }\SpecialCharTok{\%in\%}\NormalTok{ ecoregions\_keep]}
+\NormalTok{winter\_regions\_subset }\OtherTok{\textless{}{-}}\NormalTok{ ecoregions[winter\_coords\_nearest\_subset]}
+\end{Highlighting}
+\end{Shaded}
+
+This leaves us with a final set of our nonbreeding nodes and the samples associated with them:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_spatvector}\NormalTok{(}\AttributeTok{data =}\NormalTok{ winter\_regions\_subset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Region)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_spatvector}\NormalTok{(}\AttributeTok{data =}\NormalTok{ winter\_coords\_nearest\_subset) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-14-1.pdf}
 
 Now on to getting the \protect\hyperlink{abundance}{relative abundance}.
 
@@ -708,7 +779,7 @@ We provide functions for basic visualization of the network (\texttt{net\_create
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-15-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-21-1.pdf}
 
 In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. By default, breeding populations are in the top row (red) and nonbreeding populations are in the bottom row (blue).
 

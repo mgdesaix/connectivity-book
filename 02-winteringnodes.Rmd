@@ -4,39 +4,71 @@ For the migratory networks, we will use ecoregions to define the nonbreeding nod
 
 ## Subsetting ecoregions
 
-The ecoregion data is provided by [provide link]. The ecoregions are provided in this this package as `ecoregions_simple`. We will intersect the ecoregions with the nonbreeding range of the Common Yellowthroat to identify all the ecoregions that overlap with the nonbreeding range.
+The ecoregion data is derived from [provide link] and defines biogeographic regions in the Western Hemisphere. We provide these as external data stored as a SpatVector. We will intersect the ecoregions with the nonbreeding range of the American Redstart to identify all the ecoregions for this region.
 
-``` r
-comyel_winter <- comyel_range_smooth %>%
-  dplyr::filter(season == "nonbreeding") %>%
-  sf::st_transform(crs = 4326) %>%
-  sf::st_intersection(mignette::ecoregions_simple) %>%
-  dplyr::select(Region)
+```{r, results = F, message = F, warning = F}
+library(mignette)
+library(terra)
+library(tidyterra)
+library(tidyverse)
+```
+
+```{r, warning = F, message = F}
+ecoregions <- system.file("extdata", "ecoregions.Rds",
+                          package = "mignette") %>%
+  terra::vect()
+amre_nonbreeding_range <- system.file("extdata", "amre_nonbreeding_range.Rds",
+                                      package = "mignette") %>%
+  terra::vect()
+
+amre_nonbreeding_ecoregions <- terra::intersect(amre_nonbreeding_range, ecoregions)
+
+ggplot() +
+  tidyterra::geom_spatvector(data = amre_nonbreeding_ecoregions, 
+                  aes(fill = Region)) +
+  theme_bw()
 ```
 
 
-## Snap points
+## Select sampled regions
 
-Sometimes individuals are not quite within the wintering nodes. Here, we will make sure all sampled individuals get assigned to the nearest ecoregion with the `mignette` function `snap_points()`.
+For the purpose of the migratory network, we are only interested in nonbreeding nodes for which we have sampled data. To identify these nodes, we will intersect our sampled nonbreeding individuals locations with the ecoregion data. Additionally, since sampling locations may fall just outside an ecoregion boundary (for example, imprecise coordinates along a coast) we will identify the ecoregions by selecting the *nearest* ecoregion to a point.
 
-``` r
-winter.coords <- mignette::comyel_wintering_data %>%
-  st_as_sf(coords=c("Long","Lat")) %>%
-  st_cast("MULTIPOINT") %>%
-  st_set_crs(4326)
-  
-new.winter.coords <- mignette::snap_points(winter.coords, comyel_winter, 150000)
+
+```{r, warning = F, message=F}
+winter_coords <- terra::vect(mignette::amre_nonbreeding_data, 
+                             geom=c("Lon", "Lat"),
+                             crs = "EPSG:4326")
+winter_coords_nearest <- terra::nearest(winter_coords,
+                                        ecoregions,
+                                        centroids = FALSE)
+# Add Region ID from original file for easier interpretation
+winter_coords_nearest$Region <- ecoregions$Region[winter_coords_nearest$to_id]
+table(winter_coords_nearest$Region)
 ```
 
-## Finalize nonbreeding nodes
+For the migratory network, we also want sufficient sampling of a node for the model to be able to reach convergence. In the example above, we see "Highland/Interior Mexico" only has 1 sample and the "Northern Andes" only have 3 samples. Below, we use a cut off of a minimum of 4 samples to remove those ecoregions
 
-Now that points have been *snapped* to the appropriate ecoregions, we can further subset all of the ecoregions in which we have actually sampled individuals from. If we haven't sampled individuals from a region, we can't use that region as a node in the migratory connectivity network! 
+```{r, warning = F, message = F}
+cutoff <- 4
 
-``` r
-winter_intersect <- st_intersects(comyel_winter, new.winter.coords, sparse = T)
-poly_id <- which(unlist(lapply(winter_intersect, function(x) length(x) > 0)))
-comyel_winter_ecoregions <- comyel_winter[poly_id,]
+ecoregions_keep <- data.frame(table(winter_coords_nearest$Region)) %>%
+  filter(!.[2] < cutoff) %>%
+  pull(1) %>%
+  as.character()
+
+winter_coords_nearest_subset <- winter_coords_nearest[winter_coords_nearest$Region %in% ecoregions_keep]
+winter_regions_subset <- ecoregions[winter_coords_nearest_subset]
 ```
 
-Now on to getting the [relative abundance](#abundance).
+This leaves us with a final set of our nonbreeding nodes and the samples associated with them:
+
+```{r, warning = F, message = F}
+ggplot() +
+  geom_spatvector(data = winter_regions_subset, aes(fill = Region)) +
+  geom_spatvector(data = winter_coords_nearest_subset) +
+  theme_bw()
+```
+
+Now on to getting the [node assignment matrix](#assignment).
 

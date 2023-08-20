@@ -1,0 +1,18 @@
+# Node assignment {#assignment}
+
+In `mignette`, node assignment data is one of the two main inputs into the migratory network model. Regardless of the methods used to collect these data, as input into the `mignette` migratory network model it needs to be in a specific format:
+
+* Column 1 = Node names of *inferred* populations of origin
+* Column 2:length(sampled nodes) column names = Names of sampled nodes
+
+Typically, the geographic range of a population will be stored as a vector (e.g., polygon), but in the case of a genoscape, the population ranges can be specified by a raster with q-values. For abundance data, we will use the [eBird Status and Trends](https://science.ebird.org/en/status-and-trends) data, but any abundance data in a raster object can be used.
+
+## Get relative abundance for a genoscape (raster)
+
+In the case of a *genoscape* raster with q-values, we will convert the q-values to probabilities of a pixel belonging to that population which is used to weight the abundance values. This is done with a single function `get_genoscape_abunds()`, and outputs a two-column matrix with the population names and the relative abundance of each population. Below, we provide the genoscape as a SpatRaster (`genoscape`) and the ebirdst abundance data as a SpatRaster (`abunds`).
+
+```r
+genoscape_abunds <- get_genoscape_abunds(genoscape = genoscape, abunds = abunds)
+```
+
+Now on to getting the [relative abundance](#abundance).

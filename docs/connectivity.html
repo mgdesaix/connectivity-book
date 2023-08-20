@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 6 Migratory Network Model | Creating Migratory Networks in R</title>
+  <title>Chapter 6 Migratory Network Model | Creating Migratory Networks in R: mignette</title>
   <meta name="description" content="This provides examples and documentation of the Mignette R package" />
-  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 6 Migratory Network Model | Creating Migratory Networks in R" />
+  <meta property="og:title" content="Chapter 6 Migratory Network Model | Creating Migratory Networks in R: mignette" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This provides examples and documentation of the Mignette R package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 6 Migratory Network Model | Creating Migratory Networks in R" />
+  <meta name="twitter:title" content="Chapter 6 Migratory Network Model | Creating Migratory Networks in R: mignette" />
   
   <meta name="twitter:description" content="This provides examples and documentation of the Mignette R package" />
   
@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-05-24" />
+<meta name="date" content="2023-08-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -120,6 +120,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
 /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
 div.csl-bib-body { }
 div.csl-entry {
@@ -174,8 +178,7 @@ div.csl-indent {
 <li class="chapter" data-level="4" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>4</b> Nonbreeding nodes</a>
 <ul>
 <li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting ecoregions</a></li>
-<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#snap-points"><i class="fa fa-check"></i><b>4.2</b> Snap points</a></li>
-<li class="chapter" data-level="4.3" data-path="wintering.html"><a href="wintering.html#finalize-nonbreeding-nodes"><i class="fa fa-check"></i><b>4.3</b> Finalize nonbreeding nodes</a></li>
+<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#select-sampled-regions"><i class="fa fa-check"></i><b>4.2</b> Select sampled regions</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>5</b> Relative Abundance</a>
 <ul>
@@ -205,7 +208,7 @@ div.csl-indent {
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R: mignette</a>
           </h1>
         </div>
 
@@ -290,34 +293,34 @@ div.csl-indent {
 </table>
 <p>where the first column specifies breeding population IDs while subsequent columns are the nonbreeding populations. The values are the number of individuals that connect each node. Depending on the type of assignment data the <code>mignette</code> user has, individual data points may need to be associated with a specific population. For these types of basic spatial analyses, <code>mignette</code> users can check out the <code>sf</code> package, specifically the <code>st_intersection()</code> function, or whatever geospatial tools they prefer to create these data. Once you have connectivity data in the above format, you can continue with the following sections.</p>
 <p>For the following functions, we specify the order of the populations we are using for the model. Here, we are just ordering populations geographically by longitude to facilitate straightforward interpretation of the output.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="connectivity.html#cb23-1" aria-hidden="true" tabindex="-1"></a>bnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;WB&quot;</span>, <span class="st">&quot;NT&quot;</span>, <span class="st">&quot;ST&quot;</span>)</span>
-<span id="cb23-2"><a href="connectivity.html#cb23-2" aria-hidden="true" tabindex="-1"></a>wnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ALM&quot;</span>, <span class="st">&quot;CAR&quot;</span>, <span class="st">&quot;AONU&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="connectivity.html#cb28-1" tabindex="-1"></a>bnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;WB&quot;</span>, <span class="st">&quot;NT&quot;</span>, <span class="st">&quot;ST&quot;</span>)</span>
+<span id="cb28-2"><a href="connectivity.html#cb28-2" tabindex="-1"></a>wnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ALM&quot;</span>, <span class="st">&quot;CAR&quot;</span>, <span class="st">&quot;AONU&quot;</span>)</span></code></pre></div>
 </div>
 <div id="migratory-network-model-jags" class="section level2 hasAnchor" number="6.2">
 <h2><span class="header-section-number">6.2</span> Migratory network model (JAGS)<a href="connectivity.html#migratory-network-model-jags" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="preparing-input-data" class="section level3 hasAnchor" number="6.2.1">
 <h3><span class="header-section-number">6.2.1</span> Preparing input data<a href="connectivity.html#preparing-input-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The following code provides the necessary data to run the JAGS model. To create the migratory network, the user first creates a text file specifying the JAGS model to be used, providing the name of the file to be saved (<code>base_filename</code>) and the type of model type (<code>model_type</code>). Currently <code>mignette</code> supports two model types based on the type of data used to determine assignment of individuals: <code>1</code> indicates that only genetic data were used for assignment, and <code>2</code> indicates that there’s assignment data from both genetic and geolocator data. Here, the example only uses genetic data. <code>get_jags_model()</code> saves a <code>.txt</code> file with the <code>base_filename</code> and stores that name as a variable for use in JAGS. We also specify the desired order of the breeding populations (<code>bnode_names</code>) and the nonbreeding populations (<code>wnode_names</code>). Finally, we use these as input into the function <code>get_jags_data()</code> to prepare the data appropriately for the model.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="connectivity.html#cb24-1" aria-hidden="true" tabindex="-1"></a>base_filename <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">get_jags_model</span>(<span class="at">base_filename =</span> <span class="st">&quot;amre.genetic.model&quot;</span>, <span class="at">model_type =</span> <span class="dv">1</span>)</span>
-<span id="cb24-2"><a href="connectivity.html#cb24-2" aria-hidden="true" tabindex="-1"></a>jags_data <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">get_jags_data</span>(<span class="at">abundance =</span> mignette<span class="sc">::</span>amre_abundance, </span>
-<span id="cb24-3"><a href="connectivity.html#cb24-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">assignment =</span> mignette<span class="sc">::</span>amre_assign,</span>
-<span id="cb24-4"><a href="connectivity.html#cb24-4" aria-hidden="true" tabindex="-1"></a>                           <span class="at">bnode_names =</span> bnode_names, </span>
-<span id="cb24-5"><a href="connectivity.html#cb24-5" aria-hidden="true" tabindex="-1"></a>                           <span class="at">wnode_names =</span> wnode_names)</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="connectivity.html#cb29-1" tabindex="-1"></a>base_filename <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">get_jags_model</span>(<span class="at">base_filename =</span> <span class="st">&quot;amre.genetic.model&quot;</span>, <span class="at">model_type =</span> <span class="dv">1</span>)</span>
+<span id="cb29-2"><a href="connectivity.html#cb29-2" tabindex="-1"></a>jags_data <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">get_jags_data</span>(<span class="at">abundance =</span> mignette<span class="sc">::</span>amre_abundance, </span>
+<span id="cb29-3"><a href="connectivity.html#cb29-3" tabindex="-1"></a>                           <span class="at">assignment =</span> mignette<span class="sc">::</span>amre_assign,</span>
+<span id="cb29-4"><a href="connectivity.html#cb29-4" tabindex="-1"></a>                           <span class="at">bnode_names =</span> bnode_names, </span>
+<span id="cb29-5"><a href="connectivity.html#cb29-5" tabindex="-1"></a>                           <span class="at">wnode_names =</span> wnode_names)</span></code></pre></div>
 </div>
 <div id="running-the-model" class="section level3 hasAnchor" number="6.2.2">
 <h3><span class="header-section-number">6.2.2</span> Running the model<a href="connectivity.html#running-the-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Now the user can use the output of <code>jags_data</code> into JAGS to run the actual model:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="connectivity.html#cb25-1" aria-hidden="true" tabindex="-1"></a>parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;conn_g&quot;</span>)</span>
-<span id="cb25-2"><a href="connectivity.html#cb25-2" aria-hidden="true" tabindex="-1"></a>ni <span class="ot">&lt;-</span> <span class="dv">500000</span></span>
-<span id="cb25-3"><a href="connectivity.html#cb25-3" aria-hidden="true" tabindex="-1"></a>nt <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb25-4"><a href="connectivity.html#cb25-4" aria-hidden="true" tabindex="-1"></a>nb <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
-<span id="cb25-5"><a href="connectivity.html#cb25-5" aria-hidden="true" tabindex="-1"></a>nc <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb25-6"><a href="connectivity.html#cb25-6" aria-hidden="true" tabindex="-1"></a>jags_out <span class="ot">&lt;-</span> <span class="fu">autojags</span>(jags_data, <span class="at">inits=</span><span class="cn">NULL</span>, parameters, <span class="fu">paste0</span>(base_filename,<span class="st">&quot;.txt&quot;</span>),</span>
-<span id="cb25-7"><a href="connectivity.html#cb25-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">n.chains =</span> nc, <span class="at">n.thin =</span>nt, <span class="at">iter.increment=</span>ni,</span>
-<span id="cb25-8"><a href="connectivity.html#cb25-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">max.iter =</span> ni<span class="sc">*</span><span class="dv">50</span><span class="sc">+</span>nb, <span class="at">n.burnin =</span> nb,</span>
-<span id="cb25-9"><a href="connectivity.html#cb25-9" aria-hidden="true" tabindex="-1"></a>                      <span class="at">n.adapt=</span> <span class="cn">NULL</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span>
-<span id="cb25-10"><a href="connectivity.html#cb25-10" aria-hidden="true" tabindex="-1"></a>amre_conn <span class="ot">&lt;-</span> jags_out<span class="sc">$</span>mean<span class="sc">$</span>conn_g</span>
-<span id="cb25-11"><a href="connectivity.html#cb25-11" aria-hidden="true" tabindex="-1"></a>amre_conn</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="connectivity.html#cb30-1" tabindex="-1"></a>parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;conn_g&quot;</span>)</span>
+<span id="cb30-2"><a href="connectivity.html#cb30-2" tabindex="-1"></a>ni <span class="ot">&lt;-</span> <span class="dv">500000</span></span>
+<span id="cb30-3"><a href="connectivity.html#cb30-3" tabindex="-1"></a>nt <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb30-4"><a href="connectivity.html#cb30-4" tabindex="-1"></a>nb <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
+<span id="cb30-5"><a href="connectivity.html#cb30-5" tabindex="-1"></a>nc <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb30-6"><a href="connectivity.html#cb30-6" tabindex="-1"></a>jags_out <span class="ot">&lt;-</span> <span class="fu">autojags</span>(jags_data, <span class="at">inits=</span><span class="cn">NULL</span>, parameters, <span class="fu">paste0</span>(base_filename,<span class="st">&quot;.txt&quot;</span>),</span>
+<span id="cb30-7"><a href="connectivity.html#cb30-7" tabindex="-1"></a>                      <span class="at">n.chains =</span> nc, <span class="at">n.thin =</span>nt, <span class="at">iter.increment=</span>ni,</span>
+<span id="cb30-8"><a href="connectivity.html#cb30-8" tabindex="-1"></a>                      <span class="at">max.iter =</span> ni<span class="sc">*</span><span class="dv">50</span><span class="sc">+</span>nb, <span class="at">n.burnin =</span> nb,</span>
+<span id="cb30-9"><a href="connectivity.html#cb30-9" tabindex="-1"></a>                      <span class="at">n.adapt=</span> <span class="cn">NULL</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span>
+<span id="cb30-10"><a href="connectivity.html#cb30-10" tabindex="-1"></a>amre_conn <span class="ot">&lt;-</span> jags_out<span class="sc">$</span>mean<span class="sc">$</span>conn_g</span>
+<span id="cb30-11"><a href="connectivity.html#cb30-11" tabindex="-1"></a>amre_conn</span></code></pre></div>
 <table>
 <tbody>
 <tr class="odd">
@@ -338,9 +341,9 @@ div.csl-indent {
 </tbody>
 </table>
 <p>The connectivity between the nodes is provided by the <code>conn_g</code> parameter of the model, which is accessed from the above code. The rows are the breeding nodes and the columns are the nonbreeding nodes, which we can make more apparent:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="connectivity.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(amre_conn) <span class="ot">&lt;-</span> wnode_names</span>
-<span id="cb26-2"><a href="connectivity.html#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(amre_conn) <span class="ot">&lt;-</span> bnode_names</span>
-<span id="cb26-3"><a href="connectivity.html#cb26-3" aria-hidden="true" tabindex="-1"></a>amre_conn</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="connectivity.html#cb31-1" tabindex="-1"></a><span class="fu">colnames</span>(amre_conn) <span class="ot">&lt;-</span> wnode_names</span>
+<span id="cb31-2"><a href="connectivity.html#cb31-2" tabindex="-1"></a><span class="fu">rownames</span>(amre_conn) <span class="ot">&lt;-</span> bnode_names</span>
+<span id="cb31-3"><a href="connectivity.html#cb31-3" tabindex="-1"></a>amre_conn</span></code></pre></div>
 <pre><code>##             ALM         CAR         AONU
 ## WB 2.219310e-01 0.008784863 8.568762e-05
 ## NT 5.571149e-02 0.534380974 1.573024e-04

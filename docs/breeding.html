@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 3 Breeding nodes | Creating Migratory Networks in R</title>
+  <title>Chapter 3 Breeding nodes | Creating Migratory Networks in R: mignette</title>
   <meta name="description" content="This provides examples and documentation of the Mignette R package" />
-  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 3 Breeding nodes | Creating Migratory Networks in R" />
+  <meta property="og:title" content="Chapter 3 Breeding nodes | Creating Migratory Networks in R: mignette" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This provides examples and documentation of the Mignette R package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 3 Breeding nodes | Creating Migratory Networks in R" />
+  <meta name="twitter:title" content="Chapter 3 Breeding nodes | Creating Migratory Networks in R: mignette" />
   
   <meta name="twitter:description" content="This provides examples and documentation of the Mignette R package" />
   
@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-05-24" />
+<meta name="date" content="2023-08-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -120,6 +120,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
 /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
 div.csl-bib-body { }
 div.csl-entry {
@@ -174,8 +178,7 @@ div.csl-indent {
 <li class="chapter" data-level="4" data-path="wintering.html"><a href="wintering.html"><i class="fa fa-check"></i><b>4</b> Nonbreeding nodes</a>
 <ul>
 <li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting ecoregions</a></li>
-<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#snap-points"><i class="fa fa-check"></i><b>4.2</b> Snap points</a></li>
-<li class="chapter" data-level="4.3" data-path="wintering.html"><a href="wintering.html#finalize-nonbreeding-nodes"><i class="fa fa-check"></i><b>4.3</b> Finalize nonbreeding nodes</a></li>
+<li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#select-sampled-regions"><i class="fa fa-check"></i><b>4.2</b> Select sampled regions</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>5</b> Relative Abundance</a>
 <ul>
@@ -205,7 +208,7 @@ div.csl-indent {
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R: mignette</a>
           </h1>
         </div>
 
@@ -220,16 +223,16 @@ div.csl-indent {
 <h2><span class="header-section-number">3.1</span> ebirdst<a href="breeding.html#ebirdst" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>In our migratory network analyses, the <a href="https://science.ebird.org/en/status-and-trends">eBird Status and Trends</a> data is used to delineate the different stages of the annual cycle. Prior to doing anything with eBird Status and Trends data, you will need to download the <code>ebirdst</code> package, and then get access to the data. <strong>You will need to follow the most up-to-date instructions from the <code>ebirdst</code> developers for getting the abundance data. Currently, that information is here: <a href="https://ebird.github.io/ebirdst/">https://ebird.github.io/ebirdst/</a></strong></p>
 <p>To download the package:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="breeding.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
-<span id="cb10-2"><a href="breeding.html#cb10-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;CornellLabofOrnithology/ebirdst&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="breeding.html#cb10-1" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
+<span id="cb10-2"><a href="breeding.html#cb10-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;CornellLabofOrnithology/ebirdst&quot;</span>)</span></code></pre></div>
 <p>Then, get access to <code>ebirdst</code> data at <a href="https://ebird.org/st/request" class="uri">https://ebird.org/st/request</a>. You will receive a key to download <code>ebirdst</code> data and you can enter that key in R:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="breeding.html#cb11-1" aria-hidden="true" tabindex="-1"></a>ebirdst<span class="sc">::</span><span class="fu">set_ebirdst_access_key</span>(<span class="st">&quot;XXXXX&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="breeding.html#cb11-1" tabindex="-1"></a>ebirdst<span class="sc">::</span><span class="fu">set_ebirdst_access_key</span>(<span class="st">&quot;XXXXX&quot;</span>)</span></code></pre></div>
 <p>where <code>"XXXXX"</code> is the key.</p>
 <p>By following instructions from the <code>ebirdst</code> developers, you can obtain polygons of the breeding and nonbreeding ranges of avian species (see <a href="https://ebird.github.io/ebirdst/">https://ebird.github.io/ebirdst/</a> for details).</p>
 </div>
 <div id="creating-the-genoscape" class="section level2 hasAnchor" number="3.2">
 <h2><span class="header-section-number">3.2</span> Creating the genoscape<a href="breeding.html#creating-the-genoscape" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>A genoscape is the collection of genetically distinct populations that make up a species’ range <span class="citation">(<a href="#ref-ruegg2021american" role="doc-biblioref">Ruegg et al. 2021</a>)</span>. Typically, for migratory species, the genoscape describes this population structure on the breeding range because the nonbreeding populations can can contain individuals from different breeding populations.</p>
+<p>A genoscape is the collection of genetically distinct populations that make up a species’ range <span class="citation">(<a href="#ref-ruegg2021american">Ruegg et al. 2021</a>)</span>. Typically, for migratory species, the genoscape describes this population structure on the breeding range because the nonbreeding populations can can contain individuals from different breeding populations.</p>
 <p>We will outline the main genoscape creation steps here, but full instructions on creating a genoscape map can be found in Eric Anderson’s Github project <a href="https://github.com/eriqande/make-a-BGP-map">Make a Bird Genoscape Project map</a>. The input data needed for a genoscape are:</p>
 <ul>
 <li>Individual Q-value matrix</li>
@@ -237,61 +240,64 @@ div.csl-indent {
 <li>Breeding range polygon</li>
 </ul>
 <p>The Q-value matrix is obtained from individual admixture analyses (e.g. Structure, Admixture, <code>snmf</code> fuction from the LEA R-package). Latitude/longitude coordinates are for the individual samples used in the Q-value matrix. Breeding range polygons can be obtained from <code>ebirdst</code> (see previous section).</p>
-<p>The <code>comyel_breeding_data</code> data set provides admixture results (Q-values) of five genotype clusters for Common Yellowthroat (cite a coye paper) and metadata for the sampled individuals.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="breeding.html#cb12-1" aria-hidden="true" tabindex="-1"></a>Q_matrix <span class="ot">&lt;-</span> Mignette<span class="sc">::</span>comyel_breeding_data <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="breeding.html#cb12-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(CA, Midwest, NewEngland, West, Southwest) <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="breeding.html#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb12-4"><a href="breeding.html#cb12-4" aria-hidden="true" tabindex="-1"></a>long_lat_matrix <span class="ot">&lt;-</span> Mignette<span class="sc">::</span>comyel_breeding_data <span class="sc">%&gt;%</span></span>
-<span id="cb12-5"><a href="breeding.html#cb12-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Long, Lat) <span class="sc">%&gt;%</span></span>
-<span id="cb12-6"><a href="breeding.html#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb12-7"><a href="breeding.html#cb12-7" aria-hidden="true" tabindex="-1"></a>cluster_colors <span class="ot">&lt;-</span>  <span class="fu">c</span>(</span>
-<span id="cb12-8"><a href="breeding.html#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">CA =</span> <span class="st">&quot;#CC0000&quot;</span>,</span>
-<span id="cb12-9"><a href="breeding.html#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Midwest =</span> <span class="st">&quot;#3399FF&quot;</span>,</span>
-<span id="cb12-10"><a href="breeding.html#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">NewEngland =</span> <span class="st">&quot;#9933CC&quot;</span>,</span>
-<span id="cb12-11"><a href="breeding.html#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">West =</span> <span class="st">&quot;#009933&quot;</span>,</span>
-<span id="cb12-12"><a href="breeding.html#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Southwest =</span> <span class="st">&quot;#FF6600&quot;</span>) </span></code></pre></div>
+<p>The <code>amre_breeding_data</code> data set provides admixture results (Q-values) for five genetic clusters for American Redstart (DeSaix et al. 2023) and metadata for the sampled individuals.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="breeding.html#cb12-1" tabindex="-1"></a>Q_matrix <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_breeding_data <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="breeding.html#cb12-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(WB, BR, NT, ST, MP) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="breeding.html#cb12-3" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb12-4"><a href="breeding.html#cb12-4" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="breeding.html#cb12-5" tabindex="-1"></a>coords <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_breeding_data <span class="sc">%&gt;%</span></span>
+<span id="cb12-6"><a href="breeding.html#cb12-6" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Lon, Lat) <span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a href="breeding.html#cb12-7" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span></code></pre></div>
+<p>The larger data objects in <code>mignette</code> are stored in <code>extdata</code>:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="breeding.html#cb13-1" tabindex="-1"></a>breeding_range <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;amre_breeding_range.Rds&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="breeding.html#cb13-2" tabindex="-1"></a>  terra<span class="sc">::</span><span class="fu">vect</span>()</span>
+<span id="cb13-3"><a href="breeding.html#cb13-3" tabindex="-1"></a>  </span>
+<span id="cb13-4"><a href="breeding.html#cb13-4" tabindex="-1"></a>breeding_range_st <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_as_sf</span>(mignette<span class="sc">::</span>amre_breeding_range) <span class="co"># tess3Q_map_rasters function requires sf objects, not terra</span></span></code></pre></div>
+<p>We will also specify custom colors to correspond to the published genoscape.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="breeding.html#cb14-1" tabindex="-1"></a>cluster_colors <span class="ot">&lt;-</span>  <span class="fu">c</span>(</span>
+<span id="cb14-2"><a href="breeding.html#cb14-2" tabindex="-1"></a>  <span class="st">`</span><span class="at">ST</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#FF99FF&quot;</span>, <span class="co"># pink/Southern Temperate</span></span>
+<span id="cb14-3"><a href="breeding.html#cb14-3" tabindex="-1"></a>  <span class="st">`</span><span class="at">BR</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#3399FF&quot;</span>, <span class="co"># blue/Basin Rockies</span></span>
+<span id="cb14-4"><a href="breeding.html#cb14-4" tabindex="-1"></a>  <span class="st">`</span><span class="at">NT</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#FFFF33&quot;</span>, <span class="co"># yellow/Northern Temperate</span></span>
+<span id="cb14-5"><a href="breeding.html#cb14-5" tabindex="-1"></a>  <span class="st">`</span><span class="at">WB</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#339933&quot;</span>, <span class="co"># green/Western Boreal</span></span>
+<span id="cb14-6"><a href="breeding.html#cb14-6" tabindex="-1"></a>  <span class="st">`</span><span class="at">MP</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#CC0033&quot;</span> <span class="co"># red/Maritime Provinces</span></span>
+<span id="cb14-7"><a href="breeding.html#cb14-7" tabindex="-1"></a>) </span></code></pre></div>
 <p>We will use a <a href="https://github.com/eriqande/TESS3_encho_sen">modified version</a> of the <code>tess3r</code> package to create the genoscape rasters.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="breeding.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github(&quot;eriqande/TESS3_encho_sen&quot;)</span></span>
-<span id="cb13-2"><a href="breeding.html#cb13-2" aria-hidden="true" tabindex="-1"></a>genoscape_brick <span class="ot">&lt;-</span> tess3r<span class="sc">::</span><span class="fu">tess3Q_map_rasters</span>(</span>
-<span id="cb13-3"><a href="breeding.html#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> Q_matrix, </span>
-<span id="cb13-4"><a href="breeding.html#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">coord =</span> long_lat_matrix,  </span>
-<span id="cb13-5"><a href="breeding.html#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">map.polygon =</span> breed_smooth,</span>
-<span id="cb13-6"><a href="breeding.html#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">window =</span> terra<span class="sc">::</span><span class="fu">ext</span>(breed_smooth)[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>],</span>
-<span id="cb13-7"><a href="breeding.html#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">resolution =</span> <span class="fu">c</span>(<span class="dv">300</span>,<span class="dv">300</span>), <span class="co"># if you want more cells in your raster, set higher</span></span>
-<span id="cb13-8"><a href="breeding.html#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.palette =</span> tess3r<span class="sc">::</span><span class="fu">CreatePalette</span>(cluster_colors, <span class="fu">length</span>(cluster_colors)), </span>
-<span id="cb13-9"><a href="breeding.html#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;map.max&quot;</span>, </span>
-<span id="cb13-10"><a href="breeding.html#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">interpol =</span> tess3r<span class="sc">::</span><span class="fu">FieldsKrigModel</span>(<span class="dv">10</span>),  </span>
-<span id="cb13-11"><a href="breeding.html#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Ancestry coefficients&quot;</span>,</span>
-<span id="cb13-12"><a href="breeding.html#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Longitude&quot;</span>, </span>
-<span id="cb13-13"><a href="breeding.html#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Latitude&quot;</span>, </span>
-<span id="cb13-14"><a href="breeding.html#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> .<span class="dv">4</span></span>
-<span id="cb13-15"><a href="breeding.html#cb13-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-16"><a href="breeding.html#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(genoscape_brick) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(Q_matrix)</span>
-<span id="cb13-17"><a href="breeding.html#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-18"><a href="breeding.html#cb13-18" aria-hidden="true" tabindex="-1"></a>out.files <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;./comyel/genoscape/comyel_genoscape_cluster_&quot;</span>, <span class="fu">names</span>(genoscape_brick), <span class="st">&quot;.tif&quot;</span>)</span>
-<span id="cb13-19"><a href="breeding.html#cb13-19" aria-hidden="true" tabindex="-1"></a>terra<span class="sc">::</span><span class="fu">writeRaster</span>(terra<span class="sc">::</span><span class="fu">rast</span>(genoscape_brick), <span class="at">filename =</span> out.files)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="breeding.html#cb15-1" tabindex="-1"></a><span class="co"># remotes::install_github(&quot;eriqande/TESS3_encho_sen&quot;)</span></span>
+<span id="cb15-2"><a href="breeding.html#cb15-2" tabindex="-1"></a>amre_genoscape <span class="ot">&lt;-</span> tess3r<span class="sc">::</span><span class="fu">tess3Q_map_rasters</span>(</span>
+<span id="cb15-3"><a href="breeding.html#cb15-3" tabindex="-1"></a>  <span class="at">x =</span> Q_matrix,</span>
+<span id="cb15-4"><a href="breeding.html#cb15-4" tabindex="-1"></a>  <span class="at">coord =</span> coords,</span>
+<span id="cb15-5"><a href="breeding.html#cb15-5" tabindex="-1"></a>  <span class="at">map.polygon =</span> breeding_range_st,</span>
+<span id="cb15-6"><a href="breeding.html#cb15-6" tabindex="-1"></a>  <span class="at">window =</span> sf<span class="sc">::</span><span class="fu">st_bbox</span>(breeding_range_st),</span>
+<span id="cb15-7"><a href="breeding.html#cb15-7" tabindex="-1"></a>  <span class="at">resolution =</span> <span class="fu">c</span>(<span class="dv">300</span>,<span class="dv">300</span>), <span class="co"># if you want more cells in your raster, set higher</span></span>
+<span id="cb15-8"><a href="breeding.html#cb15-8" tabindex="-1"></a>  <span class="at">col.palette =</span> tess3r<span class="sc">::</span><span class="fu">CreatePalette</span>(cluster_colors, <span class="fu">length</span>(cluster_colors)), </span>
+<span id="cb15-9"><a href="breeding.html#cb15-9" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;map.max&quot;</span>, </span>
+<span id="cb15-10"><a href="breeding.html#cb15-10" tabindex="-1"></a>  <span class="at">interpol =</span> tess3r<span class="sc">::</span><span class="fu">FieldsKrigModel</span>(<span class="dv">10</span>),  </span>
+<span id="cb15-11"><a href="breeding.html#cb15-11" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Ancestry coefficients&quot;</span>,</span>
+<span id="cb15-12"><a href="breeding.html#cb15-12" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Longitude&quot;</span>, </span>
+<span id="cb15-13"><a href="breeding.html#cb15-13" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Latitude&quot;</span>, </span>
+<span id="cb15-14"><a href="breeding.html#cb15-14" tabindex="-1"></a>  <span class="at">cex =</span> .<span class="dv">4</span></span>
+<span id="cb15-15"><a href="breeding.html#cb15-15" tabindex="-1"></a>)</span>
+<span id="cb15-16"><a href="breeding.html#cb15-16" tabindex="-1"></a><span class="fu">names</span>(amre_genoscape) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(Q_matrix)</span>
+<span id="cb15-17"><a href="breeding.html#cb15-17" tabindex="-1"></a>amre_genoscape <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rast</span>(amre_genoscape) <span class="co"># convert from rasterbrick to spatRaster</span></span>
+<span id="cb15-18"><a href="breeding.html#cb15-18" tabindex="-1"></a><span class="fu">crs</span>(amre_genoscape) <span class="ot">&lt;-</span> <span class="st">&quot;EPSG:4326&quot;</span> <span class="co"># Set CRS projection</span></span></code></pre></div>
+<p>Check out the resulting genoscape:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="breeding.html#cb16-1" tabindex="-1"></a><span class="fu">plot</span>(amre_genoscape)</span></code></pre></div>
+<p><img src="Mignette_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p><strong>STOP</strong></p>
-<p>The rasters for the genoscape are all that are needed for obtaining information on relative abundance for the different populations. You can continue on to the <a href="abundance.html#abundance">relative abundance section</a> if you are ready to do that with the genoscape. Or if you still need to create the wintering nodes, check out the <a href="wintering.html#wintering">wintering nodes section</a>. The following section is not necessary for the migratory network but details how to covert genoscape rasters to polygons if the <code>mignette</code> user is interested in doing so.</p>
+<p>The rasters for the genoscape are all that are needed for obtaining information on relative abundance for the different populations. You can continue on to the <a href="abundance.html#abundance">relative abundance chapter</a> if you are ready to do that with the genoscape. Or if you still need to create the wintering nodes, check out the next chapter on <a href="wintering.html#wintering">wintering nodes</a>. The following section is not necessary for the migratory network but details how to covert genoscape rasters to polygons if the <code>mignette</code> user is interested in doing so.</p>
 <div id="genoscape-polygons" class="section level3 hasAnchor" number="3.2.1">
 <h3><span class="header-section-number">3.2.1</span> Genoscape polygons<a href="breeding.html#genoscape-polygons" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Using the genoscape rasters we will convert them to polygons, using the handy <code>scape_to_shape()</code> function. The <code>prob_threshold</code> parameter specifies the value to determine if a raster cell is included in the polygon for that genoscape. This value should be customized for different species to check for overlap of genoscape polygons, which is not desirable. Setting too high of a threshold will create very small breeding nodes, while too low of a threshold will result in large, overlapping breeding nodes.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="breeding.html#cb14-1" aria-hidden="true" tabindex="-1"></a>genoscape_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">&quot;./comyel/genoscape&quot;</span>, </span>
-<span id="cb14-2"><a href="breeding.html#cb14-2" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">full.names =</span> T,</span>
-<span id="cb14-3"><a href="breeding.html#cb14-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">pattern =</span> <span class="st">&quot;*.tif&quot;</span>)</span>
-<span id="cb14-4"><a href="breeding.html#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="breeding.html#cb14-5" aria-hidden="true" tabindex="-1"></a>genoscape_raster_stack <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rast</span>(genoscape_files)</span>
-<span id="cb14-6"><a href="breeding.html#cb14-6" aria-hidden="true" tabindex="-1"></a>genoscape_polygon_sf <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">scape_to_shape</span>(<span class="at">x =</span> genoscape_raster_stack, <span class="at">prob_threshold =</span> <span class="fl">0.5</span>)</span></code></pre></div>
 <p>Check out the polygons</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="breeding.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb15-2"><a href="breeding.html#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> genoscape_polygon_sf,<span class="at">alpha =</span> <span class="fl">0.75</span>, <span class="fu">aes</span>(<span class="at">fill =</span> Cluster)) <span class="sc">+</span></span>
-<span id="cb15-3"><a href="breeding.html#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cluster_colors)</span></code></pre></div>
-<p><img src="Mignette_files/figure-html/unnamed-chunk-7-1.png" width="70%" /></p>
-<p>Check which polygons are overlapping. Each row of the output provides a pair of overlapping polygons (if there are any).</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="breeding.html#cb16-1" aria-hidden="true" tabindex="-1"></a>mignette<span class="sc">::</span><span class="fu">check_genoscape_overlap</span>(genoscape_polygon_sf)</span></code></pre></div>
-<pre><code>##      [,1]      [,2]        
-## [1,] &quot;CA&quot;      &quot;West&quot;      
-## [2,] &quot;Midwest&quot; &quot;NewEngland&quot;
-## [3,] &quot;Midwest&quot; &quot;West&quot;</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="breeding.html#cb17-1" tabindex="-1"></a>genoscape_polygons <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">scape_to_shape</span>(<span class="at">x =</span> amre_genoscape, </span>
+<span id="cb17-2"><a href="breeding.html#cb17-2" tabindex="-1"></a>                                               <span class="at">prob_threshold =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<pre><code>## Spherical geometry (s2) switched off</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="breeding.html#cb19-1" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb19-2"><a href="breeding.html#cb19-2" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> genoscape_polygons,<span class="at">alpha =</span> <span class="fl">0.75</span>, <span class="fu">aes</span>(<span class="at">fill =</span> Cluster)) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="breeding.html#cb19-3" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cluster_colors) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="breeding.html#cb19-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<p><img src="Mignette_files/figure-html/unnamed-chunk-9-1.png" width="70%" /></p>
+<p>Note that the lower population membership probabilities occur at the boundaries of different populations, thereby making the polygons discontinuous compared to the entire range</p>
 <p>Now on to creating the <a href="wintering.html#wintering">wintering nodes</a></p>
 
 </div>

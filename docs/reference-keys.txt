@@ -7,8 +7,7 @@ creating-the-genoscape
 genoscape-polygons
 wintering
 subsetting-ecoregions
-snap-points
-finalize-nonbreeding-nodes
+select-sampled-regions
 abundance
 get-relative-abundance-for-a-genoscape-raster
 get-relative-abundance-for-a-vector
