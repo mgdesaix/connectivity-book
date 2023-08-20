@@ -306,14 +306,13 @@ Now the user can use the output of \texttt{jags\_data} into JAGS to run the actu
 \end{Highlighting}
 \end{Shaded}
 
-The connectivity between the nodes is provided by the \texttt{conn\_g} parameter of the model, which is accessed from the above code. We provide this output for the example as well with \texttt{mignette::amre\_conn}. We also provide functions for basic visualization of the network. A threshold (\texttt{connected\_tol}) can be set to remove very weak connectivity for better visualizing the network as shown below.
+The connectivity between the nodes is provided by the \texttt{conn\_g} parameter of the model, which is accessed from the above code. We provide this output for the example as well with \texttt{mignette::amre\_conn}. We also provide functions for basic visualization of the network. A threshold (\texttt{connected\_tol}) can be set to remove very weak connectivity (i.e.~set connectivity values less than the threshold to 0) for better visualizing the network as shown below.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# set threshold for not visualizing minimal connectivity}
 \NormalTok{net }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{net\_create}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_conn, }
                             \AttributeTok{node.names =} \FunctionTok{list}\NormalTok{(bnode\_names, wnode\_names),}
-                            \AttributeTok{connected\_tol =} \FloatTok{0.02}\NormalTok{)}
+                            \AttributeTok{connected\_tol =} \FloatTok{0.02}\NormalTok{) }\CommentTok{\# threshold}
 \CommentTok{\#set the display size range for nodes (min and max), default 1{-}10}
 \NormalTok{net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{node\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{20}\NormalTok{)}
 \CommentTok{\#set the display size range for edges (min and max), default 1{-}10}

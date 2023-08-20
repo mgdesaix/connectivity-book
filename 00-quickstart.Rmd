@@ -71,13 +71,12 @@ jags_out <- autojags(jags_data, inits=NULL, parameters, paste0(base_filename,".t
 amre_conn <- jags_out$mean$conn_g
 ```
 
-The connectivity between the nodes is provided by the `conn_g` parameter of the model, which is accessed from the above code. We provide this output for the example as well with `mignette::amre_conn`. We also provide functions for basic visualization of the network. A threshold (`connected_tol`) can be set to remove very weak connectivity for better visualizing the network as shown below.
+The connectivity between the nodes is provided by the `conn_g` parameter of the model, which is accessed from the above code. We provide this output for the example as well with `mignette::amre_conn`. We also provide functions for basic visualization of the network. A threshold (`connected_tol`) can be set to remove very weak connectivity (i.e. set connectivity values less than the threshold to 0) for better visualizing the network as shown below.
 
 ```{r}
-# set threshold for not visualizing minimal connectivity
 net <- mignette::net_create(mignette::amre_conn, 
                             node.names = list(bnode_names, wnode_names),
-                            connected_tol = 0.02)
+                            connected_tol = 0.02) # threshold
 #set the display size range for nodes (min and max), default 1-10
 net$display_par$node_size_scale<-c(5,20)
 #set the display size range for edges (min and max), default 1-10
