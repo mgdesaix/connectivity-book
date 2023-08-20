@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="breeding.html"/>
-<link rel="next" href="abundance.html"/>
+<link rel="next" href="assignment.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -180,21 +180,26 @@ div.csl-indent {
 <li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting ecoregions</a></li>
 <li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#select-sampled-regions"><i class="fa fa-check"></i><b>4.2</b> Select sampled regions</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>5</b> Relative Abundance</a>
+<li class="chapter" data-level="5" data-path="assignment.html"><a href="assignment.html"><i class="fa fa-check"></i><b>5</b> Node assignment</a></li>
+<li class="chapter" data-level="6" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>6</b> Relative Abundance</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="abundance.html"><a href="abundance.html#get-relative-abundance-for-a-genoscape-raster"><i class="fa fa-check"></i><b>5.1</b> Get relative abundance for a genoscape (raster)</a></li>
-<li class="chapter" data-level="5.2" data-path="abundance.html"><a href="abundance.html#get-relative-abundance-for-a-vector"><i class="fa fa-check"></i><b>5.2</b> Get relative abundance for a vector</a></li>
+<li class="chapter" data-level="6.1" data-path="abundance.html"><a href="abundance.html#get-relative-abundance-for-a-genoscape-raster"><i class="fa fa-check"></i><b>6.1</b> Get relative abundance for a genoscape (raster)</a></li>
+<li class="chapter" data-level="6.2" data-path="abundance.html"><a href="abundance.html#get-relative-abundance-for-a-vector"><i class="fa fa-check"></i><b>6.2</b> Get relative abundance for a vector</a></li>
+<li class="chapter" data-level="6.3" data-path="abundance.html"><a href="abundance.html#combine-the-abundance-data"><i class="fa fa-check"></i><b>6.3</b> Combine the abundance data</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="connectivity.html"><a href="connectivity.html"><i class="fa fa-check"></i><b>6</b> Migratory Network Model</a>
+<li class="chapter" data-level="7" data-path="connectivity.html"><a href="connectivity.html"><i class="fa fa-check"></i><b>7</b> Migratory Network Model</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="connectivity.html"><a href="connectivity.html#input-data"><i class="fa fa-check"></i><b>6.1</b> Input data</a></li>
-<li class="chapter" data-level="6.2" data-path="connectivity.html"><a href="connectivity.html#migratory-network-model-jags"><i class="fa fa-check"></i><b>6.2</b> Migratory network model (JAGS)</a>
+<li class="chapter" data-level="7.1" data-path="connectivity.html"><a href="connectivity.html#input-data"><i class="fa fa-check"></i><b>7.1</b> Input data</a></li>
+<li class="chapter" data-level="7.2" data-path="connectivity.html"><a href="connectivity.html#migratory-network-model-jags"><i class="fa fa-check"></i><b>7.2</b> Migratory network model (JAGS)</a>
 <ul>
-<li class="chapter" data-level="6.2.1" data-path="connectivity.html"><a href="connectivity.html#preparing-input-data"><i class="fa fa-check"></i><b>6.2.1</b> Preparing input data</a></li>
-<li class="chapter" data-level="6.2.2" data-path="connectivity.html"><a href="connectivity.html#running-the-model"><i class="fa fa-check"></i><b>6.2.2</b> Running the model</a></li>
+<li class="chapter" data-level="7.2.1" data-path="connectivity.html"><a href="connectivity.html#preparing-input-data"><i class="fa fa-check"></i><b>7.2.1</b> Preparing input data</a></li>
+<li class="chapter" data-level="7.2.2" data-path="connectivity.html"><a href="connectivity.html#running-the-model"><i class="fa fa-check"></i><b>7.2.2</b> Running the model</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>7</b> Network visualization</a></li>
+<li class="chapter" data-level="8" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>8</b> Network visualization</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="visualization.html"><a href="visualization.html#other-visualization-options"><i class="fa fa-check"></i><b>8.1</b> Other visualization options</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -244,41 +249,70 @@ div.csl-indent {
 <div id="select-sampled-regions" class="section level2 hasAnchor" number="4.2">
 <h2><span class="header-section-number">4.2</span> Select sampled regions<a href="wintering.html#select-sampled-regions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>For the purpose of the migratory network, we are only interested in nonbreeding nodes for which we have sampled data. To identify these nodes, we will intersect our sampled nonbreeding individuals locations with the ecoregion data. Additionally, since sampling locations may fall just outside an ecoregion boundary (for example, imprecise coordinates along a coast) we will identify the ecoregions by selecting the <em>nearest</em> ecoregion to a point.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="wintering.html#cb22-1" tabindex="-1"></a>winter_coords <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">vect</span>(mignette<span class="sc">::</span>amre_nonbreeding_data, </span>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="wintering.html#cb22-1" tabindex="-1"></a>nonbreeding_coords <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">vect</span>(mignette<span class="sc">::</span>amre_nonbreeding_data, </span>
 <span id="cb22-2"><a href="wintering.html#cb22-2" tabindex="-1"></a>                             <span class="at">geom=</span><span class="fu">c</span>(<span class="st">&quot;Lon&quot;</span>, <span class="st">&quot;Lat&quot;</span>),</span>
 <span id="cb22-3"><a href="wintering.html#cb22-3" tabindex="-1"></a>                             <span class="at">crs =</span> <span class="st">&quot;EPSG:4326&quot;</span>)</span>
-<span id="cb22-4"><a href="wintering.html#cb22-4" tabindex="-1"></a>winter_coords_nearest <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">nearest</span>(winter_coords,</span>
+<span id="cb22-4"><a href="wintering.html#cb22-4" tabindex="-1"></a>nonbreeding_coords_nearest <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">nearest</span>(nonbreeding_coords,</span>
 <span id="cb22-5"><a href="wintering.html#cb22-5" tabindex="-1"></a>                                        ecoregions,</span>
 <span id="cb22-6"><a href="wintering.html#cb22-6" tabindex="-1"></a>                                        <span class="at">centroids =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb22-7"><a href="wintering.html#cb22-7" tabindex="-1"></a><span class="co"># Add Region ID from original file for easier interpretation</span></span>
-<span id="cb22-8"><a href="wintering.html#cb22-8" tabindex="-1"></a>winter_coords_nearest<span class="sc">$</span>Region <span class="ot">&lt;-</span> ecoregions<span class="sc">$</span>Region[winter_coords_nearest<span class="sc">$</span>to_id]</span>
-<span id="cb22-9"><a href="wintering.html#cb22-9" tabindex="-1"></a><span class="fu">table</span>(winter_coords_nearest<span class="sc">$</span>Region)</span></code></pre></div>
-<pre><code>## 
-## Amazon/Orinoco-Northern Uplands         Atlantic Lowland Mexico 
-##                              21                              22 
-##                       Caribbean        Highland Central America 
-##                              69                               5 
-##        Highland/Interior Mexico         Lowland Central America 
-##                               1                              14 
-##                  Northern Andes 
-##                               3</code></pre>
+<span id="cb22-8"><a href="wintering.html#cb22-8" tabindex="-1"></a>nonbreeding_coords_nearest<span class="sc">$</span>Region <span class="ot">&lt;-</span> ecoregions<span class="sc">$</span>Region[nonbreeding_coords_nearest<span class="sc">$</span>to_id]</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="wintering.html#cb23-1" tabindex="-1"></a><span class="fu">table</span>(nonbreeding_coords_nearest<span class="sc">$</span>Region)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Var1</th>
+<th align="right">Freq</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Amazon/Orinoco-Northern Uplands</td>
+<td align="right">21</td>
+</tr>
+<tr class="even">
+<td align="left">Atlantic Lowland Mexico</td>
+<td align="right">22</td>
+</tr>
+<tr class="odd">
+<td align="left">Caribbean</td>
+<td align="right">69</td>
+</tr>
+<tr class="even">
+<td align="left">Highland Central America</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">Highland/Interior Mexico</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Lowland Central America</td>
+<td align="right">14</td>
+</tr>
+<tr class="odd">
+<td align="left">Northern Andes</td>
+<td align="right">3</td>
+</tr>
+</tbody>
+</table>
 <p>For the migratory network, we also want sufficient sampling of a node for the model to be able to reach convergence. In the example above, we see “Highland/Interior Mexico” only has 1 sample and the “Northern Andes” only have 3 samples. Below, we use a cut off of a minimum of 4 samples to remove those ecoregions</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="wintering.html#cb24-1" tabindex="-1"></a>cutoff <span class="ot">&lt;-</span> <span class="dv">4</span></span>
 <span id="cb24-2"><a href="wintering.html#cb24-2" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="wintering.html#cb24-3" tabindex="-1"></a>ecoregions_keep <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">table</span>(winter_coords_nearest<span class="sc">$</span>Region)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="wintering.html#cb24-3" tabindex="-1"></a>ecoregions_keep <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">table</span>(nonbreeding_coords_nearest<span class="sc">$</span>Region)) <span class="sc">%&gt;%</span></span>
 <span id="cb24-4"><a href="wintering.html#cb24-4" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>.[<span class="dv">2</span>] <span class="sc">&lt;</span> cutoff) <span class="sc">%&gt;%</span></span>
 <span id="cb24-5"><a href="wintering.html#cb24-5" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb24-6"><a href="wintering.html#cb24-6" tabindex="-1"></a>  <span class="fu">as.character</span>()</span>
 <span id="cb24-7"><a href="wintering.html#cb24-7" tabindex="-1"></a></span>
-<span id="cb24-8"><a href="wintering.html#cb24-8" tabindex="-1"></a>winter_coords_nearest_subset <span class="ot">&lt;-</span> winter_coords_nearest[winter_coords_nearest<span class="sc">$</span>Region <span class="sc">%in%</span> ecoregions_keep]</span>
-<span id="cb24-9"><a href="wintering.html#cb24-9" tabindex="-1"></a>winter_regions_subset <span class="ot">&lt;-</span> ecoregions[winter_coords_nearest_subset]</span></code></pre></div>
+<span id="cb24-8"><a href="wintering.html#cb24-8" tabindex="-1"></a>nonbreeding_coords_nearest_subset <span class="ot">&lt;-</span> nonbreeding_coords_nearest[nonbreeding_coords_nearest<span class="sc">$</span>Region <span class="sc">%in%</span> ecoregions_keep]</span>
+<span id="cb24-9"><a href="wintering.html#cb24-9" tabindex="-1"></a>nonbreeding_regions_subset <span class="ot">&lt;-</span> ecoregions[nonbreeding_coords_nearest_subset]</span></code></pre></div>
 <p>This leaves us with a final set of our nonbreeding nodes and the samples associated with them:</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="wintering.html#cb25-1" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb25-2"><a href="wintering.html#cb25-2" tabindex="-1"></a>  <span class="fu">geom_spatvector</span>(<span class="at">data =</span> winter_regions_subset, <span class="fu">aes</span>(<span class="at">fill =</span> Region)) <span class="sc">+</span></span>
-<span id="cb25-3"><a href="wintering.html#cb25-3" tabindex="-1"></a>  <span class="fu">geom_spatvector</span>(<span class="at">data =</span> winter_coords_nearest_subset) <span class="sc">+</span></span>
+<span id="cb25-2"><a href="wintering.html#cb25-2" tabindex="-1"></a>  <span class="fu">geom_spatvector</span>(<span class="at">data =</span> nonbreeding_regions_subset, <span class="fu">aes</span>(<span class="at">fill =</span> Region)) <span class="sc">+</span></span>
+<span id="cb25-3"><a href="wintering.html#cb25-3" tabindex="-1"></a>  <span class="fu">geom_spatvector</span>(<span class="at">data =</span> nonbreeding_coords_nearest_subset) <span class="sc">+</span></span>
 <span id="cb25-4"><a href="wintering.html#cb25-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
-<p><img src="Mignette_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<p>Now on to getting the <a href="abundance.html#abundance">relative abundance</a>.</p>
+<p><img src="Mignette_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>Now on to getting the <a href="assignment.html#assignment">node assignment matrix</a>.</p>
 
 </div>
 </div>
@@ -288,7 +322,7 @@ div.csl-indent {
         </div>
       </div>
 <a href="breeding.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="abundance.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="assignment.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

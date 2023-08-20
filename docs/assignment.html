@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Creating Migratory Networks in R: mignette</title>
+  <title>Chapter 5 Node assignment | Creating Migratory Networks in R: mignette</title>
   <meta name="description" content="This provides examples and documentation of the Mignette R package" />
   <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Creating Migratory Networks in R: mignette" />
+  <meta property="og:title" content="Chapter 5 Node assignment | Creating Migratory Networks in R: mignette" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This provides examples and documentation of the Mignette R package" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Creating Migratory Networks in R: mignette" />
+  <meta name="twitter:title" content="Chapter 5 Node assignment | Creating Migratory Networks in R: mignette" />
   
   <meta name="twitter:description" content="This provides examples and documentation of the Mignette R package" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="quickstart.html"/>
+<link rel="prev" href="wintering.html"/>
+<link rel="next" href="abundance.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -221,63 +221,145 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Creating Migratory Networks in R: mignette</h1>
-<p class="author"><em>Matt DeSaix</em></p>
-<p class="date"><em>2023-08-20</em></p>
-</div>
-<div id="introduction" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>This vignette outlines how to create migratory networks using the R package <code>mignette</code> (<strong>mig</strong>ratory <strong>net</strong>work <strong>t</strong>ools <strong>e</strong>nsemble). <code>mignette</code> was developed to facilitate conservation and management decision-making for migratory wildlife populations using migratory networks <span class="citation">(<a href="#ref-ruegg2020genoscape">Ruegg et al. 2020</a>; <a href="#ref-taylor2010population">Taylor and Norris 2010</a>)</span>. The core function of <code>mignette</code> is to model the connectivity of populations across different stages of the annual cycle. To model these migratory networks in <code>mignette</code>, users need to provide:</p>
-<ol style="list-style-type: decimal">
-<li>The number of individuals connecting migratory populations from two stages of the annual cycle</li>
-<li>Relative abundance data for the populations</li>
-</ol>
-<p>We designed <code>mignette</code> specifically for use with population assignment data from genetic markers <span class="citation">(<a href="#ref-ruegg2014mapping">Ruegg et al. 2014</a>; <a href="#ref-desaix2019population">DeSaix et al. 2019</a>)</span>, and we use genetic markers to delineate breeding populations (i.e., nodes in the migratory network model). We have since extended <code>mignette</code> to be able to model migratory networks that include geolocator data for assignment. While it is outside the scope of <code>mignette</code> for providing an exhaustive tool set of methods to delineate these nodes, given our focus on the use of genetic data, we provide examples and resources for users to delineate breeding populations from genetic data. For nonbreeding populations, we delineate these spatially by <em>ecoregions</em> ADD LINK TO ECOREGION DATA SOURCE.</p>
-<p>We anticipate users of <code>mignette</code> to be interested in modelling migratory networks for a wide-range of taxa, therefore users can provide relative abundance information from any data source. However, we also provide information on obtaining relative abundance for bird data from <a href="https://ebird.org/science/status-and-trends">eBird</a> and have developed tools in <code>mignette</code> to facilitate the calculation of relative abundance values.</p>
-<p>For an introductory demonstration of creating a migratory network with <code>mignette</code>, see the <a href="quickstart.html#quickstart">quick start example</a>. Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.</p>
-<div id="installation" class="section level2 hasAnchor" number="1.1">
-<h2><span class="header-section-number">1.1</span> Installation<a href="index.html#installation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>You can install the development version of <code>mignette</code> from GitHub with:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
-<span id="cb1-2"><a href="index.html#cb1-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;mgdesaix/mignette&quot;</span>)</span></code></pre></div>
-<p>The migratory network model will be run using R packages that run JAGS (Just Another Gibbs Sampler). JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS can be <a href="https://mcmc-jags.sourceforge.io/">downloaded here</a></p>
-<p>The primary packages for this vignette are:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="index.html#cb2-1" tabindex="-1"></a><span class="fu">library</span>(mignette)</span>
-<span id="cb2-2"><a href="index.html#cb2-2" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb2-3"><a href="index.html#cb2-3" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
-<span id="cb2-4"><a href="index.html#cb2-4" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb2-5"><a href="index.html#cb2-5" tabindex="-1"></a><span class="fu">library</span>(ebirdst) <span class="co"># for avian abundance data from eBird Status and Trends</span></span>
-<span id="cb2-6"><a href="index.html#cb2-6" tabindex="-1"></a><span class="fu">library</span>(rjags) <span class="co"># for network model</span></span>
-<span id="cb2-7"><a href="index.html#cb2-7" tabindex="-1"></a><span class="fu">library</span>(jagsUI) <span class="co"># for network model</span></span>
-<span id="cb2-8"><a href="index.html#cb2-8" tabindex="-1"></a><span class="fu">library</span>(ggnewscale) <span class="co"># for network visualization</span></span>
-<span id="cb2-9"><a href="index.html#cb2-9" tabindex="-1"></a><span class="fu">library</span>(tidyterra) <span class="co"># for plotting terra objects with ggplot</span></span></code></pre></div>
-<p>As <code>mignette</code> makes use of the <code>terra</code> package, all raster and vector (e.g., polygons) are provided as <em>SpatRaster</em> and <em>SpatVector</em> objects. See the <code>terra</code> package for more details on these types of objects in R.</p>
+<div id="assignment" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">Chapter 5</span> Node assignment<a href="assignment.html#assignment" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>In <code>mignette</code>, node assignment data is one of the two main inputs into the migratory network model. Regardless of the methods used to collect these data, as input into the <code>mignette</code> migratory network model it needs to be in a specific format:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Breeding</th>
+<th align="right">CAR</th>
+<th align="right">AONU</th>
+<th align="right">ALM</th>
+<th align="right">HCA</th>
+<th align="right">LCA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BR</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">MP</td>
+<td align="right">0</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">NT</td>
+<td align="right">54</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">ST</td>
+<td align="right">12</td>
+<td align="right">12</td>
+<td align="right">0</td>
+<td align="right">4</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">WB</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">19</td>
+<td align="right">1</td>
+<td align="right">13</td>
+</tr>
+</tbody>
+</table>
+<p>The first column specifies the <em>inferred</em> nodes in assignment. In the case of the genetic assignment data shown above, the breeding nodes are inferred from population assignment methods with individuals sampled from the nonbreeding range. The other column names refer to the nonbreeding node names, and the values are the number of individuals from a given nonbreeding node assigned to the respective breeding node specified by the row.</p>
+<p>For the American Redstart example, we can get the assignment data in the format shown above based on population assignment data provided in <code>mignette</code> as well as the ecoregion information from the previous section.</p>
+<p>The <code>amre_nonbreeding_range</code> data, from which we extracted the latitude and longitude coordinates of sampling locations to identify ecoregions in the previous section, also provides the breeding node assignment data from DeSaix et al. (2023). Creating the <code>nonbreeding_coords_nearest</code> object retained the same row order of data as in the original <code>amre_nonbreeding_range</code>, thus we can combine these data in the following way. <strong>Note:</strong> We are manually combining these data without a <em>join</em> by sample name or another identifier so it is always good to triple check that indeed the data are in the correct order when not using a join.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="assignment.html#cb26-1" tabindex="-1"></a>amre_assign_manual <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="st">&quot;Breeding&quot;</span> <span class="ot">=</span> amre_nonbreeding_data<span class="sc">$</span>Breeding_assignment,</span>
+<span id="cb26-2"><a href="assignment.html#cb26-2" tabindex="-1"></a>                             <span class="st">&quot;Nonbreeding&quot;</span> <span class="ot">=</span> nonbreeding_coords_nearest<span class="sc">$</span>Region) <span class="sc">%&gt;%</span></span>
+<span id="cb26-3"><a href="assignment.html#cb26-3" tabindex="-1"></a>  <span class="fu">filter</span>(Nonbreeding <span class="sc">%in%</span> ecoregions_keep) <span class="sc">%&gt;%</span> <span class="co"># remove those nonbreeding nodes with &lt;4 samples</span></span>
+<span id="cb26-4"><a href="assignment.html#cb26-4" tabindex="-1"></a>  <span class="fu">group_by</span>(Breeding, Nonbreeding) <span class="sc">%&gt;%</span></span>
+<span id="cb26-5"><a href="assignment.html#cb26-5" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">N =</span> <span class="fu">n</span>(),</span>
+<span id="cb26-6"><a href="assignment.html#cb26-6" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-7"><a href="assignment.html#cb26-7" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> Nonbreeding, <span class="at">values_from =</span> N) <span class="sc">%&gt;%</span></span>
+<span id="cb26-8"><a href="assignment.html#cb26-8" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">&quot;AONU&quot;</span> <span class="ot">=</span> <span class="st">&quot;Amazon/Orinoco-Northern Uplands&quot;</span>,</span>
+<span id="cb26-9"><a href="assignment.html#cb26-9" tabindex="-1"></a>         <span class="st">&quot;ALM&quot;</span> <span class="ot">=</span> <span class="st">&quot;Atlantic Lowland Mexico&quot;</span>,</span>
+<span id="cb26-10"><a href="assignment.html#cb26-10" tabindex="-1"></a>         <span class="st">&quot;CAR&quot;</span> <span class="ot">=</span> <span class="st">&quot;Caribbean&quot;</span>,</span>
+<span id="cb26-11"><a href="assignment.html#cb26-11" tabindex="-1"></a>         <span class="st">&quot;HCA&quot;</span> <span class="ot">=</span> <span class="st">&quot;Highland Central America&quot;</span>,</span>
+<span id="cb26-12"><a href="assignment.html#cb26-12" tabindex="-1"></a>         <span class="st">&quot;LCA&quot;</span> <span class="ot">=</span> <span class="st">&quot;Lowland Central America&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-13"><a href="assignment.html#cb26-13" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span><span class="fu">ifelse</span>(<span class="fu">is.na</span>(.), <span class="dv">0</span>, .))) <span class="co"># replace NAs with 0s</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="assignment.html#cb27-1" tabindex="-1"></a>amre_assign_manual</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Breeding</th>
+<th align="right">CAR</th>
+<th align="right">AONU</th>
+<th align="right">ALM</th>
+<th align="right">HCA</th>
+<th align="right">LCA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BR</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">MP</td>
+<td align="right">0</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">NT</td>
+<td align="right">54</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">ST</td>
+<td align="right">12</td>
+<td align="right">12</td>
+<td align="right">0</td>
+<td align="right">4</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">WB</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">19</td>
+<td align="right">1</td>
+<td align="right">13</td>
+</tr>
+</tbody>
+</table>
+<p>We can see that we have effectively mapped the breeding population assignment meta data to the correct ecoregion based on our individual’s sampling location. Great!</p>
+<p>Now on to getting the <a href="abundance.html#abundance">relative abundance</a>.</p>
 
-</div>
-</div>
-<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-desaix2019population" class="csl-entry">
-DeSaix, Matthew G, Lesley P Bulluck, Andrew J Eckert, Catherine B Viverette, Than J Boves, Jessica A Reese, Christopher M Tonra, and Rodney J Dyer. 2019. <span>“Population Assignment Reveals Low Migratory Connectivity in a Weakly Structured Songbird.”</span> <em>Molecular Ecology</em> 28 (9): 2122–35.
-</div>
-<div id="ref-ruegg2014mapping" class="csl-entry">
-Ruegg, Kristen C, Eric C Anderson, Kristina L Paxton, Vanessa Apkenas, Sirena Lao, Rodney B Siegel, David F DeSante, Frank Moore, and Thomas B Smith. 2014. <span>“Mapping Migration in a Songbird Using High-Resolution Genetic Markers.”</span> <em>Molecular Ecology</em> 23 (23): 5726–39.
-</div>
-<div id="ref-ruegg2020genoscape" class="csl-entry">
-Ruegg, Kristen C, Ryan J Harrigan, James F Saracco, Thomas B Smith, and Caz M Taylor. 2020. <span>“A Genoscape-Network Model for Conservation Prioritization in a Migratory Bird.”</span> <em>Conservation Biology</em> 34 (6): 1482–91.
-</div>
-<div id="ref-taylor2010population" class="csl-entry">
-Taylor, Caz M, and D Ryan Norris. 2010. <span>“Population Dynamics in Migratory Networks.”</span> <em>Theoretical Ecology</em> 3: 65–73.
-</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="quickstart.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="wintering.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="abundance.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -308,7 +390,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/USERNAME/REPO/edit/BRANCH/index.Rmd",
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/03-node_assignment.Rmd",
 "text": "Edit"
 },
 "history": {

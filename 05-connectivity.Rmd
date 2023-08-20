@@ -24,8 +24,8 @@ where the first column specifies breeding population IDs while subsequent column
 For the following functions, we specify the order of the populations we are using for the model. Here, we are just ordering populations geographically by longitude to facilitate straightforward interpretation of the output.
 
 ```{r}
-bnode_names <- c("WB", "NT", "ST")
-wnode_names <- c("ALM", "CAR", "AONU")
+bnode_names <- c("WB", "BR", "NT", "ST", "MP")
+wnode_names <- c("ALM", "LCA", "HCA", "CAR", "AONU")
 ```
 
 ## Migratory network model (JAGS)
@@ -58,27 +58,17 @@ jags_out <- autojags(jags_data, inits=NULL, parameters, paste0(base_filename,".t
                       max.iter = ni*50+nb, n.burnin = nb,
                       n.adapt= NULL, parallel=TRUE)
 amre_conn <- jags_out$mean$conn_g
+colnames(amre_conn) <- wnode_names
+rownames(amre_conn) <- bnode_names
 amre_conn
 ```
 
 ```{r, echo=FALSE}
 amre_conn <- mignette::amre_conn
 knitr::kable(mignette::amre_conn)
-colnames(amre_conn) <- wnode_names
-rownames(amre_conn) <- bnode_names
 ```
 
-The connectivity between the nodes is provided by the `conn_g` parameter of the model, which is accessed from the above code. The rows are the breeding nodes and the columns are the nonbreeding nodes, which we can make more apparent:
-
-```{r}
-colnames(amre_conn) <- wnode_names
-rownames(amre_conn) <- bnode_names
-amre_conn
-```
-
-```{r, echo=FALSE}
-knitr::kable(amre_conn)
-```
+The connectivity between the nodes is provided by the `conn_g` parameter of the model, which is accessed from the above code. The rows are the breeding nodes (the *inferred* population from assignment) and the columns are the nonbreeding nodes (the *sampled* population).
 
 Voila. A migratory network model is completed. Now, onto [visualization](#visualization)
 

@@ -180,21 +180,26 @@ div.csl-indent {
 <li class="chapter" data-level="4.1" data-path="wintering.html"><a href="wintering.html#subsetting-ecoregions"><i class="fa fa-check"></i><b>4.1</b> Subsetting ecoregions</a></li>
 <li class="chapter" data-level="4.2" data-path="wintering.html"><a href="wintering.html#select-sampled-regions"><i class="fa fa-check"></i><b>4.2</b> Select sampled regions</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>5</b> Relative Abundance</a>
+<li class="chapter" data-level="5" data-path="assignment.html"><a href="assignment.html"><i class="fa fa-check"></i><b>5</b> Node assignment</a></li>
+<li class="chapter" data-level="6" data-path="abundance.html"><a href="abundance.html"><i class="fa fa-check"></i><b>6</b> Relative Abundance</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="abundance.html"><a href="abundance.html#get-relative-abundance-for-a-genoscape-raster"><i class="fa fa-check"></i><b>5.1</b> Get relative abundance for a genoscape (raster)</a></li>
-<li class="chapter" data-level="5.2" data-path="abundance.html"><a href="abundance.html#get-relative-abundance-for-a-vector"><i class="fa fa-check"></i><b>5.2</b> Get relative abundance for a vector</a></li>
+<li class="chapter" data-level="6.1" data-path="abundance.html"><a href="abundance.html#get-relative-abundance-for-a-genoscape-raster"><i class="fa fa-check"></i><b>6.1</b> Get relative abundance for a genoscape (raster)</a></li>
+<li class="chapter" data-level="6.2" data-path="abundance.html"><a href="abundance.html#get-relative-abundance-for-a-vector"><i class="fa fa-check"></i><b>6.2</b> Get relative abundance for a vector</a></li>
+<li class="chapter" data-level="6.3" data-path="abundance.html"><a href="abundance.html#combine-the-abundance-data"><i class="fa fa-check"></i><b>6.3</b> Combine the abundance data</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="connectivity.html"><a href="connectivity.html"><i class="fa fa-check"></i><b>6</b> Migratory Network Model</a>
+<li class="chapter" data-level="7" data-path="connectivity.html"><a href="connectivity.html"><i class="fa fa-check"></i><b>7</b> Migratory Network Model</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="connectivity.html"><a href="connectivity.html#input-data"><i class="fa fa-check"></i><b>6.1</b> Input data</a></li>
-<li class="chapter" data-level="6.2" data-path="connectivity.html"><a href="connectivity.html#migratory-network-model-jags"><i class="fa fa-check"></i><b>6.2</b> Migratory network model (JAGS)</a>
+<li class="chapter" data-level="7.1" data-path="connectivity.html"><a href="connectivity.html#input-data"><i class="fa fa-check"></i><b>7.1</b> Input data</a></li>
+<li class="chapter" data-level="7.2" data-path="connectivity.html"><a href="connectivity.html#migratory-network-model-jags"><i class="fa fa-check"></i><b>7.2</b> Migratory network model (JAGS)</a>
 <ul>
-<li class="chapter" data-level="6.2.1" data-path="connectivity.html"><a href="connectivity.html#preparing-input-data"><i class="fa fa-check"></i><b>6.2.1</b> Preparing input data</a></li>
-<li class="chapter" data-level="6.2.2" data-path="connectivity.html"><a href="connectivity.html#running-the-model"><i class="fa fa-check"></i><b>6.2.2</b> Running the model</a></li>
+<li class="chapter" data-level="7.2.1" data-path="connectivity.html"><a href="connectivity.html#preparing-input-data"><i class="fa fa-check"></i><b>7.2.1</b> Preparing input data</a></li>
+<li class="chapter" data-level="7.2.2" data-path="connectivity.html"><a href="connectivity.html#running-the-model"><i class="fa fa-check"></i><b>7.2.2</b> Running the model</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>7</b> Network visualization</a></li>
+<li class="chapter" data-level="8" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>8</b> Network visualization</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="visualization.html"><a href="visualization.html#other-visualization-options"><i class="fa fa-check"></i><b>8.1</b> Other visualization options</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -238,26 +243,50 @@ div.csl-indent {
 <th align="right">CAR</th>
 <th align="right">AONU</th>
 <th align="right">ALM</th>
+<th align="right">HCA</th>
+<th align="right">LCA</th>
 </tr>
 </thead>
 <tbody>
+<tr class="odd">
+<td align="left">BR</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">MP</td>
+<td align="right">0</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
 <tr class="odd">
 <td align="left">NT</td>
 <td align="right">54</td>
 <td align="right">0</td>
 <td align="right">3</td>
+<td align="right">0</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">ST</td>
 <td align="right">12</td>
 <td align="right">12</td>
 <td align="right">0</td>
+<td align="right">4</td>
+<td align="right">1</td>
 </tr>
 <tr class="odd">
 <td align="left">WB</td>
 <td align="right">1</td>
 <td align="right">0</td>
-<td align="right">20</td>
+<td align="right">19</td>
+<td align="right">1</td>
+<td align="right">13</td>
 </tr>
 </tbody>
 </table>
@@ -273,35 +302,51 @@ div.csl-indent {
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left">BR</td>
+<td align="right">2403</td>
+</tr>
+<tr class="even">
 <td align="left">ST</td>
-<td align="right">9874.3106</td>
+<td align="right">9419</td>
+</tr>
+<tr class="odd">
+<td align="left">MP</td>
+<td align="right">19011</td>
 </tr>
 <tr class="even">
 <td align="left">NT</td>
-<td align="right">75628.5485</td>
+<td align="right">72147</td>
 </tr>
 <tr class="odd">
 <td align="left">WB</td>
-<td align="right">27340.7038</td>
+<td align="right">26080</td>
 </tr>
 <tr class="even">
+<td align="left">HCA</td>
+<td align="right">326</td>
+</tr>
+<tr class="odd">
 <td align="left">AONU</td>
-<td align="right">942.6022</td>
+<td align="right">1139</td>
+</tr>
+<tr class="even">
+<td align="left">LCA</td>
+<td align="right">2802</td>
 </tr>
 <tr class="odd">
 <td align="left">ALM</td>
-<td align="right">1667.3713</td>
+<td align="right">3169</td>
 </tr>
 <tr class="even">
 <td align="left">CAR</td>
-<td align="right">4850.6727</td>
+<td align="right">7987</td>
 </tr>
 </tbody>
 </table>
 <p>The <em>relative abundance</em> data needs to follow the above format for input into <code>mignette</code> functions with population IDs (same names as in the <em>assignment</em> file) in the first column and relative abundance values in the second column. Column names can follow any naming convention when inputting these data into <code>mignette</code>.</p>
 <p>For the following functions, we specify the order of the populations we are using for the model. Here, we are just ordering populations geographically by longitude to facilitate straightforward interpretation of the output.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="quickstart.html#cb6-1" tabindex="-1"></a>bnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;WB&quot;</span>, <span class="st">&quot;NT&quot;</span>, <span class="st">&quot;ST&quot;</span>)</span>
-<span id="cb6-2"><a href="quickstart.html#cb6-2" tabindex="-1"></a>wnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ALM&quot;</span>, <span class="st">&quot;CAR&quot;</span>, <span class="st">&quot;AONU&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="quickstart.html#cb6-1" tabindex="-1"></a>bnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;WB&quot;</span>, <span class="st">&quot;BR&quot;</span>, <span class="st">&quot;NT&quot;</span>, <span class="st">&quot;ST&quot;</span>, <span class="st">&quot;MP&quot;</span>)</span>
+<span id="cb6-2"><a href="quickstart.html#cb6-2" tabindex="-1"></a>wnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ALM&quot;</span>, <span class="st">&quot;LCA&quot;</span>, <span class="st">&quot;HCA&quot;</span>, <span class="st">&quot;CAR&quot;</span>, <span class="st">&quot;AONU&quot;</span>)</span></code></pre></div>
 <p>The following code provides the necessary data to run the JAGS model. To create the migratory network, the user first creates a text file specifying the JAGS model to be used, providing the name of the file to be saved (<code>base_filename</code>) and the type of model type (<code>model_type</code>). Currently <code>mignette</code> supports two model types based on the type of data used to determine assignment of individuals: <code>1</code> indicates that only genetic data were used for assignment, and <code>2</code> indicates that there’s assignment data from both genetic and geolocator data. Here, the example only uses genetic data. <code>get_jags_model()</code> saves a <code>.txt</code> file with the <code>base_filename</code> and stores that name as a variable for use in JAGS. We also specify the desired order of the breeding populations (<code>bnode_names</code>) and the nonbreeding populations (<code>wnode_names</code>). Finally, we use these as input into the function <code>get_jags_data()</code> to prepare the data appropriately for the model.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="quickstart.html#cb7-1" tabindex="-1"></a>base_filename <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">get_jags_model</span>(<span class="at">base_filename =</span> <span class="st">&quot;amre.genetic.model&quot;</span>, <span class="at">model_type =</span> <span class="dv">1</span>)</span>
 <span id="cb7-2"><a href="quickstart.html#cb7-2" tabindex="-1"></a>jags_data <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">get_jags_data</span>(<span class="at">abundance =</span> mignette<span class="sc">::</span>amre_abundance, </span>
@@ -319,17 +364,16 @@ div.csl-indent {
 <span id="cb8-8"><a href="quickstart.html#cb8-8" tabindex="-1"></a>                      <span class="at">max.iter =</span> ni<span class="sc">*</span><span class="dv">50</span><span class="sc">+</span>nb, <span class="at">n.burnin =</span> nb,</span>
 <span id="cb8-9"><a href="quickstart.html#cb8-9" tabindex="-1"></a>                      <span class="at">n.adapt=</span> <span class="cn">NULL</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span>
 <span id="cb8-10"><a href="quickstart.html#cb8-10" tabindex="-1"></a>amre_conn <span class="ot">&lt;-</span> jags_out<span class="sc">$</span>mean<span class="sc">$</span>conn_g</span></code></pre></div>
-<p>The connectivity between the nodes is provided by the <code>conn_g</code> parameter of the model, which is accessed from the above code. We provide this output for the example as well with <code>mignette::amre_conn</code>. We also provide functions for basic visualization of the network. A threshold can be set to remove very weak connectivity for better visualizing the network as shown below.</p>
+<p>The connectivity between the nodes is provided by the <code>conn_g</code> parameter of the model, which is accessed from the above code. We provide this output for the example as well with <code>mignette::amre_conn</code>. We also provide functions for basic visualization of the network. A threshold (<code>connected_tol</code>) can be set to remove very weak connectivity for better visualizing the network as shown below.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="quickstart.html#cb9-1" tabindex="-1"></a><span class="co"># set threshold for not visualizing minimal connectivity</span></span>
-<span id="cb9-2"><a href="quickstart.html#cb9-2" tabindex="-1"></a>amre_conn_test <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_conn</span>
-<span id="cb9-3"><a href="quickstart.html#cb9-3" tabindex="-1"></a>amre_conn_test[amre_conn_test <span class="sc">&lt;</span> <span class="fl">0.01</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb9-4"><a href="quickstart.html#cb9-4" tabindex="-1"></a>net <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">net_create</span>(amre_conn_test, </span>
-<span id="cb9-5"><a href="quickstart.html#cb9-5" tabindex="-1"></a>                            <span class="at">node.names =</span> <span class="fu">list</span>(bnode_names, wnode_names))</span>
-<span id="cb9-6"><a href="quickstart.html#cb9-6" tabindex="-1"></a><span class="co">#set the display size range for nodes (min and max), default 1-10</span></span>
-<span id="cb9-7"><a href="quickstart.html#cb9-7" tabindex="-1"></a>net<span class="sc">$</span>display_par<span class="sc">$</span>node_size_scale<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">20</span>)</span>
-<span id="cb9-8"><a href="quickstart.html#cb9-8" tabindex="-1"></a><span class="co">#set the display size range for edges (min and max), default 1-10</span></span>
-<span id="cb9-9"><a href="quickstart.html#cb9-9" tabindex="-1"></a>net<span class="sc">$</span>display_par<span class="sc">$</span>edge_size_scale<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>)</span>
-<span id="cb9-10"><a href="quickstart.html#cb9-10" tabindex="-1"></a><span class="fu">plot</span>(mignette<span class="sc">::</span><span class="fu">net_draw</span>(net))</span></code></pre></div>
+<span id="cb9-2"><a href="quickstart.html#cb9-2" tabindex="-1"></a>net <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">net_create</span>(mignette<span class="sc">::</span>amre_conn, </span>
+<span id="cb9-3"><a href="quickstart.html#cb9-3" tabindex="-1"></a>                            <span class="at">node.names =</span> <span class="fu">list</span>(bnode_names, wnode_names),</span>
+<span id="cb9-4"><a href="quickstart.html#cb9-4" tabindex="-1"></a>                            <span class="at">connected_tol =</span> <span class="fl">0.02</span>)</span>
+<span id="cb9-5"><a href="quickstart.html#cb9-5" tabindex="-1"></a><span class="co">#set the display size range for nodes (min and max), default 1-10</span></span>
+<span id="cb9-6"><a href="quickstart.html#cb9-6" tabindex="-1"></a>net<span class="sc">$</span>display_par<span class="sc">$</span>node_size_scale<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">20</span>)</span>
+<span id="cb9-7"><a href="quickstart.html#cb9-7" tabindex="-1"></a><span class="co">#set the display size range for edges (min and max), default 1-10</span></span>
+<span id="cb9-8"><a href="quickstart.html#cb9-8" tabindex="-1"></a>net<span class="sc">$</span>display_par<span class="sc">$</span>edge_size_scale<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>)</span>
+<span id="cb9-9"><a href="quickstart.html#cb9-9" tabindex="-1"></a><span class="fu">plot</span>(mignette<span class="sc">::</span><span class="fu">net_draw</span>(net))</span></code></pre></div>
 <p><img src="Mignette_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. By default, breeding populations are in the top row (red) and nonbreeding/wintering populations are in the bottom row (blue).</p>
 <p>This sums up the basics of creating and visualizing a migratory network. We encourage users to explore and build upon the visualization tools we provide (e.g. overlay the migratory networks on geographic ranges) - the options are endless, enjoy!</p>

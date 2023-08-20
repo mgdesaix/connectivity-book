@@ -214,15 +214,19 @@ We provide an example of these data in \texttt{mignette}, with assignment data f
 \end{Highlighting}
 \end{Shaded}
 
-\begin{tabular}{l|r|r|r}
+\begin{tabular}{l|r|r|r|r|r}
 \hline
-Breeding & CAR & AONU & ALM\\
+Breeding & CAR & AONU & ALM & HCA & LCA\\
 \hline
-NT & 54 & 0 & 3\\
+BR & 2 & 0 & 0 & 0 & 0\\
 \hline
-ST & 12 & 12 & 0\\
+MP & 0 & 9 & 0 & 0 & 0\\
 \hline
-WB & 1 & 0 & 20\\
+NT & 54 & 0 & 3 & 0 & 0\\
+\hline
+ST & 12 & 12 & 0 & 4 & 1\\
+\hline
+WB & 1 & 0 & 19 & 1 & 13\\
 \hline
 \end{tabular}
 
@@ -240,17 +244,25 @@ We also provide the relative abundance of these populations:
 \hline
 Population & Relative\_abundance\\
 \hline
-ST & 9874.3106\\
+BR & 2403\\
 \hline
-NT & 75628.5485\\
+ST & 9419\\
 \hline
-WB & 27340.7038\\
+MP & 19011\\
 \hline
-AONU & 942.6022\\
+NT & 72147\\
 \hline
-ALM & 1667.3713\\
+WB & 26080\\
 \hline
-CAR & 4850.6727\\
+HCA & 326\\
+\hline
+AONU & 1139\\
+\hline
+LCA & 2802\\
+\hline
+ALM & 3169\\
+\hline
+CAR & 7987\\
 \hline
 \end{tabular}
 
@@ -260,8 +272,8 @@ For the following functions, we specify the order of the populations we are usin
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{bnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"WB"}\NormalTok{, }\StringTok{"NT"}\NormalTok{, }\StringTok{"ST"}\NormalTok{)}
-\NormalTok{wnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ALM"}\NormalTok{, }\StringTok{"CAR"}\NormalTok{, }\StringTok{"AONU"}\NormalTok{)}
+\NormalTok{bnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"WB"}\NormalTok{, }\StringTok{"BR"}\NormalTok{, }\StringTok{"NT"}\NormalTok{, }\StringTok{"ST"}\NormalTok{, }\StringTok{"MP"}\NormalTok{)}
+\NormalTok{wnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ALM"}\NormalTok{, }\StringTok{"LCA"}\NormalTok{, }\StringTok{"HCA"}\NormalTok{, }\StringTok{"CAR"}\NormalTok{, }\StringTok{"AONU"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -294,15 +306,14 @@ Now the user can use the output of \texttt{jags\_data} into JAGS to run the actu
 \end{Highlighting}
 \end{Shaded}
 
-The connectivity between the nodes is provided by the \texttt{conn\_g} parameter of the model, which is accessed from the above code. We provide this output for the example as well with \texttt{mignette::amre\_conn}. We also provide functions for basic visualization of the network. A threshold can be set to remove very weak connectivity for better visualizing the network as shown below.
+The connectivity between the nodes is provided by the \texttt{conn\_g} parameter of the model, which is accessed from the above code. We provide this output for the example as well with \texttt{mignette::amre\_conn}. We also provide functions for basic visualization of the network. A threshold (\texttt{connected\_tol}) can be set to remove very weak connectivity for better visualizing the network as shown below.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# set threshold for not visualizing minimal connectivity}
-\NormalTok{amre\_conn\_test }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_conn}
-\NormalTok{amre\_conn\_test[amre\_conn\_test }\SpecialCharTok{\textless{}} \FloatTok{0.01}\NormalTok{] }\OtherTok{\textless{}{-}} \DecValTok{0}
-\NormalTok{net }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{net\_create}\NormalTok{(amre\_conn\_test, }
-                            \AttributeTok{node.names =} \FunctionTok{list}\NormalTok{(bnode\_names, wnode\_names))}
+\NormalTok{net }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{net\_create}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_conn, }
+                            \AttributeTok{node.names =} \FunctionTok{list}\NormalTok{(bnode\_names, wnode\_names),}
+                            \AttributeTok{connected\_tol =} \FloatTok{0.02}\NormalTok{)}
 \CommentTok{\#set the display size range for nodes (min and max), default 1{-}10}
 \NormalTok{net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{node\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{20}\NormalTok{)}
 \CommentTok{\#set the display size range for edges (min and max), default 1{-}10}
@@ -524,29 +535,42 @@ For the purpose of the migratory network, we are only interested in nonbreeding 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{winter\_coords }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_nonbreeding\_data, }
+\NormalTok{nonbreeding\_coords }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_nonbreeding\_data, }
                              \AttributeTok{geom=}\FunctionTok{c}\NormalTok{(}\StringTok{"Lon"}\NormalTok{, }\StringTok{"Lat"}\NormalTok{),}
                              \AttributeTok{crs =} \StringTok{"EPSG:4326"}\NormalTok{)}
-\NormalTok{winter\_coords\_nearest }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{nearest}\NormalTok{(winter\_coords,}
+\NormalTok{nonbreeding\_coords\_nearest }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{nearest}\NormalTok{(nonbreeding\_coords,}
 \NormalTok{                                        ecoregions,}
                                         \AttributeTok{centroids =} \ConstantTok{FALSE}\NormalTok{)}
 \CommentTok{\# Add Region ID from original file for easier interpretation}
-\NormalTok{winter\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region }\OtherTok{\textless{}{-}}\NormalTok{ ecoregions}\SpecialCharTok{$}\NormalTok{Region[winter\_coords\_nearest}\SpecialCharTok{$}\NormalTok{to\_id]}
-\FunctionTok{table}\NormalTok{(winter\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region)}
+\NormalTok{nonbreeding\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region }\OtherTok{\textless{}{-}}\NormalTok{ ecoregions}\SpecialCharTok{$}\NormalTok{Region[nonbreeding\_coords\_nearest}\SpecialCharTok{$}\NormalTok{to\_id]}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## 
-## Amazon/Orinoco-Northern Uplands         Atlantic Lowland Mexico 
-##                              21                              22 
-##                       Caribbean        Highland Central America 
-##                              69                               5 
-##        Highland/Interior Mexico         Lowland Central America 
-##                               1                              14 
-##                  Northern Andes 
-##                               3
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{table}\NormalTok{(nonbreeding\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r}
+\hline
+Var1 & Freq\\
+\hline
+Amazon/Orinoco-Northern Uplands & 21\\
+\hline
+Atlantic Lowland Mexico & 22\\
+\hline
+Caribbean & 69\\
+\hline
+Highland Central America & 5\\
+\hline
+Highland/Interior Mexico & 1\\
+\hline
+Lowland Central America & 14\\
+\hline
+Northern Andes & 3\\
+\hline
+\end{tabular}
 
 For the migratory network, we also want sufficient sampling of a node for the model to be able to reach convergence. In the example above, we see ``Highland/Interior Mexico'' only has 1 sample and the ``Northern Andes'' only have 3 samples. Below, we use a cut off of a minimum of 4 samples to remove those ecoregions
 
@@ -554,13 +578,13 @@ For the migratory network, we also want sufficient sampling of a node for the mo
 \begin{Highlighting}[]
 \NormalTok{cutoff }\OtherTok{\textless{}{-}} \DecValTok{4}
 
-\NormalTok{ecoregions\_keep }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\FunctionTok{table}\NormalTok{(winter\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region)) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{ecoregions\_keep }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\FunctionTok{table}\NormalTok{(nonbreeding\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region)) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\NormalTok{.[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{\textless{}}\NormalTok{ cutoff) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{pull}\NormalTok{(}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{as.character}\NormalTok{()}
 
-\NormalTok{winter\_coords\_nearest\_subset }\OtherTok{\textless{}{-}}\NormalTok{ winter\_coords\_nearest[winter\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region }\SpecialCharTok{\%in\%}\NormalTok{ ecoregions\_keep]}
-\NormalTok{winter\_regions\_subset }\OtherTok{\textless{}{-}}\NormalTok{ ecoregions[winter\_coords\_nearest\_subset]}
+\NormalTok{nonbreeding\_coords\_nearest\_subset }\OtherTok{\textless{}{-}}\NormalTok{ nonbreeding\_coords\_nearest[nonbreeding\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region }\SpecialCharTok{\%in\%}\NormalTok{ ecoregions\_keep]}
+\NormalTok{nonbreeding\_regions\_subset }\OtherTok{\textless{}{-}}\NormalTok{ ecoregions[nonbreeding\_coords\_nearest\_subset]}
 \end{Highlighting}
 \end{Shaded}
 
@@ -569,13 +593,84 @@ This leaves us with a final set of our nonbreeding nodes and the samples associa
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
-  \FunctionTok{geom\_spatvector}\NormalTok{(}\AttributeTok{data =}\NormalTok{ winter\_regions\_subset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Region)) }\SpecialCharTok{+}
-  \FunctionTok{geom\_spatvector}\NormalTok{(}\AttributeTok{data =}\NormalTok{ winter\_coords\_nearest\_subset) }\SpecialCharTok{+}
+  \FunctionTok{geom\_spatvector}\NormalTok{(}\AttributeTok{data =}\NormalTok{ nonbreeding\_regions\_subset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Region)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_spatvector}\NormalTok{(}\AttributeTok{data =}\NormalTok{ nonbreeding\_coords\_nearest\_subset) }\SpecialCharTok{+}
   \FunctionTok{theme\_bw}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-14-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-15-1.pdf}
+
+Now on to getting the \protect\hyperlink{assignment}{node assignment matrix}.
+
+\hypertarget{assignment}{%
+\chapter{Node assignment}\label{assignment}}
+
+In \texttt{mignette}, node assignment data is one of the two main inputs into the migratory network model. Regardless of the methods used to collect these data, as input into the \texttt{mignette} migratory network model it needs to be in a specific format:
+
+\begin{tabular}{l|r|r|r|r|r}
+\hline
+Breeding & CAR & AONU & ALM & HCA & LCA\\
+\hline
+BR & 2 & 0 & 0 & 0 & 0\\
+\hline
+MP & 0 & 9 & 0 & 0 & 0\\
+\hline
+NT & 54 & 0 & 3 & 0 & 0\\
+\hline
+ST & 12 & 12 & 0 & 4 & 1\\
+\hline
+WB & 1 & 0 & 19 & 1 & 13\\
+\hline
+\end{tabular}
+
+The first column specifies the \emph{inferred} nodes in assignment. In the case of the genetic assignment data shown above, the breeding nodes are inferred from population assignment methods with individuals sampled from the nonbreeding range. The other column names refer to the nonbreeding node names, and the values are the number of individuals from a given nonbreeding node assigned to the respective breeding node specified by the row.
+
+For the American Redstart example, we can get the assignment data in the format shown above based on population assignment data provided in \texttt{mignette} as well as the ecoregion information from the previous section.
+
+The \texttt{amre\_nonbreeding\_range} data, from which we extracted the latitude and longitude coordinates of sampling locations to identify ecoregions in the previous section, also provides the breeding node assignment data from DeSaix et al.~(2023). Creating the \texttt{nonbreeding\_coords\_nearest} object retained the same row order of data as in the original \texttt{amre\_nonbreeding\_range}, thus we can combine these data in the following way. \textbf{Note:} We are manually combining these data without a \emph{join} by sample name or another identifier so it is always good to triple check that indeed the data are in the correct order when not using a join.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{amre\_assign\_manual }\OtherTok{\textless{}{-}} \FunctionTok{tibble}\NormalTok{(}\StringTok{"Breeding"} \OtherTok{=}\NormalTok{ amre\_nonbreeding\_data}\SpecialCharTok{$}\NormalTok{Breeding\_assignment,}
+                             \StringTok{"Nonbreeding"} \OtherTok{=}\NormalTok{ nonbreeding\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(Nonbreeding }\SpecialCharTok{\%in\%}\NormalTok{ ecoregions\_keep) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\# remove those nonbreeding nodes with \textless{}4 samples}
+  \FunctionTok{group\_by}\NormalTok{(Breeding, Nonbreeding) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{N =} \FunctionTok{n}\NormalTok{(),}
+            \AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ Nonbreeding, }\AttributeTok{values\_from =}\NormalTok{ N) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{rename}\NormalTok{(}\StringTok{"AONU"} \OtherTok{=} \StringTok{"Amazon/Orinoco{-}Northern Uplands"}\NormalTok{,}
+         \StringTok{"ALM"} \OtherTok{=} \StringTok{"Atlantic Lowland Mexico"}\NormalTok{,}
+         \StringTok{"CAR"} \OtherTok{=} \StringTok{"Caribbean"}\NormalTok{,}
+         \StringTok{"HCA"} \OtherTok{=} \StringTok{"Highland Central America"}\NormalTok{,}
+         \StringTok{"LCA"} \OtherTok{=} \StringTok{"Lowland Central America"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{where}\NormalTok{(is.numeric), }\SpecialCharTok{\textasciitilde{}}\FunctionTok{ifelse}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(.), }\DecValTok{0}\NormalTok{, .))) }\CommentTok{\# replace NAs with 0s}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{amre\_assign\_manual}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r|r|r|r|r}
+\hline
+Breeding & CAR & AONU & ALM & HCA & LCA\\
+\hline
+BR & 2 & 0 & 0 & 0 & 0\\
+\hline
+MP & 0 & 9 & 0 & 0 & 0\\
+\hline
+NT & 54 & 0 & 3 & 0 & 0\\
+\hline
+ST & 12 & 12 & 0 & 4 & 1\\
+\hline
+WB & 1 & 0 & 19 & 1 & 13\\
+\hline
+\end{tabular}
+
+We can see that we have effectively mapped the breeding population assignment meta data to the correct ecoregion based on our individual's sampling location. Great!
 
 Now on to getting the \protect\hyperlink{abundance}{relative abundance}.
 
@@ -592,16 +687,16 @@ Here, we calculate the relative abundance for the different nodes of the migrato
   Population ranges (Raster or Vector)
 \end{itemize}
 
-Typically, the geographic range of a population will be stored as a vector (e.g., polygon), but in the case of a genoscape, the population ranges can be specified by a raster with q-values. For abundance data, we will use the \href{https://science.ebird.org/en/status-and-trends}{eBird Status and Trends} data, but any abundance data in a raster object can be used.
+Typically, the geographic range of a population will be stored as a vector (e.g., polygon), but in the case of a genoscape, the population ranges can be specified by a raster with q-values. For abundance data, we will use the \href{https://science.ebird.org/en/status-and-trends}{eBird Status and Trends} data which are obtained with the \href{https://cornelllabofornithology.github.io/ebirdst/}{ebirdst R package}, but any abundance data in a raster object can be used. \textbf{Note:} We do not provide the \texttt{ebirdst} data within \texttt{mignette} - these data are publicly available and licensed by the Cornell Lab of Ornithology and can be obtained by following the appropriate directions in the above links.
 
 \hypertarget{get-relative-abundance-for-a-genoscape-raster}{%
 \section{Get relative abundance for a genoscape (raster)}\label{get-relative-abundance-for-a-genoscape-raster}}
 
-In the case of a \emph{genoscape} raster with q-values, we will convert the q-values to probabilities of a pixel belonging to that population which is used to weight the abundance values. This is done with a single function \texttt{get\_genoscape\_abunds()}, and outputs a two-column matrix with the population names and the relative abundance of each population. Below, we provide the genoscape as a SpatRaster (\texttt{genoscape}) and the ebirdst abundance data as a SpatRaster (\texttt{abunds}).
+In the case of a \emph{genoscape} raster with q-values, we will convert the q-values to probabilities of a pixel belonging to that population which is used to weight the abundance values. This is done with a single function \texttt{get\_genoscape\_abunds()}, and outputs a two-column matrix with the population names and the relative abundance of each population. Below, we provide an example with the genoscape as a SpatRaster (\texttt{genoscape}) and the ebirdst abundance data as a SpatRaster (\texttt{abunds}; obtained from the links above).
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{genoscape\_abunds }\OtherTok{\textless{}{-}} \FunctionTok{get\_genoscape\_abunds}\NormalTok{(}\AttributeTok{genoscape =}\NormalTok{ genoscape, }\AttributeTok{abunds =}\NormalTok{ abunds)}
+\NormalTok{genoscape\_abunds }\OtherTok{\textless{}{-}} \FunctionTok{get\_genoscape\_abunds}\NormalTok{(}\AttributeTok{genoscape =}\NormalTok{ amre\_genoscape, }\AttributeTok{abunds =}\NormalTok{ abunds)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -612,9 +707,51 @@ In the case of vector file delineating populations, we sum abundance across the 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{winter\_abunds }\OtherTok{\textless{}{-}} \FunctionTok{get\_vector\_abunds}\NormalTok{(}\AttributeTok{populations =}\NormalTok{ winter\_regions, }\AttributeTok{abunds =}\NormalTok{ abunds)}
+\NormalTok{winter\_abunds }\OtherTok{\textless{}{-}} \FunctionTok{get\_vector\_abunds}\NormalTok{(}\AttributeTok{populations =}\NormalTok{ nonbreeding\_regions\_subset, }\AttributeTok{abunds =}\NormalTok{ abunds)}
 \end{Highlighting}
 \end{Shaded}
+
+\hypertarget{combine-the-abundance-data}{%
+\section{Combine the abundance data}\label{combine-the-abundance-data}}
+
+As you'll see in the next section, these data are one of the primary inputs into the migratory network model and we combine the relative abundance data sets across the breeding and nonbreeding nodes with the following code. The final product is what we provide in this package
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{amre\_abundance }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(genoscape\_abunds, winter\_abunds) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Relative\_abundance =} \FunctionTok{round}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(Relative\_abundance)))}
+\NormalTok{amre\_abundance}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r}
+\hline
+Population & Relative\_abundance\\
+\hline
+BR & 2403\\
+\hline
+ST & 9419\\
+\hline
+MP & 19011\\
+\hline
+NT & 72147\\
+\hline
+WB & 26080\\
+\hline
+HCA & 326\\
+\hline
+AONU & 1139\\
+\hline
+LCA & 2802\\
+\hline
+ALM & 3169\\
+\hline
+CAR & 7987\\
+\hline
+\end{tabular}
+
+Now on to creating the \protect\hyperlink{connectivity}{migratory network model}.
 
 \hypertarget{connectivity}{%
 \chapter{Migratory Network Model}\label{connectivity}}
@@ -638,31 +775,43 @@ We demonstrate in the previous \protect\hyperlink{abundance}{relative abundance 
 \hline
 Population & Relative\_abundance\\
 \hline
-ST & 9874.3106\\
+BR & 2403\\
 \hline
-NT & 75628.5485\\
+ST & 9419\\
 \hline
-WB & 27340.7038\\
+MP & 19011\\
 \hline
-AONU & 942.6022\\
+NT & 72147\\
 \hline
-ALM & 1667.3713\\
+WB & 26080\\
 \hline
-CAR & 4850.6727\\
+HCA & 326\\
+\hline
+AONU & 1139\\
+\hline
+LCA & 2802\\
+\hline
+ALM & 3169\\
+\hline
+CAR & 7987\\
 \hline
 \end{tabular}
 
 For the assignment matrix, the input data needs to correspond to the following format:
 
-\begin{tabular}{l|r|r|r}
+\begin{tabular}{l|r|r|r|r|r}
 \hline
-Breeding & CAR & AONU & ALM\\
+Breeding & CAR & AONU & ALM & HCA & LCA\\
 \hline
-NT & 54 & 0 & 3\\
+BR & 2 & 0 & 0 & 0 & 0\\
 \hline
-ST & 12 & 12 & 0\\
+MP & 0 & 9 & 0 & 0 & 0\\
 \hline
-WB & 1 & 0 & 20\\
+NT & 54 & 0 & 3 & 0 & 0\\
+\hline
+ST & 12 & 12 & 0 & 4 & 1\\
+\hline
+WB & 1 & 0 & 19 & 1 & 13\\
 \hline
 \end{tabular}
 
@@ -672,8 +821,8 @@ For the following functions, we specify the order of the populations we are usin
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{bnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"WB"}\NormalTok{, }\StringTok{"NT"}\NormalTok{, }\StringTok{"ST"}\NormalTok{)}
-\NormalTok{wnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ALM"}\NormalTok{, }\StringTok{"CAR"}\NormalTok{, }\StringTok{"AONU"}\NormalTok{)}
+\NormalTok{bnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"WB"}\NormalTok{, }\StringTok{"BR"}\NormalTok{, }\StringTok{"NT"}\NormalTok{, }\StringTok{"ST"}\NormalTok{, }\StringTok{"MP"}\NormalTok{)}
+\NormalTok{wnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ALM"}\NormalTok{, }\StringTok{"LCA"}\NormalTok{, }\StringTok{"HCA"}\NormalTok{, }\StringTok{"CAR"}\NormalTok{, }\StringTok{"AONU"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -712,48 +861,29 @@ Now the user can use the output of \texttt{jags\_data} into JAGS to run the actu
                       \AttributeTok{max.iter =}\NormalTok{ ni}\SpecialCharTok{*}\DecValTok{50}\SpecialCharTok{+}\NormalTok{nb, }\AttributeTok{n.burnin =}\NormalTok{ nb,}
                       \AttributeTok{n.adapt=} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{parallel=}\ConstantTok{TRUE}\NormalTok{)}
 \NormalTok{amre\_conn }\OtherTok{\textless{}{-}}\NormalTok{ jags\_out}\SpecialCharTok{$}\NormalTok{mean}\SpecialCharTok{$}\NormalTok{conn\_g}
-\NormalTok{amre\_conn}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{tabular}{r|r|r}
-\hline
-0.2219310 & 0.0087849 & 0.0000857\\
-\hline
-0.0557115 & 0.5343810 & 0.0001573\\
-\hline
-0.0000205 & 0.0538838 & 0.1250444\\
-\hline
-\end{tabular}
-
-The connectivity between the nodes is provided by the \texttt{conn\_g} parameter of the model, which is accessed from the above code. The rows are the breeding nodes and the columns are the nonbreeding nodes, which we can make more apparent:
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \FunctionTok{colnames}\NormalTok{(amre\_conn) }\OtherTok{\textless{}{-}}\NormalTok{ wnode\_names}
 \FunctionTok{rownames}\NormalTok{(amre\_conn) }\OtherTok{\textless{}{-}}\NormalTok{ bnode\_names}
 \NormalTok{amre\_conn}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-##             ALM         CAR         AONU
-## WB 2.219310e-01 0.008784863 8.568762e-05
-## NT 5.571149e-02 0.534380974 1.573024e-04
-## ST 2.046623e-05 0.053883752 1.250444e-01
-\end{verbatim}
-
-\begin{tabular}{l|r|r|r}
+\begin{tabular}{l|r|r|r|r|r}
 \hline
-  & ALM & CAR & AONU\\
+  & ALM & LCA & HCA & CAR & AONU\\
 \hline
-WB & 0.2219310 & 0.0087849 & 0.0000857\\
+WB & 0.14212 & 0.13901 & 0.01346 & 0.00507 & 0.00002\\
 \hline
-NT & 0.0557115 & 0.5343810 & 0.0001573\\
+BR & 0.00010 & 0.00021 & 0.00008 & 0.02082 & 0.00004\\
 \hline
-ST & 0.0000205 & 0.0538838 & 0.1250444\\
+NT & 0.05680 & 0.00041 & 0.00013 & 0.38276 & 0.00006\\
+\hline
+ST & 0.00003 & 0.01345 & 0.03618 & 0.03902 & 0.06453\\
+\hline
+MP & 0.00013 & 0.00036 & 0.00022 & 0.00002 & 0.08496\\
 \hline
 \end{tabular}
+
+The connectivity between the nodes is provided by the \texttt{conn\_g} parameter of the model, which is accessed from the above code. The rows are the breeding nodes (the \emph{inferred} population from assignment) and the columns are the nonbreeding nodes (the \emph{sampled} population).
 
 Voila. A migratory network model is completed. Now, onto \protect\hyperlink{visualization}{visualization}
 
@@ -764,12 +894,9 @@ We provide functions for basic visualization of the network (\texttt{net\_create
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{bnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"WB"}\NormalTok{, }\StringTok{"NT"}\NormalTok{, }\StringTok{"ST"}\NormalTok{)}
-\NormalTok{wnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ALM"}\NormalTok{, }\StringTok{"CAR"}\NormalTok{, }\StringTok{"AONU"}\NormalTok{)}
-\CommentTok{\# set threshold for not visualizing minimal connectivity}
-\NormalTok{amre\_conn\_test }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_conn}
-\NormalTok{amre\_conn\_test[amre\_conn\_test }\SpecialCharTok{\textless{}} \FloatTok{0.01}\NormalTok{] }\OtherTok{\textless{}{-}} \DecValTok{0}
-\NormalTok{net }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{net\_create}\NormalTok{(amre\_conn\_test, }
+\NormalTok{bnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"WB"}\NormalTok{, }\StringTok{"BR"}\NormalTok{, }\StringTok{"NT"}\NormalTok{, }\StringTok{"ST"}\NormalTok{, }\StringTok{"MP"}\NormalTok{)}
+\NormalTok{wnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ALM"}\NormalTok{, }\StringTok{"LCA"}\NormalTok{, }\StringTok{"HCA"}\NormalTok{, }\StringTok{"CAR"}\NormalTok{, }\StringTok{"AONU"}\NormalTok{)}
+\NormalTok{net }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{net\_create}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_conn, }
                             \AttributeTok{node.names =} \FunctionTok{list}\NormalTok{(bnode\_names, wnode\_names))}
 \CommentTok{\#set the display size range for nodes (min and max), default 1{-}10}
 \NormalTok{net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{node\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{20}\NormalTok{)}
@@ -779,11 +906,73 @@ We provide functions for basic visualization of the network (\texttt{net\_create
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-21-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-24-1.pdf}
 
 In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. By default, breeding populations are in the top row (red) and nonbreeding populations are in the bottom row (blue).
 
+We also can change the \texttt{connected\_tol} threshold in the \texttt{net\_create} function to not output extremely weak connectivity. For example, the plot below removes connectivity less than 0.02:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{net }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{net\_create}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_conn, }
+                            \AttributeTok{node.names =} \FunctionTok{list}\NormalTok{(bnode\_names, wnode\_names),}
+                            \AttributeTok{connected\_tol =} \FloatTok{0.02}\NormalTok{) }\CommentTok{\# threshold}
+\NormalTok{net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{node\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{20}\NormalTok{)}
+\NormalTok{net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{edge\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{5}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(mignette}\SpecialCharTok{::}\FunctionTok{net\_draw}\NormalTok{(net))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-25-1.pdf}
+
 This sums up the basics of creating and visualizing a migratory network. We encourage users to explore and build upon the visualization tools we provide (e.g.~overlay the migratory networks on geographic ranges) - the options are endless, enjoy!
+
+\hypertarget{other-visualization-options}{%
+\section{Other visualization options}\label{other-visualization-options}}
+
+Ok, we'll toss out another way to visualize these networks using the \href{https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.htm}{\texttt{ggalluvial} package} because it's really fun.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(mignette)}
+\FunctionTok{library}\NormalTok{(ggalluvial)}
+
+\NormalTok{bnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"WB"}\NormalTok{, }\StringTok{"BR"}\NormalTok{, }\StringTok{"NT"}\NormalTok{, }\StringTok{"ST"}\NormalTok{, }\StringTok{"MP"}\NormalTok{)}
+\NormalTok{wnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ALM"}\NormalTok{, }\StringTok{"LCA"}\NormalTok{, }\StringTok{"HCA"}\NormalTok{, }\StringTok{"CAR"}\NormalTok{, }\StringTok{"AONU"}\NormalTok{)}
+
+\NormalTok{cluster\_colors }\OtherTok{\textless{}{-}}  \FunctionTok{c}\NormalTok{(}
+  \StringTok{\textasciigrave{}}\AttributeTok{ST}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#FF99FF"}\NormalTok{, }\CommentTok{\# pink/Southern Temperate}
+  \StringTok{\textasciigrave{}}\AttributeTok{BR}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#3399FF"}\NormalTok{, }\CommentTok{\# blue/Basin Rockies}
+  \StringTok{\textasciigrave{}}\AttributeTok{NT}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#FFFF33"}\NormalTok{, }\CommentTok{\# yellow/Northern Temperate}
+  \StringTok{\textasciigrave{}}\AttributeTok{WB}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#339933"}\NormalTok{, }\CommentTok{\# green/Western Boreal}
+  \StringTok{\textasciigrave{}}\AttributeTok{MP}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#CC0033"} \CommentTok{\# red/Maritime Provinces}
+\NormalTok{) }
+
+\NormalTok{amre\_conn\_df }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_conn }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tibble}\NormalTok{(}\AttributeTok{rownames =} \StringTok{"Breeding"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =}\NormalTok{ ALM}\SpecialCharTok{:}\NormalTok{AONU, }\AttributeTok{names\_to =} \StringTok{"Nonbreeding"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"Connectivity"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Connectivity =} \FunctionTok{ifelse}\NormalTok{(Connectivity }\SpecialCharTok{\textless{}} \FloatTok{0.01}\NormalTok{, }\DecValTok{0}\NormalTok{, Connectivity)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Breeding =} \FunctionTok{factor}\NormalTok{(Breeding, }\AttributeTok{levels =} \FunctionTok{rev}\NormalTok{(bnode\_names)),}
+         \AttributeTok{Nonbreeding =} \FunctionTok{factor}\NormalTok{(Nonbreeding, }\AttributeTok{levels =} \FunctionTok{rev}\NormalTok{(wnode\_names)))}
+
+\NormalTok{p.alluvial }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(amre\_conn\_df,}
+       \FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Connectivity, }\AttributeTok{axis1 =}\NormalTok{ Nonbreeding, }\AttributeTok{axis2 =}\NormalTok{ Breeding)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_alluvium}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Breeding), }\AttributeTok{width =} \DecValTok{1}\SpecialCharTok{/}\DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =}\NormalTok{ cluster\_colors) }\SpecialCharTok{+}
+  \FunctionTok{geom\_stratum}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.25}\NormalTok{, }\AttributeTok{width =} \DecValTok{1}\SpecialCharTok{/}\DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\AttributeTok{stat =} \StringTok{"stratum"}\NormalTok{, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{after\_stat}\NormalTok{(stratum))) }\SpecialCharTok{+}
+  \FunctionTok{scale\_x\_discrete}\NormalTok{(}\AttributeTok{limits =} \FunctionTok{c}\NormalTok{(}\StringTok{"Nonbreeding"}\NormalTok{, }\StringTok{"Breeding"}\NormalTok{),}
+                   \AttributeTok{expand =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.05}\NormalTok{, }\FloatTok{0.05}\NormalTok{)) }\SpecialCharTok{+} 
+  \FunctionTok{coord\_flip}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme\_void}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.background =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \StringTok{"white"}\NormalTok{))}
+
+\NormalTok{p.alluvial}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-26-1.pdf}
 
   \bibliography{book.bib,packages.bib}
 

@@ -36,15 +36,21 @@ For the purpose of the migratory network, we are only interested in nonbreeding 
 
 
 ```{r, warning = F, message=F}
-winter_coords <- terra::vect(mignette::amre_nonbreeding_data, 
+nonbreeding_coords <- terra::vect(mignette::amre_nonbreeding_data, 
                              geom=c("Lon", "Lat"),
                              crs = "EPSG:4326")
-winter_coords_nearest <- terra::nearest(winter_coords,
+nonbreeding_coords_nearest <- terra::nearest(nonbreeding_coords,
                                         ecoregions,
                                         centroids = FALSE)
 # Add Region ID from original file for easier interpretation
-winter_coords_nearest$Region <- ecoregions$Region[winter_coords_nearest$to_id]
-table(winter_coords_nearest$Region)
+nonbreeding_coords_nearest$Region <- ecoregions$Region[nonbreeding_coords_nearest$to_id]
+```
+```r
+table(nonbreeding_coords_nearest$Region)
+```
+
+```{r, echo = F}
+knitr::kable(table(nonbreeding_coords_nearest$Region))
 ```
 
 For the migratory network, we also want sufficient sampling of a node for the model to be able to reach convergence. In the example above, we see "Highland/Interior Mexico" only has 1 sample and the "Northern Andes" only have 3 samples. Below, we use a cut off of a minimum of 4 samples to remove those ecoregions
@@ -52,21 +58,21 @@ For the migratory network, we also want sufficient sampling of a node for the mo
 ```{r, warning = F, message = F}
 cutoff <- 4
 
-ecoregions_keep <- data.frame(table(winter_coords_nearest$Region)) %>%
+ecoregions_keep <- data.frame(table(nonbreeding_coords_nearest$Region)) %>%
   filter(!.[2] < cutoff) %>%
   pull(1) %>%
   as.character()
 
-winter_coords_nearest_subset <- winter_coords_nearest[winter_coords_nearest$Region %in% ecoregions_keep]
-winter_regions_subset <- ecoregions[winter_coords_nearest_subset]
+nonbreeding_coords_nearest_subset <- nonbreeding_coords_nearest[nonbreeding_coords_nearest$Region %in% ecoregions_keep]
+nonbreeding_regions_subset <- ecoregions[nonbreeding_coords_nearest_subset]
 ```
 
 This leaves us with a final set of our nonbreeding nodes and the samples associated with them:
 
 ```{r, warning = F, message = F}
 ggplot() +
-  geom_spatvector(data = winter_regions_subset, aes(fill = Region)) +
-  geom_spatvector(data = winter_coords_nearest_subset) +
+  geom_spatvector(data = nonbreeding_regions_subset, aes(fill = Region)) +
+  geom_spatvector(data = nonbreeding_coords_nearest_subset) +
   theme_bw()
 ```
 

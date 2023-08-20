@@ -8,12 +8,15 @@ genoscape-polygons
 wintering
 subsetting-ecoregions
 select-sampled-regions
+assignment
 abundance
 get-relative-abundance-for-a-genoscape-raster
 get-relative-abundance-for-a-vector
+combine-the-abundance-data
 connectivity
 input-data
 migratory-network-model-jags
 preparing-input-data
 running-the-model
 visualization
+other-visualization-options
