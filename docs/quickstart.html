@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-08-20" />
+<meta name="date" content="2023-08-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -359,7 +359,7 @@ div.csl-indent {
 <span id="cb8-3"><a href="quickstart.html#cb8-3" tabindex="-1"></a>nt <span class="ot">&lt;-</span> <span class="dv">4</span></span>
 <span id="cb8-4"><a href="quickstart.html#cb8-4" tabindex="-1"></a>nb <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
 <span id="cb8-5"><a href="quickstart.html#cb8-5" tabindex="-1"></a>nc <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb8-6"><a href="quickstart.html#cb8-6" tabindex="-1"></a>jags_out <span class="ot">&lt;-</span> <span class="fu">autojags</span>(jags_data, <span class="at">inits=</span><span class="cn">NULL</span>, parameters, <span class="fu">paste0</span>(base_filename,<span class="st">&quot;.txt&quot;</span>),</span>
+<span id="cb8-6"><a href="quickstart.html#cb8-6" tabindex="-1"></a>jags_out <span class="ot">&lt;-</span> <span class="fu">autojags</span>(jags_data, <span class="at">inits=</span><span class="cn">NULL</span>, parameters, base_filename,</span>
 <span id="cb8-7"><a href="quickstart.html#cb8-7" tabindex="-1"></a>                      <span class="at">n.chains =</span> nc, <span class="at">n.thin =</span>nt, <span class="at">iter.increment=</span>ni,</span>
 <span id="cb8-8"><a href="quickstart.html#cb8-8" tabindex="-1"></a>                      <span class="at">max.iter =</span> ni<span class="sc">*</span><span class="dv">50</span><span class="sc">+</span>nb, <span class="at">n.burnin =</span> nb,</span>
 <span id="cb8-9"><a href="quickstart.html#cb8-9" tabindex="-1"></a>                      <span class="at">n.adapt=</span> <span class="cn">NULL</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span>

@@ -64,7 +64,7 @@ ni <- 500000
 nt <- 4
 nb <- 100000
 nc <- 2
-jags_out <- autojags(jags_data, inits=NULL, parameters, paste0(base_filename,".txt"),
+jags_out <- autojags(jags_data, inits=NULL, parameters, base_filename,
                       n.chains = nc, n.thin =nt, iter.increment=ni,
                       max.iter = ni*50+nb, n.burnin = nb,
                       n.adapt= NULL, parallel=TRUE)
