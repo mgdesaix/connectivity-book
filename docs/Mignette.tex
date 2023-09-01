@@ -120,7 +120,7 @@
 
 \title{Creating Migratory Networks in R: mignette}
 \author{Matt DeSaix}
-\date{2023-08-31}
+\date{2023-09-01}
 
 \begin{document}
 \maketitle
@@ -152,7 +152,7 @@ For an introductory demonstration of creating a migratory network with \texttt{m
 \hypertarget{installation}{%
 \section{Installation}\label{installation}}
 
-You can install the development version of \texttt{mignette} from GitHub with:
+You can install the development version of the R package \texttt{mignette} from GitHub with:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -161,7 +161,7 @@ You can install the development version of \texttt{mignette} from GitHub with:
 \end{Highlighting}
 \end{Shaded}
 
-The migratory network model will be run using R packages that run JAGS (Just Another Gibbs Sampler). JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS can be \href{https://mcmc-jags.sourceforge.io/}{downloaded here}
+While \texttt{mignette} is an R package, it uses the separate software JAGS (Just Another Gibbs Sampler) to actually implement the migratory network model. JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS needs to be installed for \texttt{mignette} to function properly and can be \href{https://mcmc-jags.sourceforge.io/}{downloaded here}.
 
 The primary packages for this vignette are:
 
@@ -206,7 +206,7 @@ The data required are:
   Assignment matrix of individuals among nodes
 \end{itemize}
 
-We provide an example of these data in \texttt{mignette}, with assignment data from 3 populations from the breeding range (WB = Western Boreal, NT = Northern Temperate, ST = Southern Temperate) and nonbreeding range (ALM = Atlantic Lowland Mexico, CAR = Caribbean, AONU = Amazon/Orinoco-Northern Uplands) of the American Redstart (\emph{Setophaga ruticilla}). The assignment matrix specifies the number of individuals that have been sampled or detected that migrate between different populations (i.e.~\emph{connect} the nodes).
+We provide an example of these data in \texttt{mignette}, with assignment data from 5 populations from the breeding range (WB = Western Boreal, NT = Northern Temperate, ST = Southern Temperate, BR = Basin Rockies, MP = Maritime Provinces) and nonbreeding range (ALM = Atlantic Lowland Mexico, CAR = Caribbean, AONU = Amazon/Orinoco-Northern Uplands, HCA = Highland Central America, LCA = Lowland Central America) of the American Redstart (\emph{Setophaga ruticilla}). The assignment matrix specifies the number of individuals that have been sampled or detected that migrate between different populations (i.e.~\emph{connect} the nodes).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -266,7 +266,7 @@ CAR & 7987\\
 \hline
 \end{tabular}
 
-The \emph{relative abundance} data needs to follow the above format for input into \texttt{mignette} functions with population IDs (same names as in the \emph{assignment} file) in the first column and relative abundance values in the second column. Column names can follow any naming convention when inputting these data into \texttt{mignette}.
+The \emph{relative abundance} data needs to follow the above format for input into \texttt{mignette} functions, with population IDs (same names as in the \emph{assignment} file) in the first column and relative abundance values in the second column. Column names can follow any naming convention when inputting these data into \texttt{mignette}.
 
 For the following functions, we specify the order of the populations we are using for the model. Here, we are just ordering populations geographically by longitude to facilitate straightforward interpretation of the output.
 
@@ -281,11 +281,12 @@ The following code provides the necessary data to run the JAGS model. To create 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{base\_filename }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{get\_jags\_model}\NormalTok{(}\AttributeTok{base\_filename =} \StringTok{"amre.genetic.model"}\NormalTok{, }\AttributeTok{model\_type =} \DecValTok{1}\NormalTok{)}
+\NormalTok{base\_filename }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{get\_jags\_model}\NormalTok{(}\AttributeTok{base\_filename =} \StringTok{"amre.genetic.model"}\NormalTok{, }\AttributeTok{model =} \DecValTok{1}\NormalTok{)}
 \NormalTok{jags\_data }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{get\_jags\_data}\NormalTok{(}\AttributeTok{abundance =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_abundance, }
-                           \AttributeTok{assignment =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_assign,}
+                           \AttributeTok{nb2br\_assign =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_assign,}
                            \AttributeTok{bnode\_names =}\NormalTok{ bnode\_names, }
-                           \AttributeTok{wnode\_names =}\NormalTok{ wnode\_names)}
+                           \AttributeTok{wnode\_names =}\NormalTok{ wnode\_names,}
+                           \AttributeTok{model =} \DecValTok{1}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -381,6 +382,7 @@ The \texttt{amre\_breeding\_data} data set provides admixture results (Q-values)
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(mignette)}
 \NormalTok{Q\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_breeding\_data }\SpecialCharTok{\%\textgreater{}\%}
 \NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(WB, BR, NT, ST, MP) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{as.matrix}\NormalTok{()}
@@ -395,10 +397,10 @@ The larger data objects in \texttt{mignette} are stored in \texttt{extdata}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{breeding\_range }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"amre\_breeding\_range.Rds"}\NormalTok{, }\AttributeTok{package =} \StringTok{"mignette"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{()}
+\NormalTok{breeding\_range }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"amre\_breeding\_range.Rds"}\NormalTok{, }\AttributeTok{package =} \StringTok{"mignette"}\NormalTok{)}
+\NormalTok{breeding\_range }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{(breeding\_range)}
   
-\NormalTok{breeding\_range\_st }\OtherTok{\textless{}{-}}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sf}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_breeding\_range) }\CommentTok{\# tess3Q\_map\_rasters function requires sf objects, not terra}
+\NormalTok{breeding\_range\_st }\OtherTok{\textless{}{-}}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sf}\NormalTok{(breeding\_range) }\CommentTok{\# tess3Q\_map\_rasters function requires sf objects, not terra}
 \end{Highlighting}
 \end{Shaded}
 
@@ -510,11 +512,11 @@ The ecoregion data is derived from {[}provide link{]} and defines biogeographic 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{ecoregions }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"ecoregions.Rds"}\NormalTok{,}
-                          \AttributeTok{package =} \StringTok{"mignette"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{()}
+                          \AttributeTok{package =} \StringTok{"mignette"}\NormalTok{)}
+\NormalTok{ecoregions }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{(ecoregions)}
 \NormalTok{amre\_nonbreeding\_range }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"amre\_nonbreeding\_range.Rds"}\NormalTok{,}
-                                      \AttributeTok{package =} \StringTok{"mignette"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{()}
+                                      \AttributeTok{package =} \StringTok{"mignette"}\NormalTok{)}
+\NormalTok{amre\_nonbreeding\_range }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{(amre\_nonbreeding\_range)}
 
 \NormalTok{amre\_nonbreeding\_ecoregions }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{intersect}\NormalTok{(amre\_nonbreeding\_range, ecoregions)}
 
@@ -835,11 +837,12 @@ The following code provides the necessary data to run the JAGS model. To create 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{base\_filename }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{get\_jags\_model}\NormalTok{(}\AttributeTok{base\_filename =} \StringTok{"amre.genetic.model"}\NormalTok{, }\AttributeTok{model\_type =} \DecValTok{1}\NormalTok{)}
+\NormalTok{base\_filename }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{get\_jags\_model}\NormalTok{(}\AttributeTok{base\_filename =} \StringTok{"amre.genetic.model"}\NormalTok{, }\AttributeTok{model =} \DecValTok{1}\NormalTok{)}
 \NormalTok{jags\_data }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{get\_jags\_data}\NormalTok{(}\AttributeTok{abundance =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_abundance, }
-                           \AttributeTok{assignment =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_assign,}
+                           \AttributeTok{nb2br\_assign =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_assign,}
                            \AttributeTok{bnode\_names =}\NormalTok{ bnode\_names, }
-                           \AttributeTok{wnode\_names =}\NormalTok{ wnode\_names)}
+                           \AttributeTok{wnode\_names =}\NormalTok{ wnode\_names,}
+                           \AttributeTok{model =} \DecValTok{1}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 

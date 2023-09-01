@@ -15,7 +15,7 @@ The data required are:
 * Relative abundance matrix for each node
 * Assignment matrix of individuals among nodes
 
-We provide an example of these data in `mignette`, with assignment data from 3 populations from the breeding range (WB = Western Boreal, NT = Northern Temperate, ST = Southern Temperate) and nonbreeding range (ALM = Atlantic Lowland Mexico, CAR = Caribbean, AONU = Amazon/Orinoco-Northern Uplands) of the American Redstart (*Setophaga ruticilla*). The assignment matrix specifies the number of individuals that have been sampled or detected that migrate between different populations (i.e. *connect* the nodes).
+We provide an example of these data in `mignette`, with assignment data from 5 populations from the breeding range (WB = Western Boreal, NT = Northern Temperate, ST = Southern Temperate, BR = Basin Rockies, MP = Maritime Provinces) and nonbreeding range (ALM = Atlantic Lowland Mexico, CAR = Caribbean, AONU = Amazon/Orinoco-Northern Uplands, HCA = Highland Central America, LCA = Lowland Central America) of the American Redstart (*Setophaga ruticilla*). The assignment matrix specifies the number of individuals that have been sampled or detected that migrate between different populations (i.e. *connect* the nodes).
 
 ```r
 mignette::amre_assign
@@ -37,7 +37,7 @@ mignette::amre_abundance
 knitr::kable(mignette::amre_abundance)
 ```
 
-The *relative abundance* data needs to follow the above format for input into `mignette` functions with population IDs (same names as in the *assignment* file) in the first column and relative abundance values in the second column. Column names can follow any naming convention when inputting these data into `mignette`.
+The *relative abundance* data needs to follow the above format for input into `mignette` functions, with population IDs (same names as in the *assignment* file) in the first column and relative abundance values in the second column. Column names can follow any naming convention when inputting these data into `mignette`.
 
 For the following functions, we specify the order of the populations we are using for the model. Here, we are just ordering populations geographically by longitude to facilitate straightforward interpretation of the output.
 
@@ -49,11 +49,12 @@ wnode_names <- c("ALM", "LCA", "HCA", "CAR", "AONU")
 The following code provides the necessary data to run the JAGS model. To create the migratory network, the user first creates a text file specifying the JAGS model to be used, providing the name of the file to be saved (`base_filename`) and the type of model type (`model_type`). Currently `mignette` supports two model types based on the type of data used to determine assignment of individuals: `1` indicates that only genetic data were used for assignment, and `2` indicates that there's assignment data from both genetic and geolocator data. Here, the example only uses genetic data. `get_jags_model()` saves a `.txt` file with the `base_filename` and stores that name as a variable for use in JAGS. We also specify the desired order of the breeding populations (`bnode_names`) and the nonbreeding populations (`wnode_names`). Finally, we use these as input into the function `get_jags_data()` to prepare the data appropriately for the model.
 
 ```r
-base_filename <- mignette::get_jags_model(base_filename = "amre.genetic.model", model_type = 1)
+base_filename <- mignette::get_jags_model(base_filename = "amre.genetic.model", model = 1)
 jags_data <- mignette::get_jags_data(abundance = mignette::amre_abundance, 
-                           assignment = mignette::amre_assign,
+                           nb2br_assign = mignette::amre_assign,
                            bnode_names = bnode_names, 
-                           wnode_names = wnode_names)
+                           wnode_names = wnode_names,
+                           model = 1)
 ```
 
 Now the user can use the output of `jags_data` into JAGS to run the actual model:

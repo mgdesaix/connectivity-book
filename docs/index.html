@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-08-31" />
+<meta name="date" content="2023-09-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -224,7 +224,7 @@ div.csl-indent {
 <div id="header">
 <h1 class="title">Creating Migratory Networks in R: mignette</h1>
 <p class="author"><em>Matt DeSaix</em></p>
-<p class="date"><em>2023-08-31</em></p>
+<p class="date"><em>2023-09-01</em></p>
 </div>
 <div id="introduction" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
@@ -238,10 +238,10 @@ div.csl-indent {
 <p>For an introductory demonstration of creating a migratory network with <code>mignette</code>, see the <a href="quickstart.html#quickstart">quick start example</a>. Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.</p>
 <div id="installation" class="section level2 hasAnchor" number="1.1">
 <h2><span class="header-section-number">1.1</span> Installation<a href="index.html#installation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>You can install the development version of <code>mignette</code> from GitHub with:</p>
+<p>You can install the development version of the R package <code>mignette</code> from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
 <span id="cb1-2"><a href="index.html#cb1-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;mgdesaix/mignette&quot;</span>)</span></code></pre></div>
-<p>The migratory network model will be run using R packages that run JAGS (Just Another Gibbs Sampler). JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS can be <a href="https://mcmc-jags.sourceforge.io/">downloaded here</a></p>
+<p>While <code>mignette</code> is an R package, it uses the separate software JAGS (Just Another Gibbs Sampler) to actually implement the migratory network model. JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS needs to be installed for <code>mignette</code> to function properly and can be <a href="https://mcmc-jags.sourceforge.io/">downloaded here</a>.</p>
 <p>The primary packages for this vignette are:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="index.html#cb2-1" tabindex="-1"></a><span class="fu">library</span>(mignette)</span>
 <span id="cb2-2"><a href="index.html#cb2-2" tabindex="-1"></a><span class="fu">library</span>(sf)</span>

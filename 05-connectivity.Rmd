@@ -35,11 +35,12 @@ wnode_names <- c("ALM", "LCA", "HCA", "CAR", "AONU")
 The following code provides the necessary data to run the JAGS model. To create the migratory network, the user first creates a text file specifying the JAGS model to be used, providing the name of the file to be saved (`base_filename`) and the type of model type (`model_type`). Currently `mignette` supports two model types based on the type of data used to determine assignment of individuals: `1` indicates that only genetic data were used for assignment, and `2` indicates that there's assignment data from both genetic and geolocator data. Here, the example only uses genetic data. `get_jags_model()` saves a `.txt` file with the `base_filename` and stores that name as a variable for use in JAGS. We also specify the desired order of the breeding populations (`bnode_names`) and the nonbreeding populations (`wnode_names`). Finally, we use these as input into the function `get_jags_data()` to prepare the data appropriately for the model.
 
 ```r
-base_filename <- mignette::get_jags_model(base_filename = "amre.genetic.model", model_type = 1)
+base_filename <- mignette::get_jags_model(base_filename = "amre.genetic.model", model = 1)
 jags_data <- mignette::get_jags_data(abundance = mignette::amre_abundance, 
-                           assignment = mignette::amre_assign,
+                           nb2br_assign = mignette::amre_assign,
                            bnode_names = bnode_names, 
-                           wnode_names = wnode_names)
+                           wnode_names = wnode_names,
+                           model = 1)
 ```
 
 

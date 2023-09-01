@@ -15,11 +15,11 @@ library(tidyverse)
 
 ```{r, warning = F, message = F}
 ecoregions <- system.file("extdata", "ecoregions.Rds",
-                          package = "mignette") %>%
-  terra::vect()
+                          package = "mignette")
+ecoregions <- terra::vect(ecoregions)
 amre_nonbreeding_range <- system.file("extdata", "amre_nonbreeding_range.Rds",
-                                      package = "mignette") %>%
-  terra::vect()
+                                      package = "mignette")
+amre_nonbreeding_range <- terra::vect(amre_nonbreeding_range)
 
 amre_nonbreeding_ecoregions <- terra::intersect(amre_nonbreeding_range, ecoregions)
 

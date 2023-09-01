@@ -38,6 +38,7 @@ The Q-value matrix is obtained from individual admixture analyses (e.g. Structur
 The `amre_breeding_data` data set provides admixture results (Q-values) for five genetic clusters for American Redstart (DeSaix et al. 2023) and metadata for the sampled individuals.
 
 ``` r
+library(mignette)
 Q_matrix <- mignette::amre_breeding_data %>%
   dplyr::select(WB, BR, NT, ST, MP) %>%
   as.matrix()
@@ -50,10 +51,10 @@ coords <- mignette::amre_breeding_data %>%
 The larger data objects in `mignette` are stored in `extdata`:
 
 ```r
-breeding_range <- system.file("extdata", "amre_breeding_range.Rds", package = "mignette") %>%
-  terra::vect()
+breeding_range <- system.file("extdata", "amre_breeding_range.Rds", package = "mignette")
+breeding_range <- terra::vect(breeding_range)
   
-breeding_range_st <- sf::st_as_sf(mignette::amre_breeding_range) # tess3Q_map_rasters function requires sf objects, not terra
+breeding_range_st <- sf::st_as_sf(breeding_range) # tess3Q_map_rasters function requires sf objects, not terra
 ```
 
 We will also specify custom colors to correspond to the published genoscape.

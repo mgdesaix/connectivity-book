@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-08-31" />
+<meta name="date" content="2023-09-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -234,7 +234,7 @@ div.csl-indent {
 <li>Relative abundance matrix for each node</li>
 <li>Assignment matrix of individuals among nodes</li>
 </ul>
-<p>We provide an example of these data in <code>mignette</code>, with assignment data from 3 populations from the breeding range (WB = Western Boreal, NT = Northern Temperate, ST = Southern Temperate) and nonbreeding range (ALM = Atlantic Lowland Mexico, CAR = Caribbean, AONU = Amazon/Orinoco-Northern Uplands) of the American Redstart (<em>Setophaga ruticilla</em>). The assignment matrix specifies the number of individuals that have been sampled or detected that migrate between different populations (i.e. <em>connect</em> the nodes).</p>
+<p>We provide an example of these data in <code>mignette</code>, with assignment data from 5 populations from the breeding range (WB = Western Boreal, NT = Northern Temperate, ST = Southern Temperate, BR = Basin Rockies, MP = Maritime Provinces) and nonbreeding range (ALM = Atlantic Lowland Mexico, CAR = Caribbean, AONU = Amazon/Orinoco-Northern Uplands, HCA = Highland Central America, LCA = Lowland Central America) of the American Redstart (<em>Setophaga ruticilla</em>). The assignment matrix specifies the number of individuals that have been sampled or detected that migrate between different populations (i.e. <em>connect</em> the nodes).</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="quickstart.html#cb4-1" tabindex="-1"></a>mignette<span class="sc">::</span>amre_assign</span></code></pre></div>
 <table>
 <thead>
@@ -343,16 +343,17 @@ div.csl-indent {
 </tr>
 </tbody>
 </table>
-<p>The <em>relative abundance</em> data needs to follow the above format for input into <code>mignette</code> functions with population IDs (same names as in the <em>assignment</em> file) in the first column and relative abundance values in the second column. Column names can follow any naming convention when inputting these data into <code>mignette</code>.</p>
+<p>The <em>relative abundance</em> data needs to follow the above format for input into <code>mignette</code> functions, with population IDs (same names as in the <em>assignment</em> file) in the first column and relative abundance values in the second column. Column names can follow any naming convention when inputting these data into <code>mignette</code>.</p>
 <p>For the following functions, we specify the order of the populations we are using for the model. Here, we are just ordering populations geographically by longitude to facilitate straightforward interpretation of the output.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="quickstart.html#cb6-1" tabindex="-1"></a>bnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;WB&quot;</span>, <span class="st">&quot;BR&quot;</span>, <span class="st">&quot;NT&quot;</span>, <span class="st">&quot;ST&quot;</span>, <span class="st">&quot;MP&quot;</span>)</span>
 <span id="cb6-2"><a href="quickstart.html#cb6-2" tabindex="-1"></a>wnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ALM&quot;</span>, <span class="st">&quot;LCA&quot;</span>, <span class="st">&quot;HCA&quot;</span>, <span class="st">&quot;CAR&quot;</span>, <span class="st">&quot;AONU&quot;</span>)</span></code></pre></div>
 <p>The following code provides the necessary data to run the JAGS model. To create the migratory network, the user first creates a text file specifying the JAGS model to be used, providing the name of the file to be saved (<code>base_filename</code>) and the type of model type (<code>model_type</code>). Currently <code>mignette</code> supports two model types based on the type of data used to determine assignment of individuals: <code>1</code> indicates that only genetic data were used for assignment, and <code>2</code> indicates that there’s assignment data from both genetic and geolocator data. Here, the example only uses genetic data. <code>get_jags_model()</code> saves a <code>.txt</code> file with the <code>base_filename</code> and stores that name as a variable for use in JAGS. We also specify the desired order of the breeding populations (<code>bnode_names</code>) and the nonbreeding populations (<code>wnode_names</code>). Finally, we use these as input into the function <code>get_jags_data()</code> to prepare the data appropriately for the model.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="quickstart.html#cb7-1" tabindex="-1"></a>base_filename <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">get_jags_model</span>(<span class="at">base_filename =</span> <span class="st">&quot;amre.genetic.model&quot;</span>, <span class="at">model_type =</span> <span class="dv">1</span>)</span>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="quickstart.html#cb7-1" tabindex="-1"></a>base_filename <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">get_jags_model</span>(<span class="at">base_filename =</span> <span class="st">&quot;amre.genetic.model&quot;</span>, <span class="at">model =</span> <span class="dv">1</span>)</span>
 <span id="cb7-2"><a href="quickstart.html#cb7-2" tabindex="-1"></a>jags_data <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">get_jags_data</span>(<span class="at">abundance =</span> mignette<span class="sc">::</span>amre_abundance, </span>
-<span id="cb7-3"><a href="quickstart.html#cb7-3" tabindex="-1"></a>                           <span class="at">assignment =</span> mignette<span class="sc">::</span>amre_assign,</span>
+<span id="cb7-3"><a href="quickstart.html#cb7-3" tabindex="-1"></a>                           <span class="at">nb2br_assign =</span> mignette<span class="sc">::</span>amre_assign,</span>
 <span id="cb7-4"><a href="quickstart.html#cb7-4" tabindex="-1"></a>                           <span class="at">bnode_names =</span> bnode_names, </span>
-<span id="cb7-5"><a href="quickstart.html#cb7-5" tabindex="-1"></a>                           <span class="at">wnode_names =</span> wnode_names)</span></code></pre></div>
+<span id="cb7-5"><a href="quickstart.html#cb7-5" tabindex="-1"></a>                           <span class="at">wnode_names =</span> wnode_names,</span>
+<span id="cb7-6"><a href="quickstart.html#cb7-6" tabindex="-1"></a>                           <span class="at">model =</span> <span class="dv">1</span>)</span></code></pre></div>
 <p>Now the user can use the output of <code>jags_data</code> into JAGS to run the actual model:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="quickstart.html#cb8-1" tabindex="-1"></a>parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;conn_g&quot;</span>)</span>
 <span id="cb8-2"><a href="quickstart.html#cb8-2" tabindex="-1"></a>ni <span class="ot">&lt;-</span> <span class="dv">500000</span></span>

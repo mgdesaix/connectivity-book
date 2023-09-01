@@ -28,14 +28,14 @@ For an introductory demonstration of creating a migratory network with `mignette
 
 ## Installation 
 
-You can install the development version of `mignette` from GitHub with:
+You can install the development version of the R package `mignette` from GitHub with:
 
 ``` r
 # install.packages("remotes")
 remotes::install_github("mgdesaix/mignette")
 ```
 
-The migratory network model will be run using R packages that run JAGS (Just Another Gibbs Sampler). JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS can be [downloaded here](https://mcmc-jags.sourceforge.io/)
+While `mignette` is an R package, it uses the separate software JAGS (Just Another Gibbs Sampler) to actually implement the migratory network model. JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS needs to be installed for `mignette` to function properly and can be [downloaded here](https://mcmc-jags.sourceforge.io/).
 
 The primary packages for this vignette are:
 

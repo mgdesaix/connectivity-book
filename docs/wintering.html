@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-08-31" />
+<meta name="date" content="2023-09-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -232,11 +232,11 @@ div.csl-indent {
 <span id="cb20-3"><a href="wintering.html#cb20-3" tabindex="-1"></a><span class="fu">library</span>(tidyterra)</span>
 <span id="cb20-4"><a href="wintering.html#cb20-4" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="wintering.html#cb21-1" tabindex="-1"></a>ecoregions <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;ecoregions.Rds&quot;</span>,</span>
-<span id="cb21-2"><a href="wintering.html#cb21-2" tabindex="-1"></a>                          <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-3"><a href="wintering.html#cb21-3" tabindex="-1"></a>  terra<span class="sc">::</span><span class="fu">vect</span>()</span>
+<span id="cb21-2"><a href="wintering.html#cb21-2" tabindex="-1"></a>                          <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>)</span>
+<span id="cb21-3"><a href="wintering.html#cb21-3" tabindex="-1"></a>ecoregions <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">vect</span>(ecoregions)</span>
 <span id="cb21-4"><a href="wintering.html#cb21-4" tabindex="-1"></a>amre_nonbreeding_range <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;amre_nonbreeding_range.Rds&quot;</span>,</span>
-<span id="cb21-5"><a href="wintering.html#cb21-5" tabindex="-1"></a>                                      <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-6"><a href="wintering.html#cb21-6" tabindex="-1"></a>  terra<span class="sc">::</span><span class="fu">vect</span>()</span>
+<span id="cb21-5"><a href="wintering.html#cb21-5" tabindex="-1"></a>                                      <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>)</span>
+<span id="cb21-6"><a href="wintering.html#cb21-6" tabindex="-1"></a>amre_nonbreeding_range <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">vect</span>(amre_nonbreeding_range)</span>
 <span id="cb21-7"><a href="wintering.html#cb21-7" tabindex="-1"></a></span>
 <span id="cb21-8"><a href="wintering.html#cb21-8" tabindex="-1"></a>amre_nonbreeding_ecoregions <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">intersect</span>(amre_nonbreeding_range, ecoregions)</span>
 <span id="cb21-9"><a href="wintering.html#cb21-9" tabindex="-1"></a></span>

@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-08-31" />
+<meta name="date" content="2023-09-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -346,11 +346,12 @@ div.csl-indent {
 <div id="preparing-input-data" class="section level3 hasAnchor" number="7.2.1">
 <h3><span class="header-section-number">7.2.1</span> Preparing input data<a href="connectivity.html#preparing-input-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The following code provides the necessary data to run the JAGS model. To create the migratory network, the user first creates a text file specifying the JAGS model to be used, providing the name of the file to be saved (<code>base_filename</code>) and the type of model type (<code>model_type</code>). Currently <code>mignette</code> supports two model types based on the type of data used to determine assignment of individuals: <code>1</code> indicates that only genetic data were used for assignment, and <code>2</code> indicates that there’s assignment data from both genetic and geolocator data. Here, the example only uses genetic data. <code>get_jags_model()</code> saves a <code>.txt</code> file with the <code>base_filename</code> and stores that name as a variable for use in JAGS. We also specify the desired order of the breeding populations (<code>bnode_names</code>) and the nonbreeding populations (<code>wnode_names</code>). Finally, we use these as input into the function <code>get_jags_data()</code> to prepare the data appropriately for the model.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="connectivity.html#cb32-1" tabindex="-1"></a>base_filename <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">get_jags_model</span>(<span class="at">base_filename =</span> <span class="st">&quot;amre.genetic.model&quot;</span>, <span class="at">model_type =</span> <span class="dv">1</span>)</span>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="connectivity.html#cb32-1" tabindex="-1"></a>base_filename <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">get_jags_model</span>(<span class="at">base_filename =</span> <span class="st">&quot;amre.genetic.model&quot;</span>, <span class="at">model =</span> <span class="dv">1</span>)</span>
 <span id="cb32-2"><a href="connectivity.html#cb32-2" tabindex="-1"></a>jags_data <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">get_jags_data</span>(<span class="at">abundance =</span> mignette<span class="sc">::</span>amre_abundance, </span>
-<span id="cb32-3"><a href="connectivity.html#cb32-3" tabindex="-1"></a>                           <span class="at">assignment =</span> mignette<span class="sc">::</span>amre_assign,</span>
+<span id="cb32-3"><a href="connectivity.html#cb32-3" tabindex="-1"></a>                           <span class="at">nb2br_assign =</span> mignette<span class="sc">::</span>amre_assign,</span>
 <span id="cb32-4"><a href="connectivity.html#cb32-4" tabindex="-1"></a>                           <span class="at">bnode_names =</span> bnode_names, </span>
-<span id="cb32-5"><a href="connectivity.html#cb32-5" tabindex="-1"></a>                           <span class="at">wnode_names =</span> wnode_names)</span></code></pre></div>
+<span id="cb32-5"><a href="connectivity.html#cb32-5" tabindex="-1"></a>                           <span class="at">wnode_names =</span> wnode_names,</span>
+<span id="cb32-6"><a href="connectivity.html#cb32-6" tabindex="-1"></a>                           <span class="at">model =</span> <span class="dv">1</span>)</span></code></pre></div>
 </div>
 <div id="running-the-model" class="section level3 hasAnchor" number="7.2.2">
 <h3><span class="header-section-number">7.2.2</span> Running the model<a href="connectivity.html#running-the-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>

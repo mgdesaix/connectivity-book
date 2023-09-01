@@ -23,7 +23,7 @@
 <meta name="author" content="Matt DeSaix" />
 
 
-<meta name="date" content="2023-08-31" />
+<meta name="date" content="2023-09-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -246,18 +246,19 @@ div.csl-indent {
 </ul>
 <p>The Q-value matrix is obtained from individual admixture analyses (e.g. Structure, Admixture, <code>snmf</code> fuction from the LEA R-package). Latitude/longitude coordinates are for the individual samples used in the Q-value matrix. Breeding range polygons can be obtained from <code>ebirdst</code> (see previous section).</p>
 <p>The <code>amre_breeding_data</code> data set provides admixture results (Q-values) for five genetic clusters for American Redstart (DeSaix et al. 2023) and metadata for the sampled individuals.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="breeding.html#cb12-1" tabindex="-1"></a>Q_matrix <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_breeding_data <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="breeding.html#cb12-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(WB, BR, NT, ST, MP) <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="breeding.html#cb12-3" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb12-4"><a href="breeding.html#cb12-4" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="breeding.html#cb12-5" tabindex="-1"></a>coords <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_breeding_data <span class="sc">%&gt;%</span></span>
-<span id="cb12-6"><a href="breeding.html#cb12-6" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Lon, Lat) <span class="sc">%&gt;%</span></span>
-<span id="cb12-7"><a href="breeding.html#cb12-7" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="breeding.html#cb12-1" tabindex="-1"></a><span class="fu">library</span>(mignette)</span>
+<span id="cb12-2"><a href="breeding.html#cb12-2" tabindex="-1"></a>Q_matrix <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_breeding_data <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="breeding.html#cb12-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(WB, BR, NT, ST, MP) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="breeding.html#cb12-4" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb12-5"><a href="breeding.html#cb12-5" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="breeding.html#cb12-6" tabindex="-1"></a>coords <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_breeding_data <span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a href="breeding.html#cb12-7" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Lon, Lat) <span class="sc">%&gt;%</span></span>
+<span id="cb12-8"><a href="breeding.html#cb12-8" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span></code></pre></div>
 <p>The larger data objects in <code>mignette</code> are stored in <code>extdata</code>:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="breeding.html#cb13-1" tabindex="-1"></a>breeding_range <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;amre_breeding_range.Rds&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-2"><a href="breeding.html#cb13-2" tabindex="-1"></a>  terra<span class="sc">::</span><span class="fu">vect</span>()</span>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="breeding.html#cb13-1" tabindex="-1"></a>breeding_range <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;amre_breeding_range.Rds&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>)</span>
+<span id="cb13-2"><a href="breeding.html#cb13-2" tabindex="-1"></a>breeding_range <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">vect</span>(breeding_range)</span>
 <span id="cb13-3"><a href="breeding.html#cb13-3" tabindex="-1"></a>  </span>
-<span id="cb13-4"><a href="breeding.html#cb13-4" tabindex="-1"></a>breeding_range_st <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_as_sf</span>(mignette<span class="sc">::</span>amre_breeding_range) <span class="co"># tess3Q_map_rasters function requires sf objects, not terra</span></span></code></pre></div>
+<span id="cb13-4"><a href="breeding.html#cb13-4" tabindex="-1"></a>breeding_range_st <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_as_sf</span>(breeding_range) <span class="co"># tess3Q_map_rasters function requires sf objects, not terra</span></span></code></pre></div>
 <p>We will also specify custom colors to correspond to the published genoscape.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="breeding.html#cb14-1" tabindex="-1"></a>cluster_colors <span class="ot">&lt;-</span>  <span class="fu">c</span>(</span>
 <span id="cb14-2"><a href="breeding.html#cb14-2" tabindex="-1"></a>  <span class="st">`</span><span class="at">ST</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#FF99FF&quot;</span>, <span class="co"># pink/Southern Temperate</span></span>
