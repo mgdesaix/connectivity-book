@@ -68,10 +68,9 @@ network_model$conn
 ```{r, echo=FALSE}
 conn_ex <- mignette::amre_conn
 rownames(conn_ex) <- NULL
-conn_ex %>% 
-  as_tibble() %>% 
-  add_column("Breeding" = bnode_names, .before = 1) %>%
-  knitr::kable()
+conn_ex <- tibble::as_tibble(conn_ex) 
+conn_ex <- tibble::add_column(conn_ex, "Breeding" = bnode_names, .before = 1)
+knitr::kable(conn_ex)
 ```
 
 
@@ -90,7 +89,7 @@ knitr::kable(amre_conn)
 ```
 
 ```{r}
-amre_net <- net_create(amre_conn,
+amre_net <- mignette::net_create(amre_conn,
                         	node.names = list(bnode_names,wnode_names),
                         	connected_tol = 0.02)
 #set the display size range for nodes (min and max), default 1-10
@@ -101,7 +100,7 @@ amre_net$display_par$edge_size_scale<-c(1,5)
 amre_net$display_par$bnode_colors <- c("#009e73", "#cc79a7", "#56b4e9", "#e69f00", "#7979ff")
 amre_net$display_par$wnode_colors <- "grey80"
 
-net_draw(amre_net)
+mignette::net_draw(amre_net)
 ```
 
 In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. Breeding populations are in the top row, for which we provided custom colors, and nonbreeding populations are in the bottom row.

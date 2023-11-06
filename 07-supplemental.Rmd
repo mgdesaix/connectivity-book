@@ -1,8 +1,12 @@
-# Breeding nodes {#breeding}
+# Supplementary Information {#supplemental}
+
+This supplementary section provides more detailed information outside the scope of `mignette`. Specifically, the code here goes into details of using avian abundance data and genetic populations from a genoscape.
+
+## Breeding nodes
 
 Delineating breeding nodes is necessary for our migratory network model for both 1) assignment among populations, and 2) specifying a region for relative abundance. Here, we show how breeding nodes can be delineated by genetically distinct populations on the breeding grounds. In this example, we'll show how to use [eBird Status and Trends](https://ebird.org/science/status-and-trends) data to specify the breeding range and then use genetic data from admixture analyses to specify the spatial extent of the breeding nodes.
 
-## ebirdst
+### ebirdst
 
 In our migratory network analyses, the [eBird Status and Trends](https://science.ebird.org/en/status-and-trends) data is used to delineate the different stages of the annual cycle. Prior to doing anything with eBird Status and Trends data, you will need to download the `ebirdst` package, and then get access to the data. **You will need to follow the most up-to-date instructions from the `ebirdst` developers for getting the abundance data. Currently, that information is here: [https://ebird.github.io/ebirdst/](https://ebird.github.io/ebirdst/)**
 
@@ -23,7 +27,7 @@ where `"XXXXX"` is the key.
 
 By following instructions from the `ebirdst` developers, you can obtain polygons of the breeding and nonbreeding ranges of avian species (see [https://ebird.github.io/ebirdst/](https://ebird.github.io/ebirdst/) for details). 
 
-## Creating the genoscape
+### Creating the genoscape
 
 A genoscape is the collection of genetically distinct populations that make up a species' range [@ruegg2021american]. Typically, for migratory species, the genoscape describes this population structure on the breeding range because the nonbreeding populations can can contain individuals from different breeding populations.
 
@@ -35,7 +39,7 @@ We will outline the main genoscape creation steps here, but full instructions on
 
 The Q-value matrix is obtained from individual admixture analyses (e.g. Structure, Admixture, `snmf` fuction from the LEA R-package). Latitude/longitude coordinates are for the individual samples used in the Q-value matrix. Breeding range polygons can be obtained from `ebirdst` (see previous section). 
 
-The `amre_breeding_data` data set provides admixture results (Q-values) for five genetic clusters for American Redstart (DeSaix et al. 2023) and metadata for the sampled individuals.
+The `amre_breeding_data` data set provides admixture results (Q-values) for five genetic clusters for American Redstart [@desaix2023low] and metadata for the sampled individuals.
 
 ``` r
 library(mignette)
@@ -61,15 +65,15 @@ We will also specify custom colors to correspond to the published genoscape.
 
 ```r
 cluster_colors <-  c(
-  `ST` = "#FF99FF", # pink/Southern Temperate
-  `BR` = "#3399FF", # blue/Basin Rockies
-  `NT` = "#FFFF33", # yellow/Northern Temperate
-  `WB` = "#339933", # green/Western Boreal
-  `MP` = "#CC0033" # red/Maritime Provinces
+  `ST` = "#e69f00", # pink/Southern Temperate
+  `BR` = "#cc79a7", # blue/Basin Rockies
+  `NT` = "#56b4e9", # yellow/Northern Temperate
+  `WB` = "#009e73", # green/Western Boreal
+  `MP` = "#7979ff" # red/Maritime Provinces
 ) 
 ```
 
-We will use a [modified version](https://github.com/eriqande/TESS3_encho_sen) of the `tess3r` package to create the genoscape rasters.
+We will use a [modified version of the `tess3r` package](https://github.com/eriqande/TESS3_encho_sen) to create the genoscape rasters.
 
 ``` r
 # remotes::install_github("eriqande/TESS3_encho_sen")
@@ -122,11 +126,11 @@ library(mignette)
 library(terra)
 
 cluster_colors <-  c(
-  `ST` = "#FF99FF", # pink/Southern Temperate
-  `BR` = "#3399FF", # blue/Basin Rockies
-  `NT` = "#FFFF33", # yellow/Northern Temperate
-  `WB` = "#339933", # green/Western Boreal
-  `MP` = "#CC0033" # red/Maritime Provinces
+  `ST` = "#e69f00", # pink/Southern Temperate
+  `BR` = "#cc79a7", # blue/Basin Rockies
+  `NT` = "#56b4e9", # yellow/Northern Temperate
+  `WB` = "#009e73", # green/Western Boreal
+  `MP` = "#7979ff" # red/Maritime Provinces
 ) 
 
 ```
@@ -141,6 +145,4 @@ ggplot() +
   theme_bw()
 ```
 
-Note that the lower population membership probabilities occur at the boundaries of different populations, thereby making the polygons discontinuous compared to the entire range
 
-Now on to creating the [wintering nodes](#wintering)

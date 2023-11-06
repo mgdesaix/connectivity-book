@@ -1,0 +1,69 @@
+# Step 1: Define breeding and nonbreeding nodes {#nodes}
+
+The first step of creating a migratory network is to spatially define the nodes (i.e. populations) that make up the sampled portions of the breeding and nonbreeding range. This can either be done with *vector* data for discrete spatial boundaries of nodes or *raster* data for a continuous surface probabilistic membership of geographic cells to a node (e.g., population genetic structure of a genoscape [@ruegg2020genoscape]).
+
+## Vector data
+
+Vector data can define nodes by representing geographic boundaries such as political borders or biogeographic regions. In `mignette`, we provide data for *conservation regions* of the Western Hemisphere that integrate geopolitical boundaries and ecoregions.
+
+```{r}
+# SpatVector from terra package
+regions_file <- system.file("extdata", "conservation_regions.Rds", package = "mignette")
+# read in file as SpatVector
+conservation_regions <- terra::vect(regions_file)
+
+terra::plot(conservation_regions, col=rainbow(10))
+```
+
+For defining a node, we are only interested in regions that we have data. It's straightforward with the spatial functions from `terra` to determine the sampled regions. Here, we find the conservation regions for which we have sampled American Redstart data from the nonbreeding range.
+
+```{r}
+# create SpatVector points object from Redstart lat/lon sampling data
+nonbreeding_coords <- terra::vect(mignette::amre_nonbreeding_data, 
+                             geom=c("Lon", "Lat"),
+                             crs = "EPSG:4326")
+# find spatial intersection of points with conservation regions
+sampled_conservation_regions <- terra::intersect(nonbreeding_coords,
+                                        conservation_regions)
+# count the number of sampled individuals associated with each conservation region
+sampled_table <- table(sampled_conservation_regions$Region)
+sampled_table
+```
+
+Downstream in the workflow, we need sufficiently sampling of individuals in (or inference to) a node. So, we'll only retain the conservation regions with more than 3 samples.
+
+```{r}
+# retain conservation region names with more than 3 samples
+retained_IDs <- names(sampled_table[sampled_table > 3])
+retained_IDs
+```
+
+Thus, we've identified the 5 nonbreeding nodes for the American Redstart data. We can plot these conservation regions along with the corresponding sampling points.
+
+```{r}
+# subset conservation regions file by retained regions
+conservation_regions_subset <- terra::subset(conservation_regions, 
+                                             conservation_regions$Region %in% retained_IDs)
+# subset sampled points by retained regions
+nonbreeding_coords_subset <- terra::subset(sampled_conservation_regions,
+                                           sampled_conservation_regions$Region %in% retained_IDs)
+# plot
+terra::plot(conservation_regions_subset, col = rainbow(5))
+terra::points(nonbreeding_coords_subset, cex = 1.5)
+```
+
+
+## Raster data
+
+Raster data is used when populations are defined by a continuous surface of probabilities of membership to a population. In the example here, we have population genetic data from the American Redstart that define breeding populations (i.e., American Redstart genoscape, [@desaix2023low]). We have defined these nodes as Western Boreal (WB), Basin Rockies (BR), Northern Temperate (NT), Southern Temperate (ST) and Maritime Provinces (MP)
+
+
+```{r, results = F, message = F}
+amre_genoscape_file <- system.file("extdata", "amre_genoscape.Rds", package = "mignette")
+amre_genoscape <- terra::rast(amre_genoscape_file)
+terra::plot(amre_genoscape)
+```
+
+
+
+Now on to [Step 2: Abundance and migratory connectivity data](#wintering)
