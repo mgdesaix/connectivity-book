@@ -46,46 +46,65 @@ bnode_names <- c("WB", "BR", "NT", "ST", "MP")
 wnode_names <- c("ALM", "LCA", "HCA", "CAR", "AONU")
 ```
 
-The following code provides the necessary data to run the JAGS model. To create the migratory network, the user first creates a text file specifying the JAGS model to be used, providing the name of the file to be saved (`base_filename`) and the type of model type (`model_type`). Currently `mignette` supports two model types based on the type of data used to determine assignment of individuals: `1` indicates that only genetic data were used for assignment, and `2` indicates that there's assignment data from both genetic and geolocator data. Here, the example only uses genetic data. `get_jags_model()` saves a `.txt` file with the `base_filename` and stores that name as a variable for use in JAGS. We also specify the desired order of the breeding populations (`bnode_names`) and the nonbreeding populations (`wnode_names`). Finally, we use these as input into the function `get_jags_data()` to prepare the data appropriately for the model.
+For the American Redstart migratory network, we use `model = 1` from `mignette` which specifies that nonbreeding nodes are “encountered” and breeding nodes are “recovered” (i.e., inferred). This output saves the model as `amre.genetic.model_1.txt`. Below we specify `parallel = TRUE` to run MCMC on multiple cores and use the remaining defaults described previously CHANGE LINK. This step is computationally intensive and takes ~2 minutes to run on a 2023 MacBook Pro with an Apple M2 Pro chip.
+
 
 ```r
-base_filename <- mignette::get_jags_model(base_filename = "amre.genetic.model", model = 1)
-jags_data <- mignette::get_jags_data(abundance = mignette::amre_abundance, 
-                           nb2br_assign = mignette::amre_assign,
-                           bnode_names = bnode_names, 
-                           wnode_names = wnode_names,
-                           model = 1)
+network_model <- run_network_model(abundance = mignette::amre_abundance,
+                       	nb2br_assign = mignette::amre_assign,
+                       	bnode_names = bnode_names,
+                       	wnode_names = wnode_names,
+                       	model = 1, 
+                       	base_filename = "amre.genetic",
+                       	parallel = TRUE)
 ```
 
-Now the user can use the output of `jags_data` into JAGS to run the actual model:
+The `run_network_model()` function outputs a list object with two components. The first component of the output is `network_model$conn` which provides a formatted data frame (i.e., breeding nodes in first column, remaining columns have nonbreeding node names) of the modeled connectivity results. Each value in the connectivity matrix indicates the overall importance of a particular migratory connection. These values are interpreted as the proportion of individuals that migrate between the corresponding populations, as such all of the values in the connectivity matrix sum to one. 
 
 ```r
-parameters <- c("conn_g")
-ni <- 500000
-nt <- 4
-nb <- 100000
-nc <- 2
-jags_out <- autojags(jags_data, inits=NULL, parameters, base_filename,
-                      n.chains = nc, n.thin =nt, iter.increment=ni,
-                      max.iter = ni*50+nb, n.burnin = nb,
-                      n.adapt= NULL, parallel=TRUE)
-amre_conn <- jags_out$mean$conn_g
+network_model$conn
 ```
 
-The connectivity between the nodes is provided by the `conn_g` parameter of the model, which is accessed from the above code. We provide this output for the example as well with `mignette::amre_conn`. We also provide functions for basic visualization of the network. A threshold (`connected_tol`) can be set to remove very weak connectivity (i.e. set connectivity values less than the threshold to 0) for better visualizing the network as shown below.
+```{r, echo=FALSE}
+conn_ex <- mignette::amre_conn
+rownames(conn_ex) <- NULL
+conn_ex %>% 
+  as_tibble() %>% 
+  add_column("Breeding" = bnode_names, .before = 1) %>%
+  knitr::kable()
+```
+
+
+The second component is the full output from [`*jagsUI* autojags()`](https://rdrr.io/cran/jagsUI/man/autojags.html) and is accessed by `network_model$jags_out`. Here, the raw connectivity matrix can be accessed:
+
+```r
+amre_conn <- network_model$jags_out$mean$conn_g
+amre_conn
+```
+
+```{r, echo = FALSE}
+amre_conn <- mignette::amre_conn
+rownames(amre_conn) <- NULL
+colnames(amre_conn) <- NULL
+knitr::kable(amre_conn)
+```
 
 ```{r}
-net <- mignette::net_create(mignette::amre_conn, 
-                            node.names = list(bnode_names, wnode_names),
-                            connected_tol = 0.02) # threshold
+amre_net <- net_create(amre_conn,
+                        	node.names = list(bnode_names,wnode_names),
+                        	connected_tol = 0.02)
 #set the display size range for nodes (min and max), default 1-10
-net$display_par$node_size_scale<-c(5,20)
+amre_net$display_par$node_size_scale<-c(8,25)
 #set the display size range for edges (min and max), default 1-10
-net$display_par$edge_size_scale<-c(1,5)
-plot(mignette::net_draw(net))
+amre_net$display_par$edge_size_scale<-c(1,5)
+# change colors
+amre_net$display_par$bnode_colors <- c("#009e73", "#cc79a7", "#56b4e9", "#e69f00", "#7979ff")
+amre_net$display_par$wnode_colors <- "grey80"
+
+net_draw(amre_net)
 ```
 
-In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. By default, breeding populations are in the top row (red) and nonbreeding/wintering populations are in the bottom row (blue). 
+In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. Breeding populations are in the top row, for which we provided custom colors, and nonbreeding populations are in the bottom row.
 
 This sums up the basics of creating and visualizing a migratory network. We encourage users to explore and build upon the visualization tools we provide (e.g. overlay the migratory networks on geographic ranges) - the options are endless, enjoy!
 
