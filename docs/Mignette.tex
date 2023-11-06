@@ -114,13 +114,12 @@
 \urlstyle{same}
 \hypersetup{
   pdftitle={Creating Migratory Networks in R: mignette},
-  pdfauthor={Matt DeSaix},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
 \title{Creating Migratory Networks in R: mignette}
-\author{Matt DeSaix}
-\date{2023-09-01}
+\author{}
+\date{\vspace{-2.5em}2023-11-06}
 
 \begin{document}
 \maketitle
@@ -132,27 +131,32 @@
 \hypertarget{introduction}{%
 \chapter{Introduction}\label{introduction}}
 
-This vignette outlines how to create migratory networks using the R package \texttt{mignette} (\textbf{mig}ratory \textbf{net}work \textbf{t}ools \textbf{e}nsemble). \texttt{mignette} was developed to facilitate conservation and management decision-making for migratory wildlife populations using migratory networks \citep{ruegg2020genoscape, taylor2010population}. The core function of \texttt{mignette} is to model the connectivity of populations across different stages of the annual cycle. To model these migratory networks in \texttt{mignette}, users need to provide:
+This vignette outlines how to create migratory networks using the R package \texttt{mignette} (\textbf{mig}ratory \textbf{net}work \textbf{t}ools \textbf{e}nsemble). \texttt{mignette} was developed to facilitate conservation and management decision-making for migratory wildlife populations using migratory networks \citep{ruegg2020genoscape, taylor2010population}. Spatial migratory networks are graph-based models that incorporate migratory connectivity and abundance data to define the degree of connectivity between stages of the annual cycle, defined as breeding and nonbreeding nodes. These models are useful for a wide variety of applications because they can accommodate, and combine, different types of common tracking data used to infer individual and population movement across the annual cycle. We designed \texttt{mignette} to facilitate the creation and visualization of migratory networks for users with a wide-range of data sources and study species.
+
+\hypertarget{tutorial-structure}{%
+\section{Tutorial structure}\label{tutorial-structure}}
+
+For an introductory demonstration of creating a migratory network with \texttt{mignette}, see the \protect\hyperlink{quickstart}{quick start example}. This demonstrates the core functionality of \texttt{mignette} using data from a recent study of the American Redstart (\emph{Setophaga ruticilla}), a widespread Nearctic-Neotropical migratory songbird \citep{desaix2023low}.
+
+Subsequent chapters of the vignette provide more detailed instructions and are broken up into three main steps:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  The number of individuals connecting migratory populations from two stages of the annual cycle
+  \protect\hyperlink{nodes}{Define breeding and nonbreeding nodes}
 \item
-  Relative abundance data for the populations
+  \protect\hyperlink{data}{Assemble abundance and migratory connectivity data}
+\item
+  \protect\hyperlink{model}{Modeling the migratory network}
 \end{enumerate}
-
-We designed \texttt{mignette} specifically for use with population assignment data from genetic markers \citep{ruegg2014mapping, desaix2019population}, and we use genetic markers to delineate breeding populations (i.e., nodes in the migratory network model). We have since extended \texttt{mignette} to be able to model migratory networks that include geolocator data for assignment. While it is outside the scope of \texttt{mignette} for providing an exhaustive tool set of methods to delineate these nodes, given our focus on the use of genetic data, we provide examples and resources for users to delineate breeding populations from genetic data. For nonbreeding populations, we delineate these spatially by \emph{ecoregions} ADD LINK TO ECOREGION DATA SOURCE.
-
-We anticipate users of \texttt{mignette} to be interested in modelling migratory networks for a wide-range of taxa, therefore users can provide relative abundance information from any data source. However, we also provide information on obtaining relative abundance for bird data from \href{https://ebird.org/science/status-and-trends}{eBird} and have developed tools in \texttt{mignette} to facilitate the calculation of relative abundance values.
-
-For an introductory demonstration of creating a migratory network with \texttt{mignette}, see the \protect\hyperlink{quickstart}{quick start example}. Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.
 
 \hypertarget{installation}{%
 \section{Installation}\label{installation}}
 
-You can install the development version of the R package \texttt{mignette} from GitHub with:
+While \texttt{mignette} is an R package, it uses JAGS (Just Another Gibbs Sampler) to actually implement the migratory network model. JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. \textbf{JAGS needs to be installed for \texttt{mignette} to function} and can be \href{https://mcmc-jags.sourceforge.io/}{downloaded here}.
+
+Once you have installed JAGS, you can install \texttt{mignette} from GitHub with:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -160,8 +164,6 @@ You can install the development version of the R package \texttt{mignette} from 
 \NormalTok{remotes}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"mgdesaix/mignette"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
-
-While \texttt{mignette} is an R package, it uses the separate software JAGS (Just Another Gibbs Sampler) to actually implement the migratory network model. JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS needs to be installed for \texttt{mignette} to function properly and can be \href{https://mcmc-jags.sourceforge.io/}{downloaded here}.
 
 The primary packages for this vignette are:
 
@@ -178,8 +180,6 @@ The primary packages for this vignette are:
 \FunctionTok{library}\NormalTok{(tidyterra) }\CommentTok{\# for plotting terra objects with ggplot}
 \end{Highlighting}
 \end{Shaded}
-
-As \texttt{mignette} makes use of the \texttt{terra} package, all raster and vector (e.g., polygons) are provided as \emph{SpatRaster} and \emph{SpatVector} objects. See the \texttt{terra} package for more details on these types of objects in R.
 
 \hypertarget{quickstart}{%
 \chapter{Quick start example}\label{quickstart}}
@@ -201,12 +201,12 @@ The data required are:
 \begin{itemize}
 \tightlist
 \item
-  Relative abundance matrix for each node
+  Abundance
 \item
-  Assignment matrix of individuals among nodes
+  Migratory connectivity
 \end{itemize}
 
-We provide an example of these data in \texttt{mignette}, with assignment data from 5 populations from the breeding range (WB = Western Boreal, NT = Northern Temperate, ST = Southern Temperate, BR = Basin Rockies, MP = Maritime Provinces) and nonbreeding range (ALM = Atlantic Lowland Mexico, CAR = Caribbean, AONU = Amazon/Orinoco-Northern Uplands, HCA = Highland Central America, LCA = Lowland Central America) of the American Redstart (\emph{Setophaga ruticilla}). The assignment matrix specifies the number of individuals that have been sampled or detected that migrate between different populations (i.e.~\emph{connect} the nodes).
+We provide an example of these data in \texttt{mignette}, with migratory connectivity data from 5 breeding nodes (WB = Western Boreal, NT = Northern Temperate, ST = Southern Temperate, BR = Basin Rockies, MP = Maritime Provinces) and 5 nonbreeding nodes (ALM = Atlantic Lowland Mexico, CAR = Caribbean, AONU = Amazon/Orinoco-Northern Uplands, HCA = Highland Central America, LCA = Lowland Central America) for the American Redstart (\emph{Setophaga ruticilla}). The migratory connectivity data specifies the number of individuals that have been sampled or detected that migrate between different populations (i.e.~\emph{connect} the nodes).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -230,9 +230,7 @@ WB & 1 & 0 & 19 & 1 & 13\\
 \hline
 \end{tabular}
 
-Assignment data input into \texttt{mignette} needs to follow the above format, where the first column specifies breeding population IDs while subsequent columns are the nonbreeding populations.
-
-We also provide the relative abundance of these populations:
+We also provide the abundance of these nodes:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -266,9 +264,7 @@ CAR & 7987\\
 \hline
 \end{tabular}
 
-The \emph{relative abundance} data needs to follow the above format for input into \texttt{mignette} functions, with population IDs (same names as in the \emph{assignment} file) in the first column and relative abundance values in the second column. Column names can follow any naming convention when inputting these data into \texttt{mignette}.
-
-For the following functions, we specify the order of the populations we are using for the model. Here, we are just ordering populations geographically by longitude to facilitate straightforward interpretation of the output.
+For the following functions, we specify the order of the nodes we are using for the model. Here, we are just ordering nodes geographically by longitude to facilitate straightforward interpretation of the output.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -277,64 +273,515 @@ For the following functions, we specify the order of the populations we are usin
 \end{Highlighting}
 \end{Shaded}
 
-The following code provides the necessary data to run the JAGS model. To create the migratory network, the user first creates a text file specifying the JAGS model to be used, providing the name of the file to be saved (\texttt{base\_filename}) and the type of model type (\texttt{model\_type}). Currently \texttt{mignette} supports two model types based on the type of data used to determine assignment of individuals: \texttt{1} indicates that only genetic data were used for assignment, and \texttt{2} indicates that there's assignment data from both genetic and geolocator data. Here, the example only uses genetic data. \texttt{get\_jags\_model()} saves a \texttt{.txt} file with the \texttt{base\_filename} and stores that name as a variable for use in JAGS. We also specify the desired order of the breeding populations (\texttt{bnode\_names}) and the nonbreeding populations (\texttt{wnode\_names}). Finally, we use these as input into the function \texttt{get\_jags\_data()} to prepare the data appropriately for the model.
+For the American Redstart migratory network, we use \texttt{model\ =\ 1} from \texttt{mignette} which specifies that nonbreeding nodes are the ``encounter'' season and breeding nodes are the ``recovery'' season (i.e., inferred). This output saves the model as \texttt{amre.genetic.model\_1.txt}. Below we specify \texttt{parallel\ =\ TRUE} to run MCMC on multiple cores and use the remaining defaults described previously CHANGE LINK. This step is computationally intensive and takes \textasciitilde2 minutes to run on a 2023 MacBook Pro with an Apple M2 Pro chip.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{base\_filename }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{get\_jags\_model}\NormalTok{(}\AttributeTok{base\_filename =} \StringTok{"amre.genetic.model"}\NormalTok{, }\AttributeTok{model =} \DecValTok{1}\NormalTok{)}
-\NormalTok{jags\_data }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{get\_jags\_data}\NormalTok{(}\AttributeTok{abundance =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_abundance, }
-                           \AttributeTok{nb2br\_assign =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_assign,}
-                           \AttributeTok{bnode\_names =}\NormalTok{ bnode\_names, }
-                           \AttributeTok{wnode\_names =}\NormalTok{ wnode\_names,}
-                           \AttributeTok{model =} \DecValTok{1}\NormalTok{)}
+\NormalTok{network\_model }\OtherTok{\textless{}{-}} \FunctionTok{run\_network\_model}\NormalTok{(}\AttributeTok{abundance =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_abundance,}
+                        \AttributeTok{nb2br\_assign =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_assign,}
+                        \AttributeTok{bnode\_names =}\NormalTok{ bnode\_names,}
+                        \AttributeTok{wnode\_names =}\NormalTok{ wnode\_names,}
+                        \AttributeTok{model =} \DecValTok{1}\NormalTok{, }
+                        \AttributeTok{base\_filename =} \StringTok{"amre.genetic"}\NormalTok{,}
+                        \AttributeTok{parallel =} \ConstantTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-Now the user can use the output of \texttt{jags\_data} into JAGS to run the actual model:
+The \texttt{run\_network\_model()} function outputs a list object with two components. The first component of the output is \texttt{network\_model\$conn} which provides a formatted data frame (i.e., breeding nodes in first column, remaining columns have nonbreeding node names) of the modeled connectivity results. Each value in the connectivity matrix indicates the overall importance of a particular migratory connection. These values are interpreted as the proportion of individuals that migrate between the corresponding populations, as such all of the values in the connectivity matrix sum to one.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{parameters }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"conn\_g"}\NormalTok{)}
-\NormalTok{ni }\OtherTok{\textless{}{-}} \DecValTok{500000}
-\NormalTok{nt }\OtherTok{\textless{}{-}} \DecValTok{4}
-\NormalTok{nb }\OtherTok{\textless{}{-}} \DecValTok{100000}
-\NormalTok{nc }\OtherTok{\textless{}{-}} \DecValTok{2}
-\NormalTok{jags\_out }\OtherTok{\textless{}{-}} \FunctionTok{autojags}\NormalTok{(jags\_data, }\AttributeTok{inits=}\ConstantTok{NULL}\NormalTok{, parameters, base\_filename,}
-                      \AttributeTok{n.chains =}\NormalTok{ nc, }\AttributeTok{n.thin =}\NormalTok{nt, }\AttributeTok{iter.increment=}\NormalTok{ni,}
-                      \AttributeTok{max.iter =}\NormalTok{ ni}\SpecialCharTok{*}\DecValTok{50}\SpecialCharTok{+}\NormalTok{nb, }\AttributeTok{n.burnin =}\NormalTok{ nb,}
-                      \AttributeTok{n.adapt=} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{parallel=}\ConstantTok{TRUE}\NormalTok{)}
-\NormalTok{amre\_conn }\OtherTok{\textless{}{-}}\NormalTok{ jags\_out}\SpecialCharTok{$}\NormalTok{mean}\SpecialCharTok{$}\NormalTok{conn\_g}
+\NormalTok{network\_model}\SpecialCharTok{$}\NormalTok{conn}
 \end{Highlighting}
 \end{Shaded}
 
-The connectivity between the nodes is provided by the \texttt{conn\_g} parameter of the model, which is accessed from the above code. We provide this output for the example as well with \texttt{mignette::amre\_conn}. We also provide functions for basic visualization of the network. A threshold (\texttt{connected\_tol}) can be set to remove very weak connectivity (i.e.~set connectivity values less than the threshold to 0) for better visualizing the network as shown below.
+\begin{tabular}{l|r|r|r|r|r}
+\hline
+Breeding & ALM & LCA & HCA & CAR & AONU\\
+\hline
+WB & 0.14212 & 0.13901 & 0.01346 & 0.00507 & 0.00002\\
+\hline
+BR & 0.00010 & 0.00021 & 0.00008 & 0.02082 & 0.00004\\
+\hline
+NT & 0.05680 & 0.00041 & 0.00013 & 0.38276 & 0.00006\\
+\hline
+ST & 0.00003 & 0.01345 & 0.03618 & 0.03902 & 0.06453\\
+\hline
+MP & 0.00013 & 0.00036 & 0.00022 & 0.00002 & 0.08496\\
+\hline
+\end{tabular}
+
+The second component is the full output from \href{https://rdrr.io/cran/jagsUI/man/autojags.html}{\texttt{*jagsUI*\ autojags()}} and is accessed by \texttt{network\_model\$jags\_out}. Here, the raw connectivity matrix can be accessed:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{net }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{net\_create}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_conn, }
-                            \AttributeTok{node.names =} \FunctionTok{list}\NormalTok{(bnode\_names, wnode\_names),}
-                            \AttributeTok{connected\_tol =} \FloatTok{0.02}\NormalTok{) }\CommentTok{\# threshold}
+\NormalTok{amre\_conn }\OtherTok{\textless{}{-}}\NormalTok{ network\_model}\SpecialCharTok{$}\NormalTok{jags\_out}\SpecialCharTok{$}\NormalTok{mean}\SpecialCharTok{$}\NormalTok{conn\_g}
+\NormalTok{amre\_conn}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{r|r|r|r|r}
+\hline
+0.14212 & 0.13901 & 0.01346 & 0.00507 & 0.00002\\
+\hline
+0.00010 & 0.00021 & 0.00008 & 0.02082 & 0.00004\\
+\hline
+0.05680 & 0.00041 & 0.00013 & 0.38276 & 0.00006\\
+\hline
+0.00003 & 0.01345 & 0.03618 & 0.03902 & 0.06453\\
+\hline
+0.00013 & 0.00036 & 0.00022 & 0.00002 & 0.08496\\
+\hline
+\end{tabular}
+
+The raw connectivity matrix is used to plot the network. We plot the migratory network with the provided \texttt{mignette} functions \texttt{net\_create()} and \texttt{net\_draw()}. We set \texttt{connected\_tol\ =\ 0.01} which plots only the edges with connectivity values of greater than 0.01.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{amre\_net }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{net\_create}\NormalTok{(amre\_conn,}
+                            \AttributeTok{node.names =} \FunctionTok{list}\NormalTok{(bnode\_names,wnode\_names),}
+                            \AttributeTok{connected\_tol =} \FloatTok{0.01}\NormalTok{)}
 \CommentTok{\#set the display size range for nodes (min and max), default 1{-}10}
-\NormalTok{net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{node\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{20}\NormalTok{)}
+\NormalTok{amre\_net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{node\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{,}\DecValTok{25}\NormalTok{)}
 \CommentTok{\#set the display size range for edges (min and max), default 1{-}10}
-\NormalTok{net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{edge\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{5}\NormalTok{)}
-\FunctionTok{plot}\NormalTok{(mignette}\SpecialCharTok{::}\FunctionTok{net\_draw}\NormalTok{(net))}
+\NormalTok{amre\_net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{edge\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{5}\NormalTok{)}
+\CommentTok{\# change colors}
+\NormalTok{amre\_net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{bnode\_colors }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"\#009e73"}\NormalTok{, }\StringTok{"\#cc79a7"}\NormalTok{, }\StringTok{"\#56b4e9"}\NormalTok{, }\StringTok{"\#e69f00"}\NormalTok{, }\StringTok{"\#7979ff"}\NormalTok{)}
+\NormalTok{amre\_net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{wnode\_colors }\OtherTok{\textless{}{-}} \StringTok{"grey80"}
+
+\NormalTok{mignette}\SpecialCharTok{::}\FunctionTok{net\_draw}\NormalTok{(amre\_net)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-5-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-7-1.pdf}
 
-In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. By default, breeding populations are in the top row (red) and nonbreeding/wintering populations are in the bottom row (blue).
+In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. Breeding populations are in the top row, for which we provided custom colors, and nonbreeding populations are in the bottom row.
 
 This sums up the basics of creating and visualizing a migratory network. We encourage users to explore and build upon the visualization tools we provide (e.g.~overlay the migratory networks on geographic ranges) - the options are endless, enjoy!
 
-\hypertarget{breeding}{%
-\chapter{Breeding nodes}\label{breeding}}
+\hypertarget{nodes}{%
+\chapter{Define breeding and nonbreeding nodes}\label{nodes}}
+
+The first step of creating a migratory network is to spatially define the nodes (i.e.~populations) that make up the sampled portions of the breeding and nonbreeding range. This can either be done with \emph{vector} data for discrete spatial boundaries of nodes or \emph{raster} data for a continuous surface probabilistic membership of geographic cells to a node (e.g., population genetic structure of a genoscape \citep{ruegg2020genoscape}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(mignette)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(terra)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{vector-data}{%
+\section{Vector data}\label{vector-data}}
+
+Vector data can define nodes by representing geographic boundaries such as political borders or biogeographic regions. In \texttt{mignette}, we provide data for \emph{conservation regions} of the Western Hemisphere that integrate geopolitical boundaries and ecoregions.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# SpatVector from terra package}
+\NormalTok{regions\_file }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"conservation\_regions.Rds"}\NormalTok{, }\AttributeTok{package =} \StringTok{"mignette"}\NormalTok{)}
+\CommentTok{\# read in file as SpatVector}
+\NormalTok{conservation\_regions }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{(regions\_file)}
+
+\NormalTok{terra}\SpecialCharTok{::}\FunctionTok{plot}\NormalTok{(conservation\_regions, }\AttributeTok{col=}\FunctionTok{rainbow}\NormalTok{(}\DecValTok{10}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+For defining a node, we are only interested in regions that we have data. It's straightforward with the spatial functions from \texttt{terra} to determine the sampled regions. Here, we find the conservation regions for which we have sampled American Redstart data from the nonbreeding range.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# create SpatVector points object from Redstart lat/lon sampling data}
+\NormalTok{nonbreeding\_coords }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_nonbreeding\_data, }
+                             \AttributeTok{geom=}\FunctionTok{c}\NormalTok{(}\StringTok{"Lon"}\NormalTok{, }\StringTok{"Lat"}\NormalTok{),}
+                             \AttributeTok{crs =} \StringTok{"EPSG:4326"}\NormalTok{)}
+\CommentTok{\# find spatial intersection of points with conservation regions}
+\NormalTok{sampled\_conservation\_regions }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{intersect}\NormalTok{(nonbreeding\_coords,}
+\NormalTok{                                        conservation\_regions)}
+\CommentTok{\# count the number of sampled individuals associated with each conservation region}
+\NormalTok{sampled\_table }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(sampled\_conservation\_regions}\SpecialCharTok{$}\NormalTok{Region)}
+\NormalTok{sampled\_table}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Amazon/Orinoco-Northern Uplands         Atlantic Lowland Mexico 
+##                              20                              22 
+##                       Caribbean        Highland Central America 
+##                              69                               5 
+##        Highland/Interior Mexico         Lowland Central America 
+##                               1                              14 
+##                  Northern Andes 
+##                               3
+\end{verbatim}
+
+Downstream in the workflow, we need sufficiently sampling of individuals in (or inference to) a node. So, we'll only retain the conservation regions with more than 3 samples.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# retain conservation region names with more than 3 samples}
+\NormalTok{retained\_IDs }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(sampled\_table[sampled\_table }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{])}
+\NormalTok{retained\_IDs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Amazon/Orinoco-Northern Uplands" "Atlantic Lowland Mexico"        
+## [3] "Caribbean"                       "Highland Central America"       
+## [5] "Lowland Central America"
+\end{verbatim}
+
+Thus, we've identified the 5 nonbreeding nodes for the American Redstart data: Amazon/Orinoco-Northern Uplands (AONU), Atlantic Lowland Mexico (ALM), Caribbean (CAR), Highland Central America (HCA), and Lowland Central America (LCA). We can plot these conservation regions along with the corresponding sampling points.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# subset conservation regions file by retained regions}
+\NormalTok{conservation\_regions\_subset }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{subset}\NormalTok{(conservation\_regions, }
+\NormalTok{                                             conservation\_regions}\SpecialCharTok{$}\NormalTok{Region }\SpecialCharTok{\%in\%}\NormalTok{ retained\_IDs)}
+\CommentTok{\# subset sampled points by retained regions}
+\NormalTok{nonbreeding\_coords\_subset }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{subset}\NormalTok{(sampled\_conservation\_regions,}
+\NormalTok{                                           sampled\_conservation\_regions}\SpecialCharTok{$}\NormalTok{Region }\SpecialCharTok{\%in\%}\NormalTok{ retained\_IDs)}
+\CommentTok{\# plot}
+\NormalTok{terra}\SpecialCharTok{::}\FunctionTok{plot}\NormalTok{(conservation\_regions\_subset, }\AttributeTok{col =} \FunctionTok{rainbow}\NormalTok{(}\DecValTok{5}\NormalTok{))}
+\NormalTok{terra}\SpecialCharTok{::}\FunctionTok{points}\NormalTok{(nonbreeding\_coords\_subset, }\AttributeTok{cex =} \FloatTok{1.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\hypertarget{raster-data}{%
+\section{Raster data}\label{raster-data}}
+
+Raster data is used when populations are defined by a continuous surface of probabilities of membership to a population. In the example here, we have population genetic data from the American Redstart that define breeding populations (i.e., American Redstart genoscape, \citep{desaix2023low}). We have defined these nodes as Western Boreal (WB), Basin Rockies (BR), Northern Temperate (NT), Southern Temperate (ST) and Maritime Provinces (MP). Raster data for nodes are used in \texttt{mignette} to get node abundance that is scaled by the raster probabilities of population membership, as shown in the next section.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{amre\_genoscape\_file }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"amre\_genoscape.Rds"}\NormalTok{, }\AttributeTok{package =} \StringTok{"mignette"}\NormalTok{)}
+\NormalTok{amre\_genoscape }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{rast}\NormalTok{(amre\_genoscape\_file)}
+\NormalTok{terra}\SpecialCharTok{::}\FunctionTok{plot}\NormalTok{(amre\_genoscape)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+While it is outside the scope of \texttt{mignette} to perform the requisite population genetics analyses for producing these rasters, users with genetic data and expertise with genetic clustering analyses may be interested in the \protect\hyperlink{supplemental}{Supplementary information} that provide additional information and code.
+
+Now on to \protect\hyperlink{data}{Step 2) Abundance and migratory connectivity data}
+
+\hypertarget{data}{%
+\chapter{Assemble abundance and migratory connectivity data}\label{data}}
+
+The two main data inputs into the migratory network model are \emph{abundance data} and \emph{migratory connectivity data} for the nodes.
+
+\hypertarget{abundance-data}{%
+\section{Abundance data}\label{abundance-data}}
+
+Once users have defined breeding and nonbreeding nodes for their sampled data, the species' abundance for each node is needed. In some cases, users may be using node definitions for which abundance estimates have already been calculated. Regardless of however \texttt{mignette} users obtain abundance data for the breeding and nonbreeding nodes, it needs to be formatted in the following manner for using with \texttt{mignette} as shown with the example American Redstart data:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mignette}\SpecialCharTok{::}\NormalTok{amre\_abundance}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r}
+\hline
+Population & Relative\_abundance\\
+\hline
+BR & 2403\\
+\hline
+ST & 9419\\
+\hline
+MP & 19011\\
+\hline
+NT & 72147\\
+\hline
+WB & 26080\\
+\hline
+HCA & 326\\
+\hline
+AONU & 1139\\
+\hline
+LCA & 2802\\
+\hline
+ALM & 3169\\
+\hline
+CAR & 7987\\
+\hline
+\end{tabular}
+
+where the first column of the data frame is the node (i.e., population) and the second column is the abundance. All sampled nodes from the breeding and nonbreeding range need to be present in this file.
+
+One common form of abundance data is as a raster where each cell specifies abundance (for example \href{https://science.ebird.org/en/status-and-trends}{eBird Status and Trends data} available from the \href{https://cornelllabofornithology.github.io/ebirdst/}{ebirdst R package}). If you are working with raster abundance data and need to summarize it at the node level, there are two functions in \texttt{mignette} to facilitate that process.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \texttt{get\_vector\_abunds(populations,\ abunds)} - sums the abundance data for a SpatRaster object of abundance (specified by the \texttt{abunds} parameter) by the vector node delineation (specified by the \texttt{populations} parameter).
+\item
+  \texttt{get\_raster\_abunds(populations,\ abunds)} - sums the abundance data for a SpatRaster object of abundance by \emph{weighting} values based on the raster node delineation.
+\end{enumerate}
+
+\hypertarget{migratory-connectivity-data}{%
+\section{Migratory connectivity data}\label{migratory-connectivity-data}}
+
+In addition to having node abundance data, \texttt{mignette} users need to have migratory connectivity data detailing the number of individuals connecting the nodes between the two stages. Migratory connectivity data has a directionality to it - i.e., there is an ``encounter'' season and a ``recovery'' season - and we use this corresponding terminology from \citep{prochazka2017delineating}. In \texttt{mignette} different types of migratory connectivity data use different models based on whether the breeding or nonbreeding seasons are the ``encounter'' or ``recovery'' seasons. To account for users providing different types of connectivity data, we provide three different models in mignette: 1 = the nonbreeding season is ``encounter'' and the breeding season is ``recovery''; 2 = the breeding season is ``encounter'' and the nonbreeding season is ``recovery''; and 3 = connectivity data are from both model types 1 and 2. For cross-season mark-recapture data (i.e.~from banding or geolocators), the encounter season is where the individual is captured and the recovery season is where they are re-captured or re-sighted or, in the case of geolocator data, inferred to have originated. For genetic data, the encounter season is nonbreeding and the recovery season is breeding (i.e., ``inferred'').
+
+The American Redstart assignment is all from genetic data \citep{desaix2023low}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mignette}\SpecialCharTok{::}\NormalTok{amre\_assign}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r|r|r|r|r}
+\hline
+Breeding & CAR & AONU & ALM & HCA & LCA\\
+\hline
+BR & 2 & 0 & 0 & 0 & 0\\
+\hline
+MP & 0 & 9 & 0 & 0 & 0\\
+\hline
+NT & 54 & 0 & 3 & 0 & 0\\
+\hline
+ST & 12 & 12 & 0 & 4 & 1\\
+\hline
+WB & 1 & 0 & 19 & 1 & 13\\
+\hline
+\end{tabular}
+
+For the \texttt{mignette} migratory network, the migratory connectivity data needs to be formatted as above: where the first column provides the node names from the ``recovery'' season in the rows and the remaining columns are the ``encounter'' season node names. The values in the data frame all the numbers of individuals assigned from the ``encounter'' season to the ``recovery'' season (in this case, American Redstarts assigned from the nonbreeding sampling location to the breeding population).
+
+Thus, when \texttt{mignette} users have migratory connectivity data types that include assignment in both directions, they will need to create two separate data frames for those data.
+
+Now on to \protect\hyperlink{model}{Step 3) Modeling the migratory network}
+
+\hypertarget{model}{%
+\chapter{Modeling the migratory network}\label{model}}
+
+\hypertarget{input-data}{%
+\section{Input data}\label{input-data}}
+
+As described in the previous section the data required are:
+
+\begin{itemize}
+\tightlist
+\item
+  Abundance
+\item
+  Migratory connectivity
+\end{itemize}
+
+The abundance data need to be in the following format, with node IDs (same names as in the \emph{assignment} file) in the first column and abundance values in the second column.
+
+\begin{tabular}{l|r}
+\hline
+Population & Relative\_abundance\\
+\hline
+BR & 2403\\
+\hline
+ST & 9419\\
+\hline
+MP & 19011\\
+\hline
+NT & 72147\\
+\hline
+WB & 26080\\
+\hline
+HCA & 326\\
+\hline
+AONU & 1139\\
+\hline
+LCA & 2802\\
+\hline
+ALM & 3169\\
+\hline
+CAR & 7987\\
+\hline
+\end{tabular}
+
+For the migratory connectivity data, the input data needs to correspond to the following format:
+
+\begin{tabular}{l|r|r|r|r|r}
+\hline
+Breeding & CAR & AONU & ALM & HCA & LCA\\
+\hline
+BR & 2 & 0 & 0 & 0 & 0\\
+\hline
+MP & 0 & 9 & 0 & 0 & 0\\
+\hline
+NT & 54 & 0 & 3 & 0 & 0\\
+\hline
+ST & 12 & 12 & 0 & 4 & 1\\
+\hline
+WB & 1 & 0 & 19 & 1 & 13\\
+\hline
+\end{tabular}
+
+If you skipped it, see the previous \protect\hyperlink{data}{Step 2) Abundance and migratory connectivity data} section for specific details on the input data formatting!
+
+For the following functions, we specify the order of the nodes we are using for the model. Here, we are just ordering nodes geographically by longitude to facilitate straightforward interpretation of the output.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"WB"}\NormalTok{, }\StringTok{"BR"}\NormalTok{, }\StringTok{"NT"}\NormalTok{, }\StringTok{"ST"}\NormalTok{, }\StringTok{"MP"}\NormalTok{)}
+\NormalTok{wnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ALM"}\NormalTok{, }\StringTok{"LCA"}\NormalTok{, }\StringTok{"HCA"}\NormalTok{, }\StringTok{"CAR"}\NormalTok{, }\StringTok{"AONU"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+For the American Redstart migratory network, we use \texttt{model\ =\ 1} from \texttt{mignette} which specifies that nonbreeding nodes are ``encountered'' and breeding nodes are ``recovered'' (i.e., inferred). This output saves the model as \texttt{amre.genetic.model\_1.txt}. Below we specify \texttt{parallel\ =\ TRUE} to run MCMC on multiple cores and use the remaining defaults described previously CHANGE LINK. This step is computationally intensive and takes \textasciitilde2 minutes to run on a 2023 MacBook Pro with an Apple M2 Pro chip.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{network\_model }\OtherTok{\textless{}{-}} \FunctionTok{run\_network\_model}\NormalTok{(}\AttributeTok{abundance =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_abundance,}
+                        \AttributeTok{nb2br\_assign =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_assign,}
+                        \AttributeTok{bnode\_names =}\NormalTok{ bnode\_names,}
+                        \AttributeTok{wnode\_names =}\NormalTok{ wnode\_names,}
+                        \AttributeTok{model =} \DecValTok{1}\NormalTok{, }
+                        \AttributeTok{base\_filename =} \StringTok{"amre.genetic"}\NormalTok{,}
+                        \AttributeTok{parallel =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+The \texttt{run\_network\_model()} function outputs a list object with two components. The first component of the output is \texttt{network\_model\$conn} which provides a formatted data frame (i.e., breeding nodes in first column, remaining columns have nonbreeding node names) of the modeled connectivity results. Each value in the connectivity matrix indicates the overall importance of a particular migratory connection. These values are interpreted as the proportion of individuals that migrate between the corresponding populations, as such all of the values in the connectivity matrix sum to one.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{network\_model}\SpecialCharTok{$}\NormalTok{conn}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r|r|r|r|r}
+\hline
+Breeding & ALM & LCA & HCA & CAR & AONU\\
+\hline
+WB & 0.14212 & 0.13901 & 0.01346 & 0.00507 & 0.00002\\
+\hline
+BR & 0.00010 & 0.00021 & 0.00008 & 0.02082 & 0.00004\\
+\hline
+NT & 0.05680 & 0.00041 & 0.00013 & 0.38276 & 0.00006\\
+\hline
+ST & 0.00003 & 0.01345 & 0.03618 & 0.03902 & 0.06453\\
+\hline
+MP & 0.00013 & 0.00036 & 0.00022 & 0.00002 & 0.08496\\
+\hline
+\end{tabular}
+
+The second component is the full output from \href{https://rdrr.io/cran/jagsUI/man/autojags.html}{\texttt{*jagsUI*\ autojags()}} and is accessed by \texttt{network\_model\$jags\_out}. Here, the raw connectivity matrix can be accessed:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{amre\_conn }\OtherTok{\textless{}{-}}\NormalTok{ network\_model}\SpecialCharTok{$}\NormalTok{jags\_out}\SpecialCharTok{$}\NormalTok{mean}\SpecialCharTok{$}\NormalTok{conn\_g}
+\NormalTok{amre\_conn}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{r|r|r|r|r}
+\hline
+0.14212 & 0.13901 & 0.01346 & 0.00507 & 0.00002\\
+\hline
+0.00010 & 0.00021 & 0.00008 & 0.02082 & 0.00004\\
+\hline
+0.05680 & 0.00041 & 0.00013 & 0.38276 & 0.00006\\
+\hline
+0.00003 & 0.01345 & 0.03618 & 0.03902 & 0.06453\\
+\hline
+0.00013 & 0.00036 & 0.00022 & 0.00002 & 0.08496\\
+\hline
+\end{tabular}
+
+The raw connectivity matrix is used to plot the network. We plot the migratory network with the provided \texttt{mignette} functions \texttt{net\_create()} and \texttt{net\_draw()}. We set \texttt{connected\_tol\ =\ 0.01} which plots only the edges with connectivity values of greater than 0.01. We also demonstrate below how to change parameters such as the colors and the node and edge scale size.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{amre\_net }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{net\_create}\NormalTok{(amre\_conn,}
+                            \AttributeTok{node.names =} \FunctionTok{list}\NormalTok{(bnode\_names,wnode\_names),}
+                            \AttributeTok{connected\_tol =} \FloatTok{0.01}\NormalTok{)}
+\CommentTok{\#set the display size range for nodes (min and max), default 1{-}10}
+\NormalTok{amre\_net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{node\_size\_scale }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{,}\DecValTok{25}\NormalTok{)}
+\CommentTok{\#set the display size range for edges (min and max), default 1{-}10}
+\NormalTok{amre\_net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{edge\_size\_scale }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{5}\NormalTok{)}
+\CommentTok{\# change colors}
+\NormalTok{amre\_net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{bnode\_colors }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"\#009e73"}\NormalTok{, }\StringTok{"\#cc79a7"}\NormalTok{, }\StringTok{"\#56b4e9"}\NormalTok{, }\StringTok{"\#e69f00"}\NormalTok{, }\StringTok{"\#7979ff"}\NormalTok{)}
+\NormalTok{amre\_net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{wnode\_colors }\OtherTok{\textless{}{-}} \StringTok{"grey80"}
+
+\NormalTok{mignette}\SpecialCharTok{::}\FunctionTok{net\_draw}\NormalTok{(amre\_net)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-21-1.pdf}
+
+In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. Breeding populations are in the top row, for which we provided custom colors, and nonbreeding populations are in the bottom row.
+
+Now you have a migratory network! Check out the \protect\hyperlink{visualization}{visualization supplement} for additional ideas on plotting the network.
+
+\hypertarget{visualization}{%
+\chapter{Supplement: Visualizations}\label{visualization}}
+
+\hypertarget{alluvial-plot}{%
+\section{Alluvial plot}\label{alluvial-plot}}
+
+Ok, we'll toss out another way to visualize these networks using the \href{https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.htm}{\texttt{ggalluvial} package} because it's really fun. In this alluvial plot, the width of the connections correspond to the network model connectivity output, thus correspond to the proportion of the global species abundance that use that migratory network. The bars on the top row are the breeding nodes scaled by abundance and the bottom row are the nonbreeding nodes scaled by abundance.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(mignette)}
+\FunctionTok{library}\NormalTok{(ggalluvial)}
+
+\NormalTok{bnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"WB"}\NormalTok{, }\StringTok{"BR"}\NormalTok{, }\StringTok{"NT"}\NormalTok{, }\StringTok{"ST"}\NormalTok{, }\StringTok{"MP"}\NormalTok{)}
+\NormalTok{wnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ALM"}\NormalTok{, }\StringTok{"LCA"}\NormalTok{, }\StringTok{"HCA"}\NormalTok{, }\StringTok{"CAR"}\NormalTok{, }\StringTok{"AONU"}\NormalTok{)}
+
+\NormalTok{cluster\_colors }\OtherTok{\textless{}{-}}  \FunctionTok{c}\NormalTok{(}
+  \StringTok{\textasciigrave{}}\AttributeTok{ST}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#e69f00"}\NormalTok{, }\CommentTok{\# orange/Southern Temperate}
+  \StringTok{\textasciigrave{}}\AttributeTok{BR}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#cc79a7"}\NormalTok{, }\CommentTok{\# pink/Basin Rockies (BR)}
+  \StringTok{\textasciigrave{}}\AttributeTok{NT}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#56b4e9"}\NormalTok{, }\CommentTok{\# light blue/Northern Temperate (NT)}
+  \StringTok{\textasciigrave{}}\AttributeTok{WB}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#009e73"}\NormalTok{, }\CommentTok{\# green/Western Boreal (WB)}
+  \StringTok{\textasciigrave{}}\AttributeTok{MP}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#7979ff"} \CommentTok{\# dark blue/Maritime Provinces (MP)}
+\NormalTok{) }
+
+\NormalTok{amre\_conn\_df }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_conn }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tibble}\NormalTok{(}\AttributeTok{rownames =} \StringTok{"Breeding"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =}\NormalTok{ ALM}\SpecialCharTok{:}\NormalTok{AONU, }\AttributeTok{names\_to =} \StringTok{"Nonbreeding"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"Connectivity"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Connectivity =} \FunctionTok{ifelse}\NormalTok{(Connectivity }\SpecialCharTok{\textless{}} \FloatTok{0.01}\NormalTok{, }\DecValTok{0}\NormalTok{, Connectivity)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Breeding =} \FunctionTok{factor}\NormalTok{(Breeding, }\AttributeTok{levels =} \FunctionTok{rev}\NormalTok{(bnode\_names)),}
+         \AttributeTok{Nonbreeding =} \FunctionTok{factor}\NormalTok{(Nonbreeding, }\AttributeTok{levels =} \FunctionTok{rev}\NormalTok{(wnode\_names)))}
+
+\NormalTok{p.alluvial }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(amre\_conn\_df,}
+       \FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Connectivity, }\AttributeTok{axis1 =}\NormalTok{ Nonbreeding, }\AttributeTok{axis2 =}\NormalTok{ Breeding)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_alluvium}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Breeding), }\AttributeTok{width =} \DecValTok{1}\SpecialCharTok{/}\DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =}\NormalTok{ cluster\_colors) }\SpecialCharTok{+}
+  \FunctionTok{geom\_stratum}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.25}\NormalTok{, }\AttributeTok{width =} \DecValTok{1}\SpecialCharTok{/}\DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\AttributeTok{stat =} \StringTok{"stratum"}\NormalTok{, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{after\_stat}\NormalTok{(stratum))) }\SpecialCharTok{+}
+  \FunctionTok{scale\_x\_discrete}\NormalTok{(}\AttributeTok{limits =} \FunctionTok{c}\NormalTok{(}\StringTok{"Nonbreeding"}\NormalTok{, }\StringTok{"Breeding"}\NormalTok{),}
+                   \AttributeTok{expand =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.05}\NormalTok{, }\FloatTok{0.05}\NormalTok{)) }\SpecialCharTok{+} 
+  \FunctionTok{coord\_flip}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme\_void}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.background =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \StringTok{"white"}\NormalTok{))}
+
+\NormalTok{p.alluvial}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-22-1.pdf}
+
+\hypertarget{supplemental}{%
+\chapter{Supplement: Avian abundance data and genetic breeding nodes}\label{supplemental}}
+
+This supplementary section provides more detailed information outside the scope of \texttt{mignette}. Specifically, the code here goes into details of using avian abundance data and genetic populations from a genoscape.
+
+\hypertarget{breeding-nodes}{%
+\section{Breeding nodes}\label{breeding-nodes}}
 
 Delineating breeding nodes is necessary for our migratory network model for both 1) assignment among populations, and 2) specifying a region for relative abundance. Here, we show how breeding nodes can be delineated by genetically distinct populations on the breeding grounds. In this example, we'll show how to use \href{https://ebird.org/science/status-and-trends}{eBird Status and Trends} data to specify the breeding range and then use genetic data from admixture analyses to specify the spatial extent of the breeding nodes.
 
 \hypertarget{ebirdst}{%
-\section{ebirdst}\label{ebirdst}}
+\subsection{ebirdst}\label{ebirdst}}
 
 In our migratory network analyses, the \href{https://science.ebird.org/en/status-and-trends}{eBird Status and Trends} data is used to delineate the different stages of the annual cycle. Prior to doing anything with eBird Status and Trends data, you will need to download the \texttt{ebirdst} package, and then get access to the data. \textbf{You will need to follow the most up-to-date instructions from the \texttt{ebirdst} developers for getting the abundance data. Currently, that information is here: \url{https://ebird.github.io/ebirdst/}}
 
@@ -360,7 +807,7 @@ where \texttt{"XXXXX"} is the key.
 By following instructions from the \texttt{ebirdst} developers, you can obtain polygons of the breeding and nonbreeding ranges of avian species (see \url{https://ebird.github.io/ebirdst/} for details).
 
 \hypertarget{creating-the-genoscape}{%
-\section{Creating the genoscape}\label{creating-the-genoscape}}
+\subsection{Creating the genoscape}\label{creating-the-genoscape}}
 
 A genoscape is the collection of genetically distinct populations that make up a species' range \citep{ruegg2021american}. Typically, for migratory species, the genoscape describes this population structure on the breeding range because the nonbreeding populations can can contain individuals from different breeding populations.
 
@@ -378,7 +825,7 @@ We will outline the main genoscape creation steps here, but full instructions on
 
 The Q-value matrix is obtained from individual admixture analyses (e.g.~Structure, Admixture, \texttt{snmf} fuction from the LEA R-package). Latitude/longitude coordinates are for the individual samples used in the Q-value matrix. Breeding range polygons can be obtained from \texttt{ebirdst} (see previous section).
 
-The \texttt{amre\_breeding\_data} data set provides admixture results (Q-values) for five genetic clusters for American Redstart (DeSaix et al.~2023) and metadata for the sampled individuals.
+The \texttt{amre\_breeding\_data} data set provides admixture results (Q-values) for five genetic clusters for American Redstart \citep{desaix2023low} and metadata for the sampled individuals.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -409,16 +856,16 @@ We will also specify custom colors to correspond to the published genoscape.
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{cluster\_colors }\OtherTok{\textless{}{-}}  \FunctionTok{c}\NormalTok{(}
-  \StringTok{\textasciigrave{}}\AttributeTok{ST}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#FF99FF"}\NormalTok{, }\CommentTok{\# pink/Southern Temperate}
-  \StringTok{\textasciigrave{}}\AttributeTok{BR}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#3399FF"}\NormalTok{, }\CommentTok{\# blue/Basin Rockies}
-  \StringTok{\textasciigrave{}}\AttributeTok{NT}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#FFFF33"}\NormalTok{, }\CommentTok{\# yellow/Northern Temperate}
-  \StringTok{\textasciigrave{}}\AttributeTok{WB}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#339933"}\NormalTok{, }\CommentTok{\# green/Western Boreal}
-  \StringTok{\textasciigrave{}}\AttributeTok{MP}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#CC0033"} \CommentTok{\# red/Maritime Provinces}
+  \StringTok{\textasciigrave{}}\AttributeTok{ST}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#e69f00"}\NormalTok{, }\CommentTok{\# orange/Southern Temperate}
+  \StringTok{\textasciigrave{}}\AttributeTok{BR}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#cc79a7"}\NormalTok{, }\CommentTok{\# pink/Basin Rockies (BR)}
+  \StringTok{\textasciigrave{}}\AttributeTok{NT}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#56b4e9"}\NormalTok{, }\CommentTok{\# light blue/Northern Temperate (NT)}
+  \StringTok{\textasciigrave{}}\AttributeTok{WB}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#009e73"}\NormalTok{, }\CommentTok{\# green/Western Boreal (WB)}
+  \StringTok{\textasciigrave{}}\AttributeTok{MP}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#7979ff"} \CommentTok{\# dark blue/Maritime Provinces (MP)}
 \NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
 
-We will use a \href{https://github.com/eriqande/TESS3_encho_sen}{modified version} of the \texttt{tess3r} package to create the genoscape rasters.
+We will use a \href{https://github.com/eriqande/TESS3_encho_sen}{modified version of the \texttt{tess3r} package} to create the genoscape rasters.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -451,7 +898,7 @@ Check out the resulting genoscape:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-24-1.pdf}
 
 \textbf{STOP}
 
@@ -484,497 +931,7 @@ Check out the polygons
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics[width=0.7\linewidth]{Mignette_files/figure-latex/unnamed-chunk-9-1}
-
-Note that the lower population membership probabilities occur at the boundaries of different populations, thereby making the polygons discontinuous compared to the entire range
-
-Now on to creating the \protect\hyperlink{wintering}{wintering nodes}
-
-\hypertarget{wintering}{%
-\chapter{Nonbreeding nodes}\label{wintering}}
-
-For the migratory networks, we will use ecoregions to define the nonbreeding nodes. However, other nonbreeding nodes could be defined by the user instead. If you already have polygons defining your nodes interest, then continue to the \protect\hyperlink{abundance}{relative abundance section}.
-
-\hypertarget{subsetting-ecoregions}{%
-\section{Subsetting ecoregions}\label{subsetting-ecoregions}}
-
-The ecoregion data is derived from {[}provide link{]} and defines biogeographic regions in the Western Hemisphere. We provide these as external data stored as a SpatVector. We will intersect the ecoregions with the nonbreeding range of the American Redstart to identify all the ecoregions for this region.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(mignette)}
-\FunctionTok{library}\NormalTok{(terra)}
-\FunctionTok{library}\NormalTok{(tidyterra)}
-\FunctionTok{library}\NormalTok{(tidyverse)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{ecoregions }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"ecoregions.Rds"}\NormalTok{,}
-                          \AttributeTok{package =} \StringTok{"mignette"}\NormalTok{)}
-\NormalTok{ecoregions }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{(ecoregions)}
-\NormalTok{amre\_nonbreeding\_range }\OtherTok{\textless{}{-}} \FunctionTok{system.file}\NormalTok{(}\StringTok{"extdata"}\NormalTok{, }\StringTok{"amre\_nonbreeding\_range.Rds"}\NormalTok{,}
-                                      \AttributeTok{package =} \StringTok{"mignette"}\NormalTok{)}
-\NormalTok{amre\_nonbreeding\_range }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{(amre\_nonbreeding\_range)}
-
-\NormalTok{amre\_nonbreeding\_ecoregions }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{intersect}\NormalTok{(amre\_nonbreeding\_range, ecoregions)}
-
-\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
-\NormalTok{  tidyterra}\SpecialCharTok{::}\FunctionTok{geom\_spatvector}\NormalTok{(}\AttributeTok{data =}\NormalTok{ amre\_nonbreeding\_ecoregions, }
-                  \FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Region)) }\SpecialCharTok{+}
-  \FunctionTok{theme\_bw}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-11-1.pdf}
-
-\hypertarget{select-sampled-regions}{%
-\section{Select sampled regions}\label{select-sampled-regions}}
-
-For the purpose of the migratory network, we are only interested in nonbreeding nodes for which we have sampled data. To identify these nodes, we will intersect our sampled nonbreeding individuals locations with the ecoregion data. Additionally, since sampling locations may fall just outside an ecoregion boundary (for example, imprecise coordinates along a coast) we will identify the ecoregions by selecting the \emph{nearest} ecoregion to a point.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{nonbreeding\_coords }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{vect}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_nonbreeding\_data, }
-                             \AttributeTok{geom=}\FunctionTok{c}\NormalTok{(}\StringTok{"Lon"}\NormalTok{, }\StringTok{"Lat"}\NormalTok{),}
-                             \AttributeTok{crs =} \StringTok{"EPSG:4326"}\NormalTok{)}
-\NormalTok{nonbreeding\_coords\_nearest }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{nearest}\NormalTok{(nonbreeding\_coords,}
-\NormalTok{                                        ecoregions,}
-                                        \AttributeTok{centroids =} \ConstantTok{FALSE}\NormalTok{)}
-\CommentTok{\# Add Region ID from original file for easier interpretation}
-\NormalTok{nonbreeding\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region }\OtherTok{\textless{}{-}}\NormalTok{ ecoregions}\SpecialCharTok{$}\NormalTok{Region[nonbreeding\_coords\_nearest}\SpecialCharTok{$}\NormalTok{to\_id]}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{table}\NormalTok{(nonbreeding\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{tabular}{l|r}
-\hline
-Var1 & Freq\\
-\hline
-Amazon/Orinoco-Northern Uplands & 21\\
-\hline
-Atlantic Lowland Mexico & 22\\
-\hline
-Caribbean & 69\\
-\hline
-Highland Central America & 5\\
-\hline
-Highland/Interior Mexico & 1\\
-\hline
-Lowland Central America & 14\\
-\hline
-Northern Andes & 3\\
-\hline
-\end{tabular}
-
-For the migratory network, we also want sufficient sampling of a node for the model to be able to reach convergence. In the example above, we see ``Highland/Interior Mexico'' only has 1 sample and the ``Northern Andes'' only have 3 samples. Below, we use a cut off of a minimum of 4 samples to remove those ecoregions
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{cutoff }\OtherTok{\textless{}{-}} \DecValTok{4}
-
-\NormalTok{ecoregions\_keep }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\FunctionTok{table}\NormalTok{(nonbreeding\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\NormalTok{.[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{\textless{}}\NormalTok{ cutoff) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pull}\NormalTok{(}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{as.character}\NormalTok{()}
-
-\NormalTok{nonbreeding\_coords\_nearest\_subset }\OtherTok{\textless{}{-}}\NormalTok{ nonbreeding\_coords\_nearest[nonbreeding\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region }\SpecialCharTok{\%in\%}\NormalTok{ ecoregions\_keep]}
-\NormalTok{nonbreeding\_regions\_subset }\OtherTok{\textless{}{-}}\NormalTok{ ecoregions[nonbreeding\_coords\_nearest\_subset]}
-\end{Highlighting}
-\end{Shaded}
-
-This leaves us with a final set of our nonbreeding nodes and the samples associated with them:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
-  \FunctionTok{geom\_spatvector}\NormalTok{(}\AttributeTok{data =}\NormalTok{ nonbreeding\_regions\_subset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Region)) }\SpecialCharTok{+}
-  \FunctionTok{geom\_spatvector}\NormalTok{(}\AttributeTok{data =}\NormalTok{ nonbreeding\_coords\_nearest\_subset) }\SpecialCharTok{+}
-  \FunctionTok{theme\_bw}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-15-1.pdf}
-
-Now on to getting the \protect\hyperlink{assignment}{node assignment matrix}.
-
-\hypertarget{assignment}{%
-\chapter{Node assignment}\label{assignment}}
-
-In \texttt{mignette}, node assignment data is one of the two main inputs into the migratory network model. Regardless of the methods used to collect these data, as input into the \texttt{mignette} migratory network model it needs to be in a specific format:
-
-\begin{tabular}{l|r|r|r|r|r}
-\hline
-Breeding & CAR & AONU & ALM & HCA & LCA\\
-\hline
-BR & 2 & 0 & 0 & 0 & 0\\
-\hline
-MP & 0 & 9 & 0 & 0 & 0\\
-\hline
-NT & 54 & 0 & 3 & 0 & 0\\
-\hline
-ST & 12 & 12 & 0 & 4 & 1\\
-\hline
-WB & 1 & 0 & 19 & 1 & 13\\
-\hline
-\end{tabular}
-
-The first column specifies the \emph{inferred} nodes in assignment. In the case of the genetic assignment data shown above, the breeding nodes are inferred from population assignment methods with individuals sampled from the nonbreeding range. The other column names refer to the nonbreeding node names, and the values are the number of individuals from a given nonbreeding node assigned to the respective breeding node specified by the row.
-
-For the American Redstart example, we can get the assignment data in the format shown above based on population assignment data provided in \texttt{mignette} as well as the ecoregion information from the previous section.
-
-The \texttt{amre\_nonbreeding\_range} data, from which we extracted the latitude and longitude coordinates of sampling locations to identify ecoregions in the previous section, also provides the breeding node assignment data from DeSaix et al.~(2023). Creating the \texttt{nonbreeding\_coords\_nearest} object retained the same row order of data as in the original \texttt{amre\_nonbreeding\_range}, thus we can combine these data in the following way. \textbf{Note:} We are manually combining these data without a \emph{join} by sample name or another identifier so it is always good to triple check that indeed the data are in the correct order when not using a join.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{amre\_assign\_manual }\OtherTok{\textless{}{-}} \FunctionTok{tibble}\NormalTok{(}\StringTok{"Breeding"} \OtherTok{=}\NormalTok{ amre\_nonbreeding\_data}\SpecialCharTok{$}\NormalTok{Breeding\_assignment,}
-                             \StringTok{"Nonbreeding"} \OtherTok{=}\NormalTok{ nonbreeding\_coords\_nearest}\SpecialCharTok{$}\NormalTok{Region) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{filter}\NormalTok{(Nonbreeding }\SpecialCharTok{\%in\%}\NormalTok{ ecoregions\_keep) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\# remove those nonbreeding nodes with \textless{}4 samples}
-  \FunctionTok{group\_by}\NormalTok{(Breeding, Nonbreeding) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{N =} \FunctionTok{n}\NormalTok{(),}
-            \AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ Nonbreeding, }\AttributeTok{values\_from =}\NormalTok{ N) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{rename}\NormalTok{(}\StringTok{"AONU"} \OtherTok{=} \StringTok{"Amazon/Orinoco{-}Northern Uplands"}\NormalTok{,}
-         \StringTok{"ALM"} \OtherTok{=} \StringTok{"Atlantic Lowland Mexico"}\NormalTok{,}
-         \StringTok{"CAR"} \OtherTok{=} \StringTok{"Caribbean"}\NormalTok{,}
-         \StringTok{"HCA"} \OtherTok{=} \StringTok{"Highland Central America"}\NormalTok{,}
-         \StringTok{"LCA"} \OtherTok{=} \StringTok{"Lowland Central America"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{where}\NormalTok{(is.numeric), }\SpecialCharTok{\textasciitilde{}}\FunctionTok{ifelse}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(.), }\DecValTok{0}\NormalTok{, .))) }\CommentTok{\# replace NAs with 0s}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{amre\_assign\_manual}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{tabular}{l|r|r|r|r|r}
-\hline
-Breeding & CAR & AONU & ALM & HCA & LCA\\
-\hline
-BR & 2 & 0 & 0 & 0 & 0\\
-\hline
-MP & 0 & 9 & 0 & 0 & 0\\
-\hline
-NT & 54 & 0 & 3 & 0 & 0\\
-\hline
-ST & 12 & 12 & 0 & 4 & 1\\
-\hline
-WB & 1 & 0 & 19 & 1 & 13\\
-\hline
-\end{tabular}
-
-We can see that we have effectively mapped the breeding population assignment meta data to the correct ecoregion based on our individual's sampling location. Great!
-
-Now on to getting the \protect\hyperlink{abundance}{relative abundance}.
-
-\hypertarget{abundance}{%
-\chapter{Relative Abundance}\label{abundance}}
-
-Here, we calculate the relative abundance for the different nodes of the migratory network. The input data for this step are:
-
-\begin{itemize}
-\tightlist
-\item
-  Abundance data (Raster)
-\item
-  Population ranges (Raster or Vector)
-\end{itemize}
-
-Typically, the geographic range of a population will be stored as a vector (e.g., polygon), but in the case of a genoscape, the population ranges can be specified by a raster with q-values. For abundance data, we will use the \href{https://science.ebird.org/en/status-and-trends}{eBird Status and Trends} data which are obtained with the \href{https://cornelllabofornithology.github.io/ebirdst/}{ebirdst R package}, but any abundance data in a raster object can be used. \textbf{Note:} We do not provide the \texttt{ebirdst} data within \texttt{mignette} - these data are publicly available and licensed by the Cornell Lab of Ornithology and can be obtained by following the appropriate directions in the above links.
-
-\hypertarget{get-relative-abundance-for-a-genoscape-raster}{%
-\section{Get relative abundance for a genoscape (raster)}\label{get-relative-abundance-for-a-genoscape-raster}}
-
-In the case of a \emph{genoscape} raster with q-values, we will convert the q-values to probabilities of a pixel belonging to that population which is used to weight the abundance values. This is done with a single function \texttt{get\_genoscape\_abunds()}, and outputs a two-column matrix with the population names and the relative abundance of each population. Below, we provide an example with the genoscape as a SpatRaster (\texttt{genoscape}) and the ebirdst abundance data as a SpatRaster (\texttt{abunds}; obtained from the links above).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{genoscape\_abunds }\OtherTok{\textless{}{-}} \FunctionTok{get\_genoscape\_abunds}\NormalTok{(}\AttributeTok{genoscape =}\NormalTok{ amre\_genoscape, }\AttributeTok{abunds =}\NormalTok{ abunds)}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{get-relative-abundance-for-a-vector}{%
-\section{Get relative abundance for a vector}\label{get-relative-abundance-for-a-vector}}
-
-In the case of vector file delineating populations, we sum abundance across the range of each population. This is done with a single function \texttt{get\_vector\_abunds()}, and outputs a two-column matrix with the population names and the relative abundance of each population. The example below provides the nonbreeding ecoregions file as a SpatVector (\texttt{winter\_regions}) and the ebirdst abundance data as a SpatRaster (\texttt{abunds})
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{winter\_abunds }\OtherTok{\textless{}{-}} \FunctionTok{get\_vector\_abunds}\NormalTok{(}\AttributeTok{populations =}\NormalTok{ nonbreeding\_regions\_subset, }\AttributeTok{abunds =}\NormalTok{ abunds)}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{combine-the-abundance-data}{%
-\section{Combine the abundance data}\label{combine-the-abundance-data}}
-
-As you'll see in the next section, these data are one of the primary inputs into the migratory network model and we combine the relative abundance data sets across the breeding and nonbreeding nodes with the following code. The final product is what we provide in this package
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{amre\_abundance }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(genoscape\_abunds, winter\_abunds) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Relative\_abundance =} \FunctionTok{round}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(Relative\_abundance)))}
-\NormalTok{amre\_abundance}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{tabular}{l|r}
-\hline
-Population & Relative\_abundance\\
-\hline
-BR & 2403\\
-\hline
-ST & 9419\\
-\hline
-MP & 19011\\
-\hline
-NT & 72147\\
-\hline
-WB & 26080\\
-\hline
-HCA & 326\\
-\hline
-AONU & 1139\\
-\hline
-LCA & 2802\\
-\hline
-ALM & 3169\\
-\hline
-CAR & 7987\\
-\hline
-\end{tabular}
-
-Now on to creating the \protect\hyperlink{connectivity}{migratory network model}.
-
-\hypertarget{connectivity}{%
-\chapter{Migratory Network Model}\label{connectivity}}
-
-\hypertarget{input-data}{%
-\section{Input data}\label{input-data}}
-
-The input data we need for the migratory network model are:
-
-\begin{itemize}
-\tightlist
-\item
-  Relative abundance matrix for each node
-\item
-  Assignment matrix of individuals among nodes
-\end{itemize}
-
-We demonstrate in the previous \protect\hyperlink{abundance}{relative abundance section} how to obtain the relative abundance data needed for the model. The relative abundance data need to be in the following format, with population IDs (same names as in the \emph{assignment} file) in the first column and relative abundance values in the second column. Column names can follow any naming convention when inputting these data into \texttt{mignette}.
-
-\begin{tabular}{l|r}
-\hline
-Population & Relative\_abundance\\
-\hline
-BR & 2403\\
-\hline
-ST & 9419\\
-\hline
-MP & 19011\\
-\hline
-NT & 72147\\
-\hline
-WB & 26080\\
-\hline
-HCA & 326\\
-\hline
-AONU & 1139\\
-\hline
-LCA & 2802\\
-\hline
-ALM & 3169\\
-\hline
-CAR & 7987\\
-\hline
-\end{tabular}
-
-For the assignment matrix, the input data needs to correspond to the following format:
-
-\begin{tabular}{l|r|r|r|r|r}
-\hline
-Breeding & CAR & AONU & ALM & HCA & LCA\\
-\hline
-BR & 2 & 0 & 0 & 0 & 0\\
-\hline
-MP & 0 & 9 & 0 & 0 & 0\\
-\hline
-NT & 54 & 0 & 3 & 0 & 0\\
-\hline
-ST & 12 & 12 & 0 & 4 & 1\\
-\hline
-WB & 1 & 0 & 19 & 1 & 13\\
-\hline
-\end{tabular}
-
-where the first column specifies breeding population IDs while subsequent columns are the nonbreeding populations. The values are the number of individuals that connect each node. Depending on the type of assignment data the \texttt{mignette} user has, individual data points may need to be associated with a specific population. For these types of basic spatial analyses, \texttt{mignette} users can check out the \texttt{sf} package, specifically the \texttt{st\_intersection()} function, or whatever geospatial tools they prefer to create these data. Once you have connectivity data in the above format, you can continue with the following sections.
-
-For the following functions, we specify the order of the populations we are using for the model. Here, we are just ordering populations geographically by longitude to facilitate straightforward interpretation of the output.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{bnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"WB"}\NormalTok{, }\StringTok{"BR"}\NormalTok{, }\StringTok{"NT"}\NormalTok{, }\StringTok{"ST"}\NormalTok{, }\StringTok{"MP"}\NormalTok{)}
-\NormalTok{wnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ALM"}\NormalTok{, }\StringTok{"LCA"}\NormalTok{, }\StringTok{"HCA"}\NormalTok{, }\StringTok{"CAR"}\NormalTok{, }\StringTok{"AONU"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{migratory-network-model-jags}{%
-\section{Migratory network model (JAGS)}\label{migratory-network-model-jags}}
-
-\hypertarget{preparing-input-data}{%
-\subsection{Preparing input data}\label{preparing-input-data}}
-
-The following code provides the necessary data to run the JAGS model. To create the migratory network, the user first creates a text file specifying the JAGS model to be used, providing the name of the file to be saved (\texttt{base\_filename}) and the type of model type (\texttt{model\_type}). Currently \texttt{mignette} supports two model types based on the type of data used to determine assignment of individuals: \texttt{1} indicates that only genetic data were used for assignment, and \texttt{2} indicates that there's assignment data from both genetic and geolocator data. Here, the example only uses genetic data. \texttt{get\_jags\_model()} saves a \texttt{.txt} file with the \texttt{base\_filename} and stores that name as a variable for use in JAGS. We also specify the desired order of the breeding populations (\texttt{bnode\_names}) and the nonbreeding populations (\texttt{wnode\_names}). Finally, we use these as input into the function \texttt{get\_jags\_data()} to prepare the data appropriately for the model.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{base\_filename }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{get\_jags\_model}\NormalTok{(}\AttributeTok{base\_filename =} \StringTok{"amre.genetic.model"}\NormalTok{, }\AttributeTok{model =} \DecValTok{1}\NormalTok{)}
-\NormalTok{jags\_data }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{get\_jags\_data}\NormalTok{(}\AttributeTok{abundance =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_abundance, }
-                           \AttributeTok{nb2br\_assign =}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_assign,}
-                           \AttributeTok{bnode\_names =}\NormalTok{ bnode\_names, }
-                           \AttributeTok{wnode\_names =}\NormalTok{ wnode\_names,}
-                           \AttributeTok{model =} \DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{running-the-model}{%
-\subsection{Running the model}\label{running-the-model}}
-
-Now the user can use the output of \texttt{jags\_data} into JAGS to run the actual model:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{parameters }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"conn\_g"}\NormalTok{)}
-\NormalTok{ni }\OtherTok{\textless{}{-}} \DecValTok{500000}
-\NormalTok{nt }\OtherTok{\textless{}{-}} \DecValTok{4}
-\NormalTok{nb }\OtherTok{\textless{}{-}} \DecValTok{100000}
-\NormalTok{nc }\OtherTok{\textless{}{-}} \DecValTok{2}
-\NormalTok{jags\_out }\OtherTok{\textless{}{-}} \FunctionTok{autojags}\NormalTok{(jags\_data, }\AttributeTok{inits=}\ConstantTok{NULL}\NormalTok{, parameters, base\_filename,}
-                      \AttributeTok{n.chains =}\NormalTok{ nc, }\AttributeTok{n.thin =}\NormalTok{nt, }\AttributeTok{iter.increment=}\NormalTok{ni,}
-                      \AttributeTok{max.iter =}\NormalTok{ ni}\SpecialCharTok{*}\DecValTok{50}\SpecialCharTok{+}\NormalTok{nb, }\AttributeTok{n.burnin =}\NormalTok{ nb,}
-                      \AttributeTok{n.adapt=} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{parallel=}\ConstantTok{TRUE}\NormalTok{)}
-\NormalTok{amre\_conn }\OtherTok{\textless{}{-}}\NormalTok{ jags\_out}\SpecialCharTok{$}\NormalTok{mean}\SpecialCharTok{$}\NormalTok{conn\_g}
-\FunctionTok{colnames}\NormalTok{(amre\_conn) }\OtherTok{\textless{}{-}}\NormalTok{ wnode\_names}
-\FunctionTok{rownames}\NormalTok{(amre\_conn) }\OtherTok{\textless{}{-}}\NormalTok{ bnode\_names}
-\NormalTok{amre\_conn}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{tabular}{l|r|r|r|r|r}
-\hline
-  & ALM & LCA & HCA & CAR & AONU\\
-\hline
-WB & 0.14212 & 0.13901 & 0.01346 & 0.00507 & 0.00002\\
-\hline
-BR & 0.00010 & 0.00021 & 0.00008 & 0.02082 & 0.00004\\
-\hline
-NT & 0.05680 & 0.00041 & 0.00013 & 0.38276 & 0.00006\\
-\hline
-ST & 0.00003 & 0.01345 & 0.03618 & 0.03902 & 0.06453\\
-\hline
-MP & 0.00013 & 0.00036 & 0.00022 & 0.00002 & 0.08496\\
-\hline
-\end{tabular}
-
-The connectivity between the nodes is provided by the \texttt{conn\_g} parameter of the model, which is accessed from the above code. The rows are the breeding nodes (the \emph{inferred} population from assignment) and the columns are the nonbreeding nodes (the \emph{sampled} population).
-
-Voila. A migratory network model is completed. Now, onto \protect\hyperlink{visualization}{visualization}
-
-\hypertarget{visualization}{%
-\chapter{Network visualization}\label{visualization}}
-
-We provide functions for basic visualization of the network (\texttt{net\_create()} and \texttt{net\_draw()}). A threshold can be set to remove very weak connectivity for better visualizing the network as shown below.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{bnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"WB"}\NormalTok{, }\StringTok{"BR"}\NormalTok{, }\StringTok{"NT"}\NormalTok{, }\StringTok{"ST"}\NormalTok{, }\StringTok{"MP"}\NormalTok{)}
-\NormalTok{wnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ALM"}\NormalTok{, }\StringTok{"LCA"}\NormalTok{, }\StringTok{"HCA"}\NormalTok{, }\StringTok{"CAR"}\NormalTok{, }\StringTok{"AONU"}\NormalTok{)}
-\NormalTok{net }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{net\_create}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_conn, }
-                            \AttributeTok{node.names =} \FunctionTok{list}\NormalTok{(bnode\_names, wnode\_names))}
-\CommentTok{\#set the display size range for nodes (min and max), default 1{-}10}
-\NormalTok{net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{node\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{20}\NormalTok{)}
-\CommentTok{\#set the display size range for edges (min and max), default 1{-}10}
-\NormalTok{net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{edge\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{5}\NormalTok{)}
-\FunctionTok{plot}\NormalTok{(mignette}\SpecialCharTok{::}\FunctionTok{net\_draw}\NormalTok{(net))}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-24-1.pdf}
-
-In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. By default, breeding populations are in the top row (red) and nonbreeding populations are in the bottom row (blue).
-
-We also can change the \texttt{connected\_tol} threshold in the \texttt{net\_create} function to not output extremely weak connectivity. For example, the plot below removes connectivity less than 0.02:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{net }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\FunctionTok{net\_create}\NormalTok{(mignette}\SpecialCharTok{::}\NormalTok{amre\_conn, }
-                            \AttributeTok{node.names =} \FunctionTok{list}\NormalTok{(bnode\_names, wnode\_names),}
-                            \AttributeTok{connected\_tol =} \FloatTok{0.02}\NormalTok{) }\CommentTok{\# threshold}
-\NormalTok{net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{node\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{20}\NormalTok{)}
-\NormalTok{net}\SpecialCharTok{$}\NormalTok{display\_par}\SpecialCharTok{$}\NormalTok{edge\_size\_scale}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{5}\NormalTok{)}
-\FunctionTok{plot}\NormalTok{(mignette}\SpecialCharTok{::}\FunctionTok{net\_draw}\NormalTok{(net))}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-25-1.pdf}
-
-This sums up the basics of creating and visualizing a migratory network. We encourage users to explore and build upon the visualization tools we provide (e.g.~overlay the migratory networks on geographic ranges) - the options are endless, enjoy!
-
-\hypertarget{other-visualization-options}{%
-\section{Other visualization options}\label{other-visualization-options}}
-
-Ok, we'll toss out another way to visualize these networks using the \href{https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.htm}{\texttt{ggalluvial} package} because it's really fun.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(tidyverse)}
-\FunctionTok{library}\NormalTok{(mignette)}
-\FunctionTok{library}\NormalTok{(ggalluvial)}
-
-\NormalTok{bnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"WB"}\NormalTok{, }\StringTok{"BR"}\NormalTok{, }\StringTok{"NT"}\NormalTok{, }\StringTok{"ST"}\NormalTok{, }\StringTok{"MP"}\NormalTok{)}
-\NormalTok{wnode\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ALM"}\NormalTok{, }\StringTok{"LCA"}\NormalTok{, }\StringTok{"HCA"}\NormalTok{, }\StringTok{"CAR"}\NormalTok{, }\StringTok{"AONU"}\NormalTok{)}
-
-\NormalTok{cluster\_colors }\OtherTok{\textless{}{-}}  \FunctionTok{c}\NormalTok{(}
-  \StringTok{\textasciigrave{}}\AttributeTok{ST}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#FF99FF"}\NormalTok{, }\CommentTok{\# pink/Southern Temperate}
-  \StringTok{\textasciigrave{}}\AttributeTok{BR}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#3399FF"}\NormalTok{, }\CommentTok{\# blue/Basin Rockies}
-  \StringTok{\textasciigrave{}}\AttributeTok{NT}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#FFFF33"}\NormalTok{, }\CommentTok{\# yellow/Northern Temperate}
-  \StringTok{\textasciigrave{}}\AttributeTok{WB}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#339933"}\NormalTok{, }\CommentTok{\# green/Western Boreal}
-  \StringTok{\textasciigrave{}}\AttributeTok{MP}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{"\#CC0033"} \CommentTok{\# red/Maritime Provinces}
-\NormalTok{) }
-
-\NormalTok{amre\_conn\_df }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_conn }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{as\_tibble}\NormalTok{(}\AttributeTok{rownames =} \StringTok{"Breeding"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =}\NormalTok{ ALM}\SpecialCharTok{:}\NormalTok{AONU, }\AttributeTok{names\_to =} \StringTok{"Nonbreeding"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"Connectivity"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Connectivity =} \FunctionTok{ifelse}\NormalTok{(Connectivity }\SpecialCharTok{\textless{}} \FloatTok{0.01}\NormalTok{, }\DecValTok{0}\NormalTok{, Connectivity)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Breeding =} \FunctionTok{factor}\NormalTok{(Breeding, }\AttributeTok{levels =} \FunctionTok{rev}\NormalTok{(bnode\_names)),}
-         \AttributeTok{Nonbreeding =} \FunctionTok{factor}\NormalTok{(Nonbreeding, }\AttributeTok{levels =} \FunctionTok{rev}\NormalTok{(wnode\_names)))}
-
-\NormalTok{p.alluvial }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(amre\_conn\_df,}
-       \FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Connectivity, }\AttributeTok{axis1 =}\NormalTok{ Nonbreeding, }\AttributeTok{axis2 =}\NormalTok{ Breeding)) }\SpecialCharTok{+}
-  \FunctionTok{geom\_alluvium}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Breeding), }\AttributeTok{width =} \DecValTok{1}\SpecialCharTok{/}\DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
-  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =}\NormalTok{ cluster\_colors) }\SpecialCharTok{+}
-  \FunctionTok{geom\_stratum}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.25}\NormalTok{, }\AttributeTok{width =} \DecValTok{1}\SpecialCharTok{/}\DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
-  \FunctionTok{geom\_text}\NormalTok{(}\AttributeTok{stat =} \StringTok{"stratum"}\NormalTok{, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{after\_stat}\NormalTok{(stratum))) }\SpecialCharTok{+}
-  \FunctionTok{scale\_x\_discrete}\NormalTok{(}\AttributeTok{limits =} \FunctionTok{c}\NormalTok{(}\StringTok{"Nonbreeding"}\NormalTok{, }\StringTok{"Breeding"}\NormalTok{),}
-                   \AttributeTok{expand =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.05}\NormalTok{, }\FloatTok{0.05}\NormalTok{)) }\SpecialCharTok{+} 
-  \FunctionTok{coord\_flip}\NormalTok{() }\SpecialCharTok{+}
-  \FunctionTok{theme\_void}\NormalTok{() }\SpecialCharTok{+}
-  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.background =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \StringTok{"white"}\NormalTok{))}
-
-\NormalTok{p.alluvial}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-26-1.pdf}
+\includegraphics[width=0.7\linewidth]{Mignette_files/figure-latex/unnamed-chunk-26-1}
 
   \bibliography{book.bib,packages.bib}
 

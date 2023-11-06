@@ -1,40 +1,25 @@
-# Quick start example {#quickstart}
+# Step 3) Modeling the migratory network {#model}
 
-Here, we demonstrate a quick example of how to create a migratory network when the user has all of the data required. To run this tutorial, load the following packages:
+## Input data
 
-```r
-library(tidyverse)
-library(mignette)
-library(rjags)
-library(jagsUI)
-library(ggnewscale)
-```
-
-The data required are:
+As described in the previous section the data required are:
 
 * Abundance
 * Migratory connectivity
 
-We provide an example of these data in `mignette`, with migratory connectivity data from 5 breeding nodes (WB = Western Boreal, NT = Northern Temperate, ST = Southern Temperate, BR = Basin Rockies, MP = Maritime Provinces) and  5 nonbreeding nodes (ALM = Atlantic Lowland Mexico, CAR = Caribbean, AONU = Amazon/Orinoco-Northern Uplands, HCA = Highland Central America, LCA = Lowland Central America) for the American Redstart (*Setophaga ruticilla*). The migratory connectivity data specifies the number of individuals that have been sampled or detected that migrate between different populations (i.e. *connect* the nodes).
-
-```r
-mignette::amre_assign
-```
-
-```{r, echo=FALSE}
-knitr::kable(mignette::amre_assign)
-```
-
-We also provide the abundance of these nodes:
-
-```r
-mignette::amre_abundance
-```
+The abundance data need to be in the following format, with node IDs (same names as in the *assignment* file) in the first column and abundance values in the second column.
 
 ```{r, echo=FALSE}
 knitr::kable(mignette::amre_abundance)
 ```
 
+For the migratory connectivity data, the input data needs to correspond to the following format:
+
+```{r, echo=FALSE}
+knitr::kable(mignette::amre_assign)
+```
+
+If you skipped it, see the previous [Step 2) Abundance and migratory connectivity data](#data) section for specific details on the input data formatting!
 
 For the following functions, we specify the order of the nodes we are using for the model. Here, we are just ordering nodes geographically by longitude to facilitate straightforward interpretation of the output.
 
@@ -43,7 +28,8 @@ bnode_names <- c("WB", "BR", "NT", "ST", "MP")
 wnode_names <- c("ALM", "LCA", "HCA", "CAR", "AONU")
 ```
 
-For the American Redstart migratory network, we use `model = 1` from `mignette` which specifies that nonbreeding nodes are the “encounter” season and breeding nodes are the “recovery” season (i.e., inferred). This output saves the model as `amre.genetic.model_1.txt`. Below we specify `parallel = TRUE` to run MCMC on multiple cores and use the remaining defaults described previously CHANGE LINK. This step is computationally intensive and takes ~2 minutes to run on a 2023 MacBook Pro with an Apple M2 Pro chip.
+
+For the American Redstart migratory network, we use `model = 1` from `mignette` which specifies that nonbreeding nodes are “encountered” and breeding nodes are “recovered” (i.e., inferred). This output saves the model as `amre.genetic.model_1.txt`. Below we specify `parallel = TRUE` to run MCMC on multiple cores and use the remaining defaults described previously CHANGE LINK. This step is computationally intensive and takes ~2 minutes to run on a 2023 MacBook Pro with an Apple M2 Pro chip.
 
 
 ```r
@@ -85,16 +71,16 @@ colnames(amre_conn) <- NULL
 knitr::kable(amre_conn)
 ```
 
-The raw connectivity matrix is used to plot the network. We plot the migratory network  with the provided `mignette` functions `net_create()` and `net_draw()`. We set `connected_tol = 0.01` which plots only the edges with connectivity values of greater than 0.01.
+The raw connectivity matrix is used to plot the network. We plot the migratory network  with the provided `mignette` functions `net_create()` and `net_draw()`. We set `connected_tol = 0.01` which plots only the edges with connectivity values of greater than 0.01. We also demonstrate below how to change parameters such as the colors and the node and edge scale size.
 
 ```{r}
 amre_net <- mignette::net_create(amre_conn,
                         	node.names = list(bnode_names,wnode_names),
-                        	connected_tol = 0.01)
+                        	connected_tol = 0.02)
 #set the display size range for nodes (min and max), default 1-10
-amre_net$display_par$node_size_scale<-c(8,25)
+amre_net$display_par$node_size_scale <- c(8,25)
 #set the display size range for edges (min and max), default 1-10
-amre_net$display_par$edge_size_scale<-c(1,5)
+amre_net$display_par$edge_size_scale <- c(1,5)
 # change colors
 amre_net$display_par$bnode_colors <- c("#009e73", "#cc79a7", "#56b4e9", "#e69f00", "#7979ff")
 amre_net$display_par$wnode_colors <- "grey80"
@@ -104,5 +90,4 @@ mignette::net_draw(amre_net)
 
 In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. Breeding populations are in the top row, for which we provided custom colors, and nonbreeding populations are in the bottom row.
 
-This sums up the basics of creating and visualizing a migratory network. We encourage users to explore and build upon the visualization tools we provide (e.g. overlay the migratory networks on geographic ranges) - the options are endless, enjoy!
-
+Now you have a migratory network! Check out the [visualization supplement](#visualization) for additional ideas on plotting the network.

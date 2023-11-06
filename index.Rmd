@@ -15,27 +15,25 @@ github-repo: rstudio/bookdown-demo
 
 # Introduction
 
-This vignette outlines how to create migratory networks using the R package `mignette` (**mig**ratory **net**work **t**ools **e**nsemble). `mignette` was developed to facilitate conservation and management decision-making for migratory wildlife populations using migratory networks [@ruegg2020genoscape; @taylor2010population]. The core function of `mignette` is to model the connectivity of populations across different stages of the annual cycle. To model these migratory networks in `mignette`, users need to provide:
+This vignette outlines how to create migratory networks using the R package `mignette` (**mig**ratory **net**work **t**ools **e**nsemble). `mignette` was developed to facilitate conservation and management decision-making for migratory wildlife populations using migratory networks [@ruegg2020genoscape; @taylor2010population]. Spatial migratory networks are graph-based models that incorporate migratory connectivity and abundance data to define the degree of connectivity between stages of the annual cycle, defined as breeding and nonbreeding nodes. These models are useful for a wide variety of applications because they can accommodate, and combine, different types of common tracking data used to infer individual and population movement across the annual cycle. We designed `mignette` to facilitate the creation and visualization of migratory networks for users with a wide-range of data sources and study species.
 
-1. The number of individuals connecting migratory populations from two stages of the annual cycle
-2. Relative abundance data for the populations
+## Tutorial structure
 
-We designed `mignette` specifically for use with population assignment data from genetic markers [@ruegg2014mapping; @desaix2019population], and we use genetic markers to delineate breeding populations (i.e., nodes in the migratory network model). We have since extended `mignette` to be able to model migratory networks that include geolocator data for assignment. While it is outside the scope of `mignette` for providing an exhaustive tool set of methods to delineate these nodes, given our focus on the use of genetic data, we provide examples and resources for users to delineate breeding populations from genetic data.
+For an introductory demonstration of creating a migratory network with `mignette`, see the [quick start example](#quickstart). This demonstrates the core functionality of `mignette` using data from a recent study of the American Redstart (*Setophaga ruticilla*), a widespread Nearctic-Neotropical migratory songbird [@desaix2023low].
 
-We anticipate users of `mignette` to be interested in modelling migratory networks for a wide-range of taxa, therefore users can provide relative abundance information from any data source. However, we also provide information on obtaining relative abundance for bird data from [eBird](https://ebird.org/science/status-and-trends) and have developed tools in `mignette` to facilitate the calculation of relative abundance values.
-
-For an introductory demonstration of creating a migratory network with `mignette`, see the [quick start example](#quickstart). Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.
+Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.
 
 ## Installation 
 
-You can install the development version of the R package `mignette` from GitHub with:
+While `mignette` is an R package, it uses JAGS (Just Another Gibbs Sampler) to actually implement the migratory network model. JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. **JAGS needs to be installed for `mignette` to function** and can be [downloaded here](https://mcmc-jags.sourceforge.io/).
+
+Once you have installed JAGS, you can install `mignette` from GitHub with:
 
 ``` r
 # install.packages("remotes")
 remotes::install_github("mgdesaix/mignette")
 ```
 
-While `mignette` is an R package, it uses the separate software JAGS (Just Another Gibbs Sampler) to actually implement the migratory network model. JAGS is a specific software for conducting analysis of Bayesian hierarchical models using Markov Chain Monte Carlo simulation. JAGS needs to be installed for `mignette` to function properly and can be [downloaded here](https://mcmc-jags.sourceforge.io/).
 
 The primary packages for this vignette are:
 
@@ -51,7 +49,6 @@ library(ggnewscale) # for network visualization
 library(tidyterra) # for plotting terra objects with ggplot
 ```
 
-As `mignette` makes use of the `terra` package, all raster and vector (e.g., polygons) are provided as *SpatRaster* and *SpatVector* objects. See the `terra` package for more details on these types of objects in R.
 
 ```{r include=FALSE}
 # automatically create a bib database for R packages

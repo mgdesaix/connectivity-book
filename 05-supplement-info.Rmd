@@ -1,4 +1,4 @@
-# Supplementary Information {#supplemental}
+# Supplement: Avian abundance data and genetic breeding nodes {#supplemental}
 
 This supplementary section provides more detailed information outside the scope of `mignette`. Specifically, the code here goes into details of using avian abundance data and genetic populations from a genoscape.
 
@@ -65,11 +65,11 @@ We will also specify custom colors to correspond to the published genoscape.
 
 ```r
 cluster_colors <-  c(
-  `ST` = "#e69f00", # pink/Southern Temperate
-  `BR` = "#cc79a7", # blue/Basin Rockies
-  `NT` = "#56b4e9", # yellow/Northern Temperate
-  `WB` = "#009e73", # green/Western Boreal
-  `MP` = "#7979ff" # red/Maritime Provinces
+  `ST` = "#e69f00", # orange/Southern Temperate
+  `BR` = "#cc79a7", # pink/Basin Rockies (BR)
+  `NT` = "#56b4e9", # light blue/Northern Temperate (NT)
+  `WB` = "#009e73", # green/Western Boreal (WB)
+  `MP` = "#7979ff" # dark blue/Maritime Provinces (MP)
 ) 
 ```
 

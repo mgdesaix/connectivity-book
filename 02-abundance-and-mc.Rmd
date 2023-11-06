@@ -1,0 +1,43 @@
+# Step 2) Assemble abundance and migratory connectivity data {#data}
+
+The two main data inputs into the migratory network model are *abundance data* and *migratory connectivity data* for the nodes.
+
+## Abundance data
+
+Once users have defined breeding and nonbreeding nodes for their sampled data, the species’ abundance for each node is needed. In some cases, users may be using node definitions for which abundance estimates have already been calculated. Regardless of however `mignette` users obtain abundance data for the breeding and nonbreeding nodes, it needs to be formatted in the following manner for using with `mignette` as shown with the example American Redstart data:
+
+```r
+mignette::amre_abundance
+```
+
+```{r, echo = F}
+knitr::kable(mignette::amre_abundance)
+```
+
+where the first column of the data frame is the node (i.e., population) and the second column is the abundance. All sampled nodes from the breeding and nonbreeding range need to be present in this file.
+
+One common form of abundance data is as a raster where each cell specifies abundance (for example [eBird Status and Trends data](https://science.ebird.org/en/status-and-trends) available from the [ebirdst R package](https://cornelllabofornithology.github.io/ebirdst/)). If you are working with raster abundance data and need to summarize it at the node level, there are two functions in `mignette` to facilitate that process.
+
+1. `get_vector_abunds(populations, abunds)` - sums the abundance data for a SpatRaster object of abundance (specified by the `abunds` parameter) by the vector node delineation (specified by the `populations` parameter). 
+
+2. `get_raster_abunds(populations, abunds)` - sums the abundance data for a SpatRaster object of abundance by *weighting* values based on the raster node delineation.
+
+## Migratory connectivity data
+
+In addition to having node abundance data, `mignette` users need to have migratory connectivity data detailing the number of individuals connecting the nodes between the two stages. Migratory connectivity data has a directionality to it - i.e., there is an “encounter” season and a “recovery” season - and we use this corresponding terminology from [@prochazka2017delineating]. In `mignette` different types of migratory connectivity data use different models based on whether the breeding or nonbreeding seasons are the “encounter” or “recovery” seasons. To account for users providing different types of connectivity data, we provide three different models in mignette: 1 = the nonbreeding season is “encounter” and the breeding season is “recovery”; 2 = the breeding season is “encounter” and the nonbreeding season is “recovery”; and 3 = connectivity data are from both model types 1 and 2. For cross-season mark-recapture data (i.e. from banding or geolocators), the encounter season is where the individual is captured and the recovery season is where they are re-captured or re-sighted or, in the case of geolocator data, inferred to have originated. For genetic data, the encounter season is nonbreeding and the recovery season is breeding (i.e., “inferred”). 
+
+The American Redstart assignment is all from genetic data [@desaix2023low]:
+
+```r
+mignette::amre_assign
+```
+
+```{r, echo = F}
+knitr::kable(mignette::amre_assign)
+```
+
+For the `mignette` migratory network, the migratory connectivity data needs to be formatted as above: where the first column provides the node names from the "recovery" season in the rows and the remaining columns are the "encounter" season node names. The values in the data frame all the numbers of individuals assigned from the "encounter" season to the "recovery" season (in this case, American Redstarts assigned from the nonbreeding sampling location to the breeding population).
+
+Thus, when `mignette` users have migratory connectivity data types that include assignment in both directions, they will need to create two separate data frames for those data.
+
+Now on to [Step 3) Modeling the migratory network](#model)

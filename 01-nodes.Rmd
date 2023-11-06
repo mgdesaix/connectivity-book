@@ -1,4 +1,4 @@
-# Step 1: Define breeding and nonbreeding nodes {#nodes}
+# Step 1) Define breeding and nonbreeding nodes {#nodes}
 
 The first step of creating a migratory network is to spatially define the nodes (i.e. populations) that make up the sampled portions of the breeding and nonbreeding range. This can either be done with *vector* data for discrete spatial boundaries of nodes or *raster* data for a continuous surface probabilistic membership of geographic cells to a node (e.g., population genetic structure of a genoscape [@ruegg2020genoscape]).
 
@@ -38,7 +38,7 @@ retained_IDs <- names(sampled_table[sampled_table > 3])
 retained_IDs
 ```
 
-Thus, we've identified the 5 nonbreeding nodes for the American Redstart data. We can plot these conservation regions along with the corresponding sampling points.
+Thus, we've identified the 5 nonbreeding nodes for the American Redstart data: Amazon/Orinoco-Northern Uplands (AONU), Atlantic Lowland Mexico (ALM), Caribbean (CAR), Highland Central America (HCA), and Lowland Central America (LCA). We can plot these conservation regions along with the corresponding sampling points.
 
 ```{r}
 # subset conservation regions file by retained regions
@@ -55,7 +55,7 @@ terra::points(nonbreeding_coords_subset, cex = 1.5)
 
 ## Raster data
 
-Raster data is used when populations are defined by a continuous surface of probabilities of membership to a population. In the example here, we have population genetic data from the American Redstart that define breeding populations (i.e., American Redstart genoscape, [@desaix2023low]). We have defined these nodes as Western Boreal (WB), Basin Rockies (BR), Northern Temperate (NT), Southern Temperate (ST) and Maritime Provinces (MP)
+Raster data is used when populations are defined by a continuous surface of probabilities of membership to a population. In the example here, we have population genetic data from the American Redstart that define breeding populations (i.e., American Redstart genoscape, [@desaix2023low]). We have defined these nodes as Western Boreal (WB), Basin Rockies (BR), Northern Temperate (NT), Southern Temperate (ST) and Maritime Provinces (MP). Raster data for nodes are used in `mignette` to get node abundance that is scaled by the raster probabilities of population membership, as shown in the next section.
 
 
 ```{r, results = F, message = F}
@@ -64,6 +64,6 @@ amre_genoscape <- terra::rast(amre_genoscape_file)
 terra::plot(amre_genoscape)
 ```
 
+While it is outside the scope of `mignette` to perform the requisite population genetics analyses for producing these rasters, users with genetic data and expertise with genetic clustering analyses may be interested in the [Supplementary information](#supplemental) that provide additional information and code.
 
-
-Now on to [Step 2: Abundance and migratory connectivity data](#wintering)
+Now on to [Step 2) Abundance and migratory connectivity data](#data)

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Define breeding and nonbreeding nodes | Creating Migratory Networks in R: mignette</title>
+  <meta name="description" content="This provides examples and documentation of the Mignette R package" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Define breeding and nonbreeding nodes | Creating Migratory Networks in R: mignette" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="This provides examples and documentation of the Mignette R package" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Define breeding and nonbreeding nodes | Creating Migratory Networks in R: mignette" />
+  
+  <meta name="twitter:description" content="This provides examples and documentation of the Mignette R package" />
+  
+
+<meta name="author" content="" />
+
+
+<meta name="date" content="2023-11-06" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="quickstart.html"/>
+<link rel="next" href="data.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Migratory Networks in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#tutorial-structure"><i class="fa fa-check"></i><b>1.1</b> Tutorial structure</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installation"><i class="fa fa-check"></i><b>1.2</b> Installation</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="quickstart.html"><a href="quickstart.html"><i class="fa fa-check"></i><b>2</b> Quick start example</a></li>
+<li class="chapter" data-level="3" data-path="nodes.html"><a href="nodes.html"><i class="fa fa-check"></i><b>3</b> Define breeding and nonbreeding nodes</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="nodes.html"><a href="nodes.html#vector-data"><i class="fa fa-check"></i><b>3.1</b> Vector data</a></li>
+<li class="chapter" data-level="3.2" data-path="nodes.html"><a href="nodes.html#raster-data"><i class="fa fa-check"></i><b>3.2</b> Raster data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>4</b> Assemble abundance and migratory connectivity data</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="data.html"><a href="data.html#abundance-data"><i class="fa fa-check"></i><b>4.1</b> Abundance data</a></li>
+<li class="chapter" data-level="4.2" data-path="data.html"><a href="data.html#migratory-connectivity-data"><i class="fa fa-check"></i><b>4.2</b> Migratory connectivity data</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="model.html"><a href="model.html"><i class="fa fa-check"></i><b>5</b> Modeling the migratory network</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="model.html"><a href="model.html#input-data"><i class="fa fa-check"></i><b>5.1</b> Input data</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>6</b> Supplement: Visualizations</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="visualization.html"><a href="visualization.html#alluvial-plot"><i class="fa fa-check"></i><b>6.1</b> Alluvial plot</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="supplemental.html"><a href="supplemental.html"><i class="fa fa-check"></i><b>7</b> Supplement: Avian abundance data and genetic breeding nodes</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="supplemental.html"><a href="supplemental.html#breeding-nodes"><i class="fa fa-check"></i><b>7.1</b> Breeding nodes</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="supplemental.html"><a href="supplemental.html#ebirdst"><i class="fa fa-check"></i><b>7.1.1</b> ebirdst</a></li>
+<li class="chapter" data-level="7.1.2" data-path="supplemental.html"><a href="supplemental.html#creating-the-genoscape"><i class="fa fa-check"></i><b>7.1.2</b> Creating the genoscape</a></li>
+<li class="chapter" data-level="7.1.3" data-path="supplemental.html"><a href="supplemental.html#genoscape-polygons"><i class="fa fa-check"></i><b>7.1.3</b> Genoscape polygons</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating Migratory Networks in R: mignette</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="nodes" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Define breeding and nonbreeding nodes<a href="nodes.html#nodes" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>The first step of creating a migratory network is to spatially define the nodes (i.e. populations) that make up the sampled portions of the breeding and nonbreeding range. This can either be done with <em>vector</em> data for discrete spatial boundaries of nodes or <em>raster</em> data for a continuous surface probabilistic membership of geographic cells to a node (e.g., population genetic structure of a genoscape <span class="citation">(<a href="#ref-ruegg2020genoscape">Ruegg et al. 2020</a>)</span>).</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="nodes.html#cb11-1" tabindex="-1"></a><span class="fu">library</span>(mignette)</span>
+<span id="cb11-2"><a href="nodes.html#cb11-2" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb11-3"><a href="nodes.html#cb11-3" tabindex="-1"></a><span class="fu">library</span>(terra)</span></code></pre></div>
+<div id="vector-data" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Vector data<a href="nodes.html#vector-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Vector data can define nodes by representing geographic boundaries such as political borders or biogeographic regions. In <code>mignette</code>, we provide data for <em>conservation regions</em> of the Western Hemisphere that integrate geopolitical boundaries and ecoregions.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="nodes.html#cb12-1" tabindex="-1"></a><span class="co"># SpatVector from terra package</span></span>
+<span id="cb12-2"><a href="nodes.html#cb12-2" tabindex="-1"></a>regions_file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;conservation_regions.Rds&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>)</span>
+<span id="cb12-3"><a href="nodes.html#cb12-3" tabindex="-1"></a><span class="co"># read in file as SpatVector</span></span>
+<span id="cb12-4"><a href="nodes.html#cb12-4" tabindex="-1"></a>conservation_regions <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">vect</span>(regions_file)</span>
+<span id="cb12-5"><a href="nodes.html#cb12-5" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="nodes.html#cb12-6" tabindex="-1"></a>terra<span class="sc">::</span><span class="fu">plot</span>(conservation_regions, <span class="at">col=</span><span class="fu">rainbow</span>(<span class="dv">10</span>))</span></code></pre></div>
+<p><img src="Mignette_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>For defining a node, we are only interested in regions that we have data. It’s straightforward with the spatial functions from <code>terra</code> to determine the sampled regions. Here, we find the conservation regions for which we have sampled American Redstart data from the nonbreeding range.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="nodes.html#cb13-1" tabindex="-1"></a><span class="co"># create SpatVector points object from Redstart lat/lon sampling data</span></span>
+<span id="cb13-2"><a href="nodes.html#cb13-2" tabindex="-1"></a>nonbreeding_coords <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">vect</span>(mignette<span class="sc">::</span>amre_nonbreeding_data, </span>
+<span id="cb13-3"><a href="nodes.html#cb13-3" tabindex="-1"></a>                             <span class="at">geom=</span><span class="fu">c</span>(<span class="st">&quot;Lon&quot;</span>, <span class="st">&quot;Lat&quot;</span>),</span>
+<span id="cb13-4"><a href="nodes.html#cb13-4" tabindex="-1"></a>                             <span class="at">crs =</span> <span class="st">&quot;EPSG:4326&quot;</span>)</span>
+<span id="cb13-5"><a href="nodes.html#cb13-5" tabindex="-1"></a><span class="co"># find spatial intersection of points with conservation regions</span></span>
+<span id="cb13-6"><a href="nodes.html#cb13-6" tabindex="-1"></a>sampled_conservation_regions <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">intersect</span>(nonbreeding_coords,</span>
+<span id="cb13-7"><a href="nodes.html#cb13-7" tabindex="-1"></a>                                        conservation_regions)</span>
+<span id="cb13-8"><a href="nodes.html#cb13-8" tabindex="-1"></a><span class="co"># count the number of sampled individuals associated with each conservation region</span></span>
+<span id="cb13-9"><a href="nodes.html#cb13-9" tabindex="-1"></a>sampled_table <span class="ot">&lt;-</span> <span class="fu">table</span>(sampled_conservation_regions<span class="sc">$</span>Region)</span>
+<span id="cb13-10"><a href="nodes.html#cb13-10" tabindex="-1"></a>sampled_table</span></code></pre></div>
+<pre><code>## 
+## Amazon/Orinoco-Northern Uplands         Atlantic Lowland Mexico 
+##                              20                              22 
+##                       Caribbean        Highland Central America 
+##                              69                               5 
+##        Highland/Interior Mexico         Lowland Central America 
+##                               1                              14 
+##                  Northern Andes 
+##                               3</code></pre>
+<p>Downstream in the workflow, we need sufficiently sampling of individuals in (or inference to) a node. So, we’ll only retain the conservation regions with more than 3 samples.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="nodes.html#cb15-1" tabindex="-1"></a><span class="co"># retain conservation region names with more than 3 samples</span></span>
+<span id="cb15-2"><a href="nodes.html#cb15-2" tabindex="-1"></a>retained_IDs <span class="ot">&lt;-</span> <span class="fu">names</span>(sampled_table[sampled_table <span class="sc">&gt;</span> <span class="dv">3</span>])</span>
+<span id="cb15-3"><a href="nodes.html#cb15-3" tabindex="-1"></a>retained_IDs</span></code></pre></div>
+<pre><code>## [1] &quot;Amazon/Orinoco-Northern Uplands&quot; &quot;Atlantic Lowland Mexico&quot;        
+## [3] &quot;Caribbean&quot;                       &quot;Highland Central America&quot;       
+## [5] &quot;Lowland Central America&quot;</code></pre>
+<p>Thus, we’ve identified the 5 nonbreeding nodes for the American Redstart data: Amazon/Orinoco-Northern Uplands (AONU), Atlantic Lowland Mexico (ALM), Caribbean (CAR), Highland Central America (HCA), and Lowland Central America (LCA). We can plot these conservation regions along with the corresponding sampling points.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="nodes.html#cb17-1" tabindex="-1"></a><span class="co"># subset conservation regions file by retained regions</span></span>
+<span id="cb17-2"><a href="nodes.html#cb17-2" tabindex="-1"></a>conservation_regions_subset <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">subset</span>(conservation_regions, </span>
+<span id="cb17-3"><a href="nodes.html#cb17-3" tabindex="-1"></a>                                             conservation_regions<span class="sc">$</span>Region <span class="sc">%in%</span> retained_IDs)</span>
+<span id="cb17-4"><a href="nodes.html#cb17-4" tabindex="-1"></a><span class="co"># subset sampled points by retained regions</span></span>
+<span id="cb17-5"><a href="nodes.html#cb17-5" tabindex="-1"></a>nonbreeding_coords_subset <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">subset</span>(sampled_conservation_regions,</span>
+<span id="cb17-6"><a href="nodes.html#cb17-6" tabindex="-1"></a>                                           sampled_conservation_regions<span class="sc">$</span>Region <span class="sc">%in%</span> retained_IDs)</span>
+<span id="cb17-7"><a href="nodes.html#cb17-7" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb17-8"><a href="nodes.html#cb17-8" tabindex="-1"></a>terra<span class="sc">::</span><span class="fu">plot</span>(conservation_regions_subset, <span class="at">col =</span> <span class="fu">rainbow</span>(<span class="dv">5</span>))</span>
+<span id="cb17-9"><a href="nodes.html#cb17-9" tabindex="-1"></a>terra<span class="sc">::</span><span class="fu">points</span>(nonbreeding_coords_subset, <span class="at">cex =</span> <span class="fl">1.5</span>)</span></code></pre></div>
+<p><img src="Mignette_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="raster-data" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Raster data<a href="nodes.html#raster-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Raster data is used when populations are defined by a continuous surface of probabilities of membership to a population. In the example here, we have population genetic data from the American Redstart that define breeding populations (i.e., American Redstart genoscape, <span class="citation">(<a href="#ref-desaix2023low">DeSaix et al. 2023</a>)</span>). We have defined these nodes as Western Boreal (WB), Basin Rockies (BR), Northern Temperate (NT), Southern Temperate (ST) and Maritime Provinces (MP). Raster data for nodes are used in <code>mignette</code> to get node abundance that is scaled by the raster probabilities of population membership, as shown in the next section.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="nodes.html#cb18-1" tabindex="-1"></a>amre_genoscape_file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;amre_genoscape.Rds&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>)</span>
+<span id="cb18-2"><a href="nodes.html#cb18-2" tabindex="-1"></a>amre_genoscape <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rast</span>(amre_genoscape_file)</span>
+<span id="cb18-3"><a href="nodes.html#cb18-3" tabindex="-1"></a>terra<span class="sc">::</span><span class="fu">plot</span>(amre_genoscape)</span></code></pre></div>
+<p><img src="Mignette_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>While it is outside the scope of <code>mignette</code> to perform the requisite population genetics analyses for producing these rasters, users with genetic data and expertise with genetic clustering analyses may be interested in the <a href="supplemental.html#supplemental">Supplementary information</a> that provide additional information and code.</p>
+<p>Now on to <a href="data.html#data">Step 2) Abundance and migratory connectivity data</a></p>
+
+</div>
+</div>
+<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-desaix2023low" class="csl-entry">
+DeSaix, Matthew G, Eric C Anderson, Christen M Bossu, Christine E Rayne, Teia M Schweizer, Nicholas J Bayly, Darshan S Narang, et al. 2023. <span>“Low-Coverage Whole Genome Sequencing for Highly Accurate Population Assignment: Mapping Migratory Connectivity in the American Redstart (Setophaga Ruticilla).”</span> <em>Molecular Ecology</em>.
+</div>
+<div id="ref-ruegg2020genoscape" class="csl-entry">
+Ruegg, Kristen C, Ryan J Harrigan, James F Saracco, Thomas B Smith, and Caz M Taylor. 2020. <span>“A Genoscape-Network Model for Conservation Prioritization in a Migratory Bird.”</span> <em>Conservation Biology</em> 34 (6): 1482–91.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="quickstart.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/01-nodes.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Mignette.pdf", "Mignette.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
