@@ -1,4 +1,4 @@
-# Step 2) Assemble abundance and migratory connectivity data {#data}
+# Assemble abundance and migratory connectivity data {#data}
 
 The two main data inputs into the migratory network model are *abundance data* and *migratory connectivity data* for the nodes.
 

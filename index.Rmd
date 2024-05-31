@@ -21,7 +21,11 @@ This vignette outlines how to create migratory networks using the R package `mig
 
 For an introductory demonstration of creating a migratory network with `mignette`, see the [quick start example](#quickstart). This demonstrates the core functionality of `mignette` using data from a recent study of the American Redstart (*Setophaga ruticilla*), a widespread Nearctic-Neotropical migratory songbird [@desaix2023low].
 
-Subsequent chapters of the vignette provide more detailed instructions and examples for delineating nodes (populations in the network model), calculating relative abundance for nodes, and running and visualizing the network model.
+Subsequent chapters of the vignette provide more detailed instructions and are broken up into three main steps:
+
+1. [Define breeding and nonbreeding nodes](#nodes)
+2. [Assemble abundance and migratory connectivity data](#data)
+3. [Modeling the migratory network](#model)
 
 ## Installation 
 

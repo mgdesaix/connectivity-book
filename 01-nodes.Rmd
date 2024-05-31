@@ -1,6 +1,12 @@
-# Step 1) Define breeding and nonbreeding nodes {#nodes}
+# Define breeding and nonbreeding nodes {#nodes}
 
 The first step of creating a migratory network is to spatially define the nodes (i.e. populations) that make up the sampled portions of the breeding and nonbreeding range. This can either be done with *vector* data for discrete spatial boundaries of nodes or *raster* data for a continuous surface probabilistic membership of geographic cells to a node (e.g., population genetic structure of a genoscape [@ruegg2020genoscape]).
+
+```{r, warning = F, message=F, result=F}
+library(mignette)
+library(tidyverse)
+library(terra)
+```
 
 ## Vector data
 

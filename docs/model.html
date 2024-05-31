@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 5 Modeling the migratory network | Creating Migratory Networks in R: mignette</title>
   <meta name="description" content="This provides examples and documentation of the Mignette R package" />
-  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 5 Modeling the migratory network | Creating Migratory Networks in R: mignette" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="" />
 
 
-<meta name="date" content="2023-11-06" />
+<meta name="date" content="2024-05-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -333,18 +333,17 @@ div.csl-indent {
 </table>
 <p>If you skipped it, see the previous <a href="data.html#data">Step 2) Abundance and migratory connectivity data</a> section for specific details on the input data formatting!</p>
 <p>For the following functions, we specify the order of the nodes we are using for the model. Here, we are just ordering nodes geographically by longitude to facilitate straightforward interpretation of the output.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="model.html#cb21-1" tabindex="-1"></a>bnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;WB&quot;</span>, <span class="st">&quot;BR&quot;</span>, <span class="st">&quot;NT&quot;</span>, <span class="st">&quot;ST&quot;</span>, <span class="st">&quot;MP&quot;</span>)</span>
-<span id="cb21-2"><a href="model.html#cb21-2" tabindex="-1"></a>wnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ALM&quot;</span>, <span class="st">&quot;LCA&quot;</span>, <span class="st">&quot;HCA&quot;</span>, <span class="st">&quot;CAR&quot;</span>, <span class="st">&quot;AONU&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="model.html#cb24-1" tabindex="-1"></a>brnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;WB&quot;</span>, <span class="st">&quot;BR&quot;</span>, <span class="st">&quot;NT&quot;</span>, <span class="st">&quot;ST&quot;</span>, <span class="st">&quot;MP&quot;</span>)</span>
+<span id="cb24-2"><a href="model.html#cb24-2" tabindex="-1"></a>nbnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ALM&quot;</span>, <span class="st">&quot;LCA&quot;</span>, <span class="st">&quot;HCA&quot;</span>, <span class="st">&quot;CAR&quot;</span>, <span class="st">&quot;AONU&quot;</span>)</span></code></pre></div>
 <p>For the American Redstart migratory network, we use <code>model = 1</code> from <code>mignette</code> which specifies that nonbreeding nodes are “encountered” and breeding nodes are “recovered” (i.e., inferred). This output saves the model as <code>amre.genetic.model_1.txt</code>. Below we specify <code>parallel = TRUE</code> to run MCMC on multiple cores and use the remaining defaults described previously CHANGE LINK. This step is computationally intensive and takes ~2 minutes to run on a 2023 MacBook Pro with an Apple M2 Pro chip.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="model.html#cb22-1" tabindex="-1"></a>network_model <span class="ot">&lt;-</span> <span class="fu">run_network_model</span>(<span class="at">abundance =</span> mignette<span class="sc">::</span>amre_abundance,</span>
-<span id="cb22-2"><a href="model.html#cb22-2" tabindex="-1"></a>                        <span class="at">nb2br_assign =</span> mignette<span class="sc">::</span>amre_assign,</span>
-<span id="cb22-3"><a href="model.html#cb22-3" tabindex="-1"></a>                        <span class="at">bnode_names =</span> bnode_names,</span>
-<span id="cb22-4"><a href="model.html#cb22-4" tabindex="-1"></a>                        <span class="at">wnode_names =</span> wnode_names,</span>
-<span id="cb22-5"><a href="model.html#cb22-5" tabindex="-1"></a>                        <span class="at">model =</span> <span class="dv">1</span>, </span>
-<span id="cb22-6"><a href="model.html#cb22-6" tabindex="-1"></a>                        <span class="at">base_filename =</span> <span class="st">&quot;amre.genetic&quot;</span>,</span>
-<span id="cb22-7"><a href="model.html#cb22-7" tabindex="-1"></a>                        <span class="at">parallel =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<p>The <code>run_network_model()</code> function outputs a list object with two components. The first component of the output is <code>network_model$conn</code> which provides a formatted data frame (i.e., breeding nodes in first column, remaining columns have nonbreeding node names) of the modeled connectivity results. Each value in the connectivity matrix indicates the overall importance of a particular migratory connection. These values are interpreted as the proportion of individuals that migrate between the corresponding populations, as such all of the values in the connectivity matrix sum to one.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="model.html#cb23-1" tabindex="-1"></a>network_model<span class="sc">$</span>conn</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="model.html#cb25-1" tabindex="-1"></a>network_model <span class="ot">&lt;-</span> <span class="fu">run_network_model</span>(<span class="at">abundance =</span> amre_abundance, </span>
+<span id="cb25-2"><a href="model.html#cb25-2" tabindex="-1"></a>                           <span class="at">nb2br_assign =</span> amre_assign,</span>
+<span id="cb25-3"><a href="model.html#cb25-3" tabindex="-1"></a>                           <span class="at">brnode_names =</span> brnode_names, </span>
+<span id="cb25-4"><a href="model.html#cb25-4" tabindex="-1"></a>                           <span class="at">nbnode_names =</span> nbnode_names,</span>
+<span id="cb25-5"><a href="model.html#cb25-5" tabindex="-1"></a>                           <span class="at">model =</span> <span class="st">&quot;BR&quot;</span>, <span class="at">base_filename =</span> <span class="st">&quot;amre.genetic&quot;</span>,</span>
+<span id="cb25-6"><a href="model.html#cb25-6" tabindex="-1"></a>                           <span class="at">parallel =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>The <code>run_network_model()</code> function outputs a list object with four components. The first component of the output, <code>[[“conn”]]</code>, is an R tibble object of the mean connectivity estimated between nodes (Table 1). These values are interpreted as the proportion of individuals the global population that migrate between the corresponding populations, as such all of the values in the network matrix sum to one. The second component, <code>[[“jags_out”]]</code>, is the full output from <code>jagsUI::autojags()</code> provided as a list object, which contains important model information such as parameter estimates and credible intervals, model specifications, and goodness of fit. The final two components, <code>[[“brnode_names”]]</code> and <code>[[“nbnode_names”]]</code>, store the node names corresponding to the rows and columns, respectively, of the connectivity matrix.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="model.html#cb26-1" tabindex="-1"></a>network_model<span class="sc">$</span>conn</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -400,8 +399,8 @@ div.csl-indent {
 </tbody>
 </table>
 <p>The second component is the full output from <a href="https://rdrr.io/cran/jagsUI/man/autojags.html"><code>*jagsUI* autojags()</code></a> and is accessed by <code>network_model$jags_out</code>. Here, the raw connectivity matrix can be accessed:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="model.html#cb24-1" tabindex="-1"></a>amre_conn <span class="ot">&lt;-</span> network_model<span class="sc">$</span>jags_out<span class="sc">$</span>mean<span class="sc">$</span>conn_g</span>
-<span id="cb24-2"><a href="model.html#cb24-2" tabindex="-1"></a>amre_conn</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="model.html#cb27-1" tabindex="-1"></a>amre_conn <span class="ot">&lt;-</span> network_model<span class="sc">$</span>jags_out<span class="sc">$</span>mean<span class="sc">$</span>conn_g</span>
+<span id="cb27-2"><a href="model.html#cb27-2" tabindex="-1"></a>amre_conn</span></code></pre></div>
 <table>
 <tbody>
 <tr class="odd">
@@ -442,19 +441,18 @@ div.csl-indent {
 </tbody>
 </table>
 <p>The raw connectivity matrix is used to plot the network. We plot the migratory network with the provided <code>mignette</code> functions <code>net_create()</code> and <code>net_draw()</code>. We set <code>connected_tol = 0.01</code> which plots only the edges with connectivity values of greater than 0.01. We also demonstrate below how to change parameters such as the colors and the node and edge scale size.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="model.html#cb25-1" tabindex="-1"></a>amre_net <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">net_create</span>(amre_conn,</span>
-<span id="cb25-2"><a href="model.html#cb25-2" tabindex="-1"></a>                            <span class="at">node.names =</span> <span class="fu">list</span>(bnode_names,wnode_names),</span>
-<span id="cb25-3"><a href="model.html#cb25-3" tabindex="-1"></a>                            <span class="at">connected_tol =</span> <span class="fl">0.01</span>)</span>
-<span id="cb25-4"><a href="model.html#cb25-4" tabindex="-1"></a><span class="co">#set the display size range for nodes (min and max), default 1-10</span></span>
-<span id="cb25-5"><a href="model.html#cb25-5" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>node_size_scale <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">8</span>,<span class="dv">25</span>)</span>
-<span id="cb25-6"><a href="model.html#cb25-6" tabindex="-1"></a><span class="co">#set the display size range for edges (min and max), default 1-10</span></span>
-<span id="cb25-7"><a href="model.html#cb25-7" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>edge_size_scale <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>)</span>
-<span id="cb25-8"><a href="model.html#cb25-8" tabindex="-1"></a><span class="co"># change colors</span></span>
-<span id="cb25-9"><a href="model.html#cb25-9" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>bnode_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;#009e73&quot;</span>, <span class="st">&quot;#cc79a7&quot;</span>, <span class="st">&quot;#56b4e9&quot;</span>, <span class="st">&quot;#e69f00&quot;</span>, <span class="st">&quot;#7979ff&quot;</span>)</span>
-<span id="cb25-10"><a href="model.html#cb25-10" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>wnode_colors <span class="ot">&lt;-</span> <span class="st">&quot;grey80&quot;</span></span>
-<span id="cb25-11"><a href="model.html#cb25-11" tabindex="-1"></a></span>
-<span id="cb25-12"><a href="model.html#cb25-12" tabindex="-1"></a>mignette<span class="sc">::</span><span class="fu">net_draw</span>(amre_net)</span></code></pre></div>
-<p><img src="Mignette_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="model.html#cb28-1" tabindex="-1"></a>amre_net <span class="ot">&lt;-</span> <span class="fu">net_create</span>(<span class="at">network_model =</span> network_model,</span>
+<span id="cb28-2"><a href="model.html#cb28-2" tabindex="-1"></a>                       <span class="at">margin =</span> <span class="fl">0.05</span>)</span>
+<span id="cb28-3"><a href="model.html#cb28-3" tabindex="-1"></a><span class="co">#set the display size range for nodes (min and max), default 1-10</span></span>
+<span id="cb28-4"><a href="model.html#cb28-4" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>node_size_scale <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">8</span>,<span class="dv">25</span>)</span>
+<span id="cb28-5"><a href="model.html#cb28-5" tabindex="-1"></a><span class="co">#set the display size range for edges (min and max), default 1-10</span></span>
+<span id="cb28-6"><a href="model.html#cb28-6" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>edge_size_scale <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>)</span>
+<span id="cb28-7"><a href="model.html#cb28-7" tabindex="-1"></a><span class="co"># change colors</span></span>
+<span id="cb28-8"><a href="model.html#cb28-8" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>brnode_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;#009e73&quot;</span>, <span class="st">&quot;#cc79a7&quot;</span>, <span class="st">&quot;#56b4e9&quot;</span>, <span class="st">&quot;#e69f00&quot;</span>, <span class="st">&quot;#7979ff&quot;</span>)</span>
+<span id="cb28-9"><a href="model.html#cb28-9" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>nbnode_colors <span class="ot">&lt;-</span> <span class="st">&quot;grey80&quot;</span></span>
+<span id="cb28-10"><a href="model.html#cb28-10" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="model.html#cb28-11" tabindex="-1"></a><span class="fu">net_draw</span>(amre_net)</span></code></pre></div>
+<p><img src="images/p.amre.net.png" width="1050" /></p>
 <p>In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. Breeding populations are in the top row, for which we provided custom colors, and nonbreeding populations are in the bottom row.</p>
 <p>Now you have a migratory network! Check out the <a href="visualization.html#visualization">visualization supplement</a> for additional ideas on plotting the network.</p>
 

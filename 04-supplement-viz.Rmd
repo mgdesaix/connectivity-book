@@ -10,8 +10,8 @@ library(tidyverse)
 library(mignette)
 library(ggalluvial)
 
-bnode_names <- c("WB", "BR", "NT", "ST", "MP")
-wnode_names <- c("ALM", "LCA", "HCA", "CAR", "AONU")
+brnode_names <- c("WB", "BR", "NT", "ST", "MP")
+nbnode_names <- c("ALM", "LCA", "HCA", "CAR", "AONU")
 
 cluster_colors <-  c(
   `ST` = "#e69f00", # orange/Southern Temperate
@@ -25,8 +25,8 @@ amre_conn_df <- mignette::amre_conn %>%
   as_tibble(rownames = "Breeding") %>%
   pivot_longer(cols = ALM:AONU, names_to = "Nonbreeding", values_to = "Connectivity") %>%
   mutate(Connectivity = ifelse(Connectivity < 0.01, 0, Connectivity)) %>%
-  mutate(Breeding = factor(Breeding, levels = rev(bnode_names)),
-         Nonbreeding = factor(Nonbreeding, levels = rev(wnode_names)))
+  mutate(Breeding = factor(Breeding, levels = rev(brnode_names)),
+         Nonbreeding = factor(Nonbreeding, levels = rev(nbnode_names)))
 
 p.alluvial <- ggplot(amre_conn_df,
        aes(y = Connectivity, axis1 = Nonbreeding, axis2 = Breeding)) +
