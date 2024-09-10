@@ -56,7 +56,7 @@ network_model <- run_network_model(abundance = amre_abundance,
                            parallel = TRUE)
 ```
 
-The first component of the output, `[[“conn”]]`, is an R tibble object of the mean connectivity estimated between nodes (Table 1). These values are interpreted as the proportion of individuals the global population that migrate between the corresponding populations, as such all of the values in the network matrix sum to one. The second component, `[[“jags_out”]]`, is the full output from `jagsUI::autojags()` provided as a list object, which contains important model information such as parameter estimates and credible intervals, model specifications, and goodness of fit. The final two components, `[[“brnode_names”]]` and `[[“nbnode_names”]]`, store the node names corresponding to the rows and columns, respectively, of the connectivity matrix.
+The first component of the output, `[[“conn”]]`, is an R tibble object of the mean connectivity estimated between nodes (Table 1). These values are interpreted as the proportion of the global population that migrate between the corresponding populations, as such all of the values in the network matrix sum to one. The second component, `[[“jags_out”]]`, is the full output from `jagsUI::autojags()` provided as a list object, which contains important model information such as parameter estimates and credible intervals, model specifications, and goodness of fit. The final two components, `[[“brnode_names”]]` and `[[“nbnode_names”]]`, store the node names corresponding to the rows and columns, respectively, of the connectivity matrix.
 
 ```r
 network_model$conn
@@ -87,14 +87,22 @@ knitr::kable(amre_conn)
 
 **Check parameter convergence**
 
-`mignette` users should familiarize themselves with the [`*jagsUI* autojags()`](https://rdrr.io/cran/jagsUI/man/autojags.html) output in order to evaluate the network model appropriately. For example, all parameters of the model should converge (*Rhat* < 1.1) and this can be double-checked by counting the number of instances where there are *Rhat* values greater than or equal to 1.1 with:
+`mignette` users should familiarize themselves with the [`jagsUI autojags()`](https://rdrr.io/cran/jagsUI/man/autojags.html) output in order to evaluate the network model appropriately. For example, all parameters of the model should converge (*Rhat* < 1.1) and this can be double-checked by counting the number of instances where there are *Rhat* values greater than or equal to 1.1 with:
 
 ```r
 sum(network_model$jags_out$Rhat$conn_g >= 1.1)
 [1] 0
 ```
 
-In this case, all of the *Rhat* values for the connectivity estimates were less than 1.1 and thus the result was 0 - all parameters converged! In the absence of convergence, the MCMC iterations may need to be increased. 
+In this case, all of the *Rhat* values for the connectivity estimates were less than 1.1 and thus the result was 0 - all parameters converged! In the absence of convergence, the MCMC iterations may need to be increased. Additionally, convergence should be inspected visually to ensure that all MCMC chains have stabilized. 
+
+```r
+jagsUI::traceplot(network_model$jags_out, "conn", layout = c(2,3))
+```
+
+```{r, echo = FALSE}
+knitr::include_graphics("./images/mcmc_chains1.png")
+```
 
 **Check goodness of fit**
 

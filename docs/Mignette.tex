@@ -119,7 +119,7 @@
 
 \title{Creating Migratory Networks in R: mignette}
 \author{}
-\date{\vspace{-2.5em}2024-05-31}
+\date{\vspace{-2.5em}2024-09-10}
 
 \begin{document}
 \maketitle
@@ -288,7 +288,7 @@ For the American Redstart migratory network, we use \texttt{model\ =\ BR} which 
 \end{Highlighting}
 \end{Shaded}
 
-The first component of the output, \texttt{{[}{[}“conn”{]}{]}}, is an R tibble object of the mean connectivity estimated between nodes (Table 1). These values are interpreted as the proportion of individuals the global population that migrate between the corresponding populations, as such all of the values in the network matrix sum to one. The second component, \texttt{{[}{[}“jags\_out”{]}{]}}, is the full output from \texttt{jagsUI::autojags()} provided as a list object, which contains important model information such as parameter estimates and credible intervals, model specifications, and goodness of fit. The final two components, \texttt{{[}{[}“brnode\_names”{]}{]}} and \texttt{{[}{[}“nbnode\_names”{]}{]}}, store the node names corresponding to the rows and columns, respectively, of the connectivity matrix.
+The first component of the output, \texttt{{[}{[}“conn”{]}{]}}, is an R tibble object of the mean connectivity estimated between nodes (Table 1). These values are interpreted as the proportion of the global population that migrate between the corresponding populations, as such all of the values in the network matrix sum to one. The second component, \texttt{{[}{[}“jags\_out”{]}{]}}, is the full output from \texttt{jagsUI::autojags()} provided as a list object, which contains important model information such as parameter estimates and credible intervals, model specifications, and goodness of fit. The final two components, \texttt{{[}{[}“brnode\_names”{]}{]}} and \texttt{{[}{[}“nbnode\_names”{]}{]}}, store the node names corresponding to the rows and columns, respectively, of the connectivity matrix.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -337,7 +337,7 @@ The second component is the full output from \href{https://rdrr.io/cran/jagsUI/m
 
 \textbf{Check parameter convergence}
 
-\texttt{mignette} users should familiarize themselves with the \href{https://rdrr.io/cran/jagsUI/man/autojags.html}{\texttt{*jagsUI*\ autojags()}} output in order to evaluate the network model appropriately. For example, all parameters of the model should converge (\emph{Rhat} \textless{} 1.1) and this can be double-checked by counting the number of instances where there are \emph{Rhat} values greater than or equal to 1.1 with:
+\texttt{mignette} users should familiarize themselves with the \href{https://rdrr.io/cran/jagsUI/man/autojags.html}{\texttt{jagsUI\ autojags()}} output in order to evaluate the network model appropriately. For example, all parameters of the model should converge (\emph{Rhat} \textless{} 1.1) and this can be double-checked by counting the number of instances where there are \emph{Rhat} values greater than or equal to 1.1 with:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -346,7 +346,15 @@ The second component is the full output from \href{https://rdrr.io/cran/jagsUI/m
 \end{Highlighting}
 \end{Shaded}
 
-In this case, all of the \emph{Rhat} values for the connectivity estimates were less than 1.1 and thus the result was 0 - all parameters converged! In the absence of convergence, the MCMC iterations may need to be increased.
+In this case, all of the \emph{Rhat} values for the connectivity estimates were less than 1.1 and thus the result was 0 - all parameters converged! In the absence of convergence, the MCMC iterations may need to be increased. Additionally, convergence should be inspected visually to ensure that all MCMC chains have stabilized.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jagsUI}\SpecialCharTok{::}\FunctionTok{traceplot}\NormalTok{(network\_model}\SpecialCharTok{$}\NormalTok{jags\_out, }\StringTok{"conn"}\NormalTok{, }\AttributeTok{layout =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[width=8.81in]{./images/mcmc_chains1}
 
 \textbf{Check goodness of fit}
 
@@ -428,7 +436,7 @@ Vector data can define nodes by representing geographic boundaries such as polit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-11-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-12-1.pdf}
 
 For defining a node, we are only interested in regions that we have data. It's straightforward with the spatial functions from \texttt{terra} to determine the sampled regions. Here, we find the conservation regions for which we have sampled American Redstart data from the nonbreeding range.
 
@@ -491,7 +499,7 @@ Thus, we've identified the 5 nonbreeding nodes for the American Redstart data: A
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-14-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-15-1.pdf}
 
 \hypertarget{raster-data}{%
 \section{Raster data}\label{raster-data}}
@@ -506,7 +514,7 @@ Raster data is used when populations are defined by a continuous surface of prob
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-15-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-16-1.pdf}
 
 While it is outside the scope of \texttt{mignette} to perform the requisite population genetics analyses for producing these rasters, users with genetic data and expertise with genetic clustering analyses may be interested in the \protect\hyperlink{supplemental}{Supplementary information} that provide additional information and code.
 
@@ -806,7 +814,7 @@ Ok, we'll toss out another way to visualize these networks using the \href{https
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-24-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-25-1.pdf}
 
 \hypertarget{supplemental}{%
 \chapter{Supplement: Avian abundance data and genetic breeding nodes}\label{supplemental}}
@@ -936,7 +944,7 @@ Check out the resulting genoscape:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-26-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-27-1.pdf}
 
 \textbf{STOP}
 
@@ -969,7 +977,7 @@ Check out the polygons
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics[width=0.7\linewidth]{Mignette_files/figure-latex/unnamed-chunk-28-1}
+\includegraphics[width=0.7\linewidth]{Mignette_files/figure-latex/unnamed-chunk-29-1}
 
   \bibliography{book.bib,packages.bib}
 
