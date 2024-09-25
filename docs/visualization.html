@@ -23,7 +23,7 @@
 <meta name="author" content="" />
 
 
-<meta name="date" content="2024-09-10" />
+<meta name="date" content="2024-09-25" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -221,42 +221,42 @@ div.csl-indent {
 <div id="alluvial-plot" class="section level2 hasAnchor" number="6.1">
 <h2><span class="header-section-number">6.1</span> Alluvial plot<a href="visualization.html#alluvial-plot" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Ok, we’ll toss out another way to visualize these networks using the <a href="https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.htm"><code>ggalluvial</code> package</a> because it’s really fun. In this alluvial plot, the width of the connections correspond to the network model connectivity output, thus correspond to the proportion of the global species abundance that use that migratory network. The bars on the top row are the breeding nodes scaled by abundance and the bottom row are the nonbreeding nodes scaled by abundance.</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="visualization.html#cb30-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb30-2"><a href="visualization.html#cb30-2" tabindex="-1"></a><span class="fu">library</span>(mignette)</span>
-<span id="cb30-3"><a href="visualization.html#cb30-3" tabindex="-1"></a><span class="fu">library</span>(ggalluvial)</span>
-<span id="cb30-4"><a href="visualization.html#cb30-4" tabindex="-1"></a></span>
-<span id="cb30-5"><a href="visualization.html#cb30-5" tabindex="-1"></a>brnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;WB&quot;</span>, <span class="st">&quot;BR&quot;</span>, <span class="st">&quot;NT&quot;</span>, <span class="st">&quot;ST&quot;</span>, <span class="st">&quot;MP&quot;</span>)</span>
-<span id="cb30-6"><a href="visualization.html#cb30-6" tabindex="-1"></a>nbnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ALM&quot;</span>, <span class="st">&quot;LCA&quot;</span>, <span class="st">&quot;HCA&quot;</span>, <span class="st">&quot;CAR&quot;</span>, <span class="st">&quot;AONU&quot;</span>)</span>
-<span id="cb30-7"><a href="visualization.html#cb30-7" tabindex="-1"></a></span>
-<span id="cb30-8"><a href="visualization.html#cb30-8" tabindex="-1"></a>cluster_colors <span class="ot">&lt;-</span>  <span class="fu">c</span>(</span>
-<span id="cb30-9"><a href="visualization.html#cb30-9" tabindex="-1"></a>  <span class="st">`</span><span class="at">ST</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#e69f00&quot;</span>, <span class="co"># orange/Southern Temperate</span></span>
-<span id="cb30-10"><a href="visualization.html#cb30-10" tabindex="-1"></a>  <span class="st">`</span><span class="at">BR</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#cc79a7&quot;</span>, <span class="co"># pink/Basin Rockies (BR)</span></span>
-<span id="cb30-11"><a href="visualization.html#cb30-11" tabindex="-1"></a>  <span class="st">`</span><span class="at">NT</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#56b4e9&quot;</span>, <span class="co"># light blue/Northern Temperate (NT)</span></span>
-<span id="cb30-12"><a href="visualization.html#cb30-12" tabindex="-1"></a>  <span class="st">`</span><span class="at">WB</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#009e73&quot;</span>, <span class="co"># green/Western Boreal (WB)</span></span>
-<span id="cb30-13"><a href="visualization.html#cb30-13" tabindex="-1"></a>  <span class="st">`</span><span class="at">MP</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#7979ff&quot;</span> <span class="co"># dark blue/Maritime Provinces (MP)</span></span>
-<span id="cb30-14"><a href="visualization.html#cb30-14" tabindex="-1"></a>) </span>
-<span id="cb30-15"><a href="visualization.html#cb30-15" tabindex="-1"></a></span>
-<span id="cb30-16"><a href="visualization.html#cb30-16" tabindex="-1"></a>amre_conn_df <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_conn <span class="sc">%&gt;%</span></span>
-<span id="cb30-17"><a href="visualization.html#cb30-17" tabindex="-1"></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">&quot;Breeding&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb30-18"><a href="visualization.html#cb30-18" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> ALM<span class="sc">:</span>AONU, <span class="at">names_to =</span> <span class="st">&quot;Nonbreeding&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;Connectivity&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb30-19"><a href="visualization.html#cb30-19" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Connectivity =</span> <span class="fu">ifelse</span>(Connectivity <span class="sc">&lt;</span> <span class="fl">0.01</span>, <span class="dv">0</span>, Connectivity)) <span class="sc">%&gt;%</span></span>
-<span id="cb30-20"><a href="visualization.html#cb30-20" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Breeding =</span> <span class="fu">factor</span>(Breeding, <span class="at">levels =</span> <span class="fu">rev</span>(brnode_names)),</span>
-<span id="cb30-21"><a href="visualization.html#cb30-21" tabindex="-1"></a>         <span class="at">Nonbreeding =</span> <span class="fu">factor</span>(Nonbreeding, <span class="at">levels =</span> <span class="fu">rev</span>(nbnode_names)))</span>
-<span id="cb30-22"><a href="visualization.html#cb30-22" tabindex="-1"></a></span>
-<span id="cb30-23"><a href="visualization.html#cb30-23" tabindex="-1"></a>p.alluvial <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(amre_conn_df,</span>
-<span id="cb30-24"><a href="visualization.html#cb30-24" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">y =</span> Connectivity, <span class="at">axis1 =</span> Nonbreeding, <span class="at">axis2 =</span> Breeding)) <span class="sc">+</span></span>
-<span id="cb30-25"><a href="visualization.html#cb30-25" tabindex="-1"></a>  <span class="fu">geom_alluvium</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Breeding), <span class="at">width =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb30-26"><a href="visualization.html#cb30-26" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cluster_colors) <span class="sc">+</span></span>
-<span id="cb30-27"><a href="visualization.html#cb30-27" tabindex="-1"></a>  <span class="fu">geom_stratum</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">width =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb30-28"><a href="visualization.html#cb30-28" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">stat =</span> <span class="st">&quot;stratum&quot;</span>, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(stratum))) <span class="sc">+</span></span>
-<span id="cb30-29"><a href="visualization.html#cb30-29" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="st">&quot;Nonbreeding&quot;</span>, <span class="st">&quot;Breeding&quot;</span>),</span>
-<span id="cb30-30"><a href="visualization.html#cb30-30" tabindex="-1"></a>                   <span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.05</span>)) <span class="sc">+</span> </span>
-<span id="cb30-31"><a href="visualization.html#cb30-31" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb30-32"><a href="visualization.html#cb30-32" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
-<span id="cb30-33"><a href="visualization.html#cb30-33" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;white&quot;</span>))</span>
-<span id="cb30-34"><a href="visualization.html#cb30-34" tabindex="-1"></a></span>
-<span id="cb30-35"><a href="visualization.html#cb30-35" tabindex="-1"></a>p.alluvial</span></code></pre></div>
-<p><img src="Mignette_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="visualization.html#cb28-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb28-2"><a href="visualization.html#cb28-2" tabindex="-1"></a><span class="fu">library</span>(mignette)</span>
+<span id="cb28-3"><a href="visualization.html#cb28-3" tabindex="-1"></a><span class="fu">library</span>(ggalluvial)</span>
+<span id="cb28-4"><a href="visualization.html#cb28-4" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="visualization.html#cb28-5" tabindex="-1"></a>brnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;WB&quot;</span>, <span class="st">&quot;BR&quot;</span>, <span class="st">&quot;NT&quot;</span>, <span class="st">&quot;ST&quot;</span>, <span class="st">&quot;MP&quot;</span>)</span>
+<span id="cb28-6"><a href="visualization.html#cb28-6" tabindex="-1"></a>nbnode_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ALM&quot;</span>, <span class="st">&quot;LCA&quot;</span>, <span class="st">&quot;HCA&quot;</span>, <span class="st">&quot;CAR&quot;</span>, <span class="st">&quot;AONU&quot;</span>)</span>
+<span id="cb28-7"><a href="visualization.html#cb28-7" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="visualization.html#cb28-8" tabindex="-1"></a>cluster_colors <span class="ot">&lt;-</span>  <span class="fu">c</span>(</span>
+<span id="cb28-9"><a href="visualization.html#cb28-9" tabindex="-1"></a>  <span class="st">`</span><span class="at">ST</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#e69f00&quot;</span>, <span class="co"># orange/Southern Temperate</span></span>
+<span id="cb28-10"><a href="visualization.html#cb28-10" tabindex="-1"></a>  <span class="st">`</span><span class="at">BR</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#cc79a7&quot;</span>, <span class="co"># pink/Basin Rockies (BR)</span></span>
+<span id="cb28-11"><a href="visualization.html#cb28-11" tabindex="-1"></a>  <span class="st">`</span><span class="at">NT</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#56b4e9&quot;</span>, <span class="co"># light blue/Northern Temperate (NT)</span></span>
+<span id="cb28-12"><a href="visualization.html#cb28-12" tabindex="-1"></a>  <span class="st">`</span><span class="at">WB</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#009e73&quot;</span>, <span class="co"># green/Western Boreal (WB)</span></span>
+<span id="cb28-13"><a href="visualization.html#cb28-13" tabindex="-1"></a>  <span class="st">`</span><span class="at">MP</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#7979ff&quot;</span> <span class="co"># dark blue/Maritime Provinces (MP)</span></span>
+<span id="cb28-14"><a href="visualization.html#cb28-14" tabindex="-1"></a>) </span>
+<span id="cb28-15"><a href="visualization.html#cb28-15" tabindex="-1"></a></span>
+<span id="cb28-16"><a href="visualization.html#cb28-16" tabindex="-1"></a>amre_conn_df <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_conn <span class="sc">%&gt;%</span></span>
+<span id="cb28-17"><a href="visualization.html#cb28-17" tabindex="-1"></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">&quot;Breeding&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-18"><a href="visualization.html#cb28-18" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> ALM<span class="sc">:</span>AONU, <span class="at">names_to =</span> <span class="st">&quot;Nonbreeding&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;Connectivity&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-19"><a href="visualization.html#cb28-19" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Connectivity =</span> <span class="fu">ifelse</span>(Connectivity <span class="sc">&lt;</span> <span class="fl">0.01</span>, <span class="dv">0</span>, Connectivity)) <span class="sc">%&gt;%</span></span>
+<span id="cb28-20"><a href="visualization.html#cb28-20" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Breeding =</span> <span class="fu">factor</span>(Breeding, <span class="at">levels =</span> <span class="fu">rev</span>(brnode_names)),</span>
+<span id="cb28-21"><a href="visualization.html#cb28-21" tabindex="-1"></a>         <span class="at">Nonbreeding =</span> <span class="fu">factor</span>(Nonbreeding, <span class="at">levels =</span> <span class="fu">rev</span>(nbnode_names)))</span>
+<span id="cb28-22"><a href="visualization.html#cb28-22" tabindex="-1"></a></span>
+<span id="cb28-23"><a href="visualization.html#cb28-23" tabindex="-1"></a>p.alluvial <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(amre_conn_df,</span>
+<span id="cb28-24"><a href="visualization.html#cb28-24" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">y =</span> Connectivity, <span class="at">axis1 =</span> Nonbreeding, <span class="at">axis2 =</span> Breeding)) <span class="sc">+</span></span>
+<span id="cb28-25"><a href="visualization.html#cb28-25" tabindex="-1"></a>  <span class="fu">geom_alluvium</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Breeding), <span class="at">width =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb28-26"><a href="visualization.html#cb28-26" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cluster_colors) <span class="sc">+</span></span>
+<span id="cb28-27"><a href="visualization.html#cb28-27" tabindex="-1"></a>  <span class="fu">geom_stratum</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">width =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb28-28"><a href="visualization.html#cb28-28" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">stat =</span> <span class="st">&quot;stratum&quot;</span>, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(stratum))) <span class="sc">+</span></span>
+<span id="cb28-29"><a href="visualization.html#cb28-29" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="st">&quot;Nonbreeding&quot;</span>, <span class="st">&quot;Breeding&quot;</span>),</span>
+<span id="cb28-30"><a href="visualization.html#cb28-30" tabindex="-1"></a>                   <span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.05</span>)) <span class="sc">+</span> </span>
+<span id="cb28-31"><a href="visualization.html#cb28-31" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb28-32"><a href="visualization.html#cb28-32" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
+<span id="cb28-33"><a href="visualization.html#cb28-33" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;white&quot;</span>))</span>
+<span id="cb28-34"><a href="visualization.html#cb28-34" tabindex="-1"></a></span>
+<span id="cb28-35"><a href="visualization.html#cb28-35" tabindex="-1"></a>p.alluvial</span></code></pre></div>
+<p><img src="Mignette_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 
 </div>
 </div>

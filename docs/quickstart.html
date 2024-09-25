@@ -23,7 +23,7 @@
 <meta name="author" content="" />
 
 
-<meta name="date" content="2024-09-10" />
+<meta name="date" content="2024-09-25" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -238,14 +238,14 @@ div.csl-indent {
 <th align="right">CAR</th>
 <th align="right">AONU</th>
 <th align="right">ALM</th>
-<th align="right">HCA</th>
 <th align="right">LCA</th>
+<th align="right">HCA</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">BR</td>
-<td align="right">2</td>
+<td align="right">1</td>
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -261,27 +261,27 @@ div.csl-indent {
 </tr>
 <tr class="odd">
 <td align="left">NT</td>
-<td align="right">54</td>
+<td align="right">58</td>
 <td align="right">0</td>
 <td align="right">3</td>
-<td align="right">0</td>
+<td align="right">1</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">ST</td>
-<td align="right">12</td>
+<td align="right">9</td>
 <td align="right">12</td>
 <td align="right">0</td>
-<td align="right">4</td>
 <td align="right">1</td>
+<td align="right">4</td>
 </tr>
 <tr class="odd">
 <td align="left">WB</td>
 <td align="right">1</td>
 <td align="right">0</td>
-<td align="right">19</td>
+<td align="right">20</td>
+<td align="right">15</td>
 <td align="right">1</td>
-<td align="right">13</td>
 </tr>
 </tbody>
 </table>
@@ -364,99 +364,58 @@ div.csl-indent {
 <tbody>
 <tr class="odd">
 <td align="left">WB</td>
-<td align="right">0.14212</td>
-<td align="right">0.13901</td>
-<td align="right">0.01346</td>
-<td align="right">0.00507</td>
+<td align="right">0.14422</td>
+<td align="right">0.13388</td>
+<td align="right">0.01340</td>
+<td align="right">0.00508</td>
 <td align="right">0.00002</td>
 </tr>
 <tr class="even">
 <td align="left">BR</td>
-<td align="right">0.00010</td>
-<td align="right">0.00021</td>
-<td align="right">0.00008</td>
-<td align="right">0.02082</td>
-<td align="right">0.00004</td>
+<td align="right">0.00014</td>
+<td align="right">0.00019</td>
+<td align="right">0.00009</td>
+<td align="right">0.01655</td>
+<td align="right">0.00006</td>
 </tr>
 <tr class="odd">
 <td align="left">NT</td>
-<td align="right">0.05680</td>
-<td align="right">0.00041</td>
-<td align="right">0.00013</td>
-<td align="right">0.38276</td>
-<td align="right">0.00006</td>
+<td align="right">0.05010</td>
+<td align="right">0.02698</td>
+<td align="right">0.00011</td>
+<td align="right">0.38497</td>
+<td align="right">0.00005</td>
 </tr>
 <tr class="even">
 <td align="left">ST</td>
-<td align="right">0.00003</td>
-<td align="right">0.01345</td>
-<td align="right">0.03618</td>
-<td align="right">0.03902</td>
-<td align="right">0.06453</td>
+<td align="right">0.00002</td>
+<td align="right">0.01126</td>
+<td align="right">0.03642</td>
+<td align="right">0.02810</td>
+<td align="right">0.06308</td>
 </tr>
 <tr class="odd">
 <td align="left">MP</td>
-<td align="right">0.00013</td>
-<td align="right">0.00036</td>
-<td align="right">0.00022</td>
+<td align="right">0.00011</td>
+<td align="right">0.00020</td>
+<td align="right">0.00023</td>
 <td align="right">0.00002</td>
-<td align="right">0.08496</td>
+<td align="right">0.08470</td>
 </tr>
 </tbody>
 </table>
-<p>The second component is the full output from <a href="https://rdrr.io/cran/jagsUI/man/autojags.html"><code>*jagsUI* autojags()</code></a> and is accessed by <code>network_model$jags_out</code>. Here, the raw connectivity matrix (i.e., mean <em>conn_g</em> estimates) can be accessed:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="quickstart.html#cb9-1" tabindex="-1"></a>amre_conn <span class="ot">&lt;-</span> network_model<span class="sc">$</span>jags_out<span class="sc">$</span>mean<span class="sc">$</span>conn_g</span>
-<span id="cb9-2"><a href="quickstart.html#cb9-2" tabindex="-1"></a>amre_conn</span></code></pre></div>
-<table>
-<tbody>
-<tr class="odd">
-<td align="right">0.14212</td>
-<td align="right">0.13901</td>
-<td align="right">0.01346</td>
-<td align="right">0.00507</td>
-<td align="right">0.00002</td>
-</tr>
-<tr class="even">
-<td align="right">0.00010</td>
-<td align="right">0.00021</td>
-<td align="right">0.00008</td>
-<td align="right">0.02082</td>
-<td align="right">0.00004</td>
-</tr>
-<tr class="odd">
-<td align="right">0.05680</td>
-<td align="right">0.00041</td>
-<td align="right">0.00013</td>
-<td align="right">0.38276</td>
-<td align="right">0.00006</td>
-</tr>
-<tr class="even">
-<td align="right">0.00003</td>
-<td align="right">0.01345</td>
-<td align="right">0.03618</td>
-<td align="right">0.03902</td>
-<td align="right">0.06453</td>
-</tr>
-<tr class="odd">
-<td align="right">0.00013</td>
-<td align="right">0.00036</td>
-<td align="right">0.00022</td>
-<td align="right">0.00002</td>
-<td align="right">0.08496</td>
-</tr>
-</tbody>
-</table>
+<p>The second component is the full output from <a href="https://rdrr.io/cran/jagsUI/man/autojags.html"><code>*jagsUI* autojags()</code></a> and is accessed by <code>network_model$jags_out</code>. Here, the raw connectivity matrix (i.e., mean <em>conn_g</em> estimates) can be accessed <code>network_model$jags_out$mean$conn_g</code></p>
 <p><strong>Check parameter convergence</strong></p>
 <p><code>mignette</code> users should familiarize themselves with the <a href="https://rdrr.io/cran/jagsUI/man/autojags.html"><code>jagsUI autojags()</code></a> output in order to evaluate the network model appropriately. For example, all parameters of the model should converge (<em>Rhat</em> &lt; 1.1) and this can be double-checked by counting the number of instances where there are <em>Rhat</em> values greater than or equal to 1.1 with:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="quickstart.html#cb10-1" tabindex="-1"></a><span class="fu">sum</span>(network_model<span class="sc">$</span>jags_out<span class="sc">$</span>Rhat<span class="sc">$</span>conn_g <span class="sc">&gt;=</span> <span class="fl">1.1</span>)</span>
-<span id="cb10-2"><a href="quickstart.html#cb10-2" tabindex="-1"></a>[<span class="dv">1</span>] <span class="dv">0</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="quickstart.html#cb9-1" tabindex="-1"></a><span class="fu">sum</span>(network_model<span class="sc">$</span>jags_out<span class="sc">$</span>Rhat<span class="sc">$</span>conn_g <span class="sc">&gt;=</span> <span class="fl">1.1</span>)</span>
+<span id="cb9-2"><a href="quickstart.html#cb9-2" tabindex="-1"></a>[<span class="dv">1</span>] <span class="dv">0</span></span></code></pre></div>
 <p>In this case, all of the <em>Rhat</em> values for the connectivity estimates were less than 1.1 and thus the result was 0 - all parameters converged! In the absence of convergence, the MCMC iterations may need to be increased. Additionally, convergence should be inspected visually to ensure that all MCMC chains have stabilized.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="quickstart.html#cb11-1" tabindex="-1"></a>jagsUI<span class="sc">::</span><span class="fu">traceplot</span>(network_model<span class="sc">$</span>jags_out, <span class="st">&quot;conn&quot;</span>, <span class="at">layout =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="quickstart.html#cb10-1" tabindex="-1"></a>jagsUI<span class="sc">::</span><span class="fu">traceplot</span>(network_model<span class="sc">$</span>jags_out, <span class="st">&quot;conn&quot;</span>, <span class="at">layout =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>))</span></code></pre></div>
 <p><img src="images/mcmc_chains1.png" width="317" /></p>
 <p><strong>Check goodness of fit</strong></p>
 <p>In <em>mignette</em>, we implement a posterior predictive check using the Freeman-Tukey discrepancy statistic to compare the fit of the observed data to simulated data from the model, following the guidelines of <a href="https://doi.org/10.1002/ecm.1314">Conn et al. (2018)</a>. In the network model output, the posterior predictive check parameters are: 1) FT.obs = the Freeman-Tukey statistic for observed data, and 2) FT.rep = the Freeman-Tukey statistic for simulated data. The function <code>get_FT_fit()</code> produces a density plot of the Freeman-Tukey statistics for qualitatively comparing observed and simulated data, as well as outputting the Bayesian p-value of the goodness of fit based on these distributions. Very small (&lt;0.05) or large (&gt;0.95) Bayesian p-values suggest a lack of fit of the model. For a full discussion of checking Bayesian models, see Conn et al. (2018).</p>
 <p>We can then look at the posterior predictive check of the American Redstart mode using the code below, which shows largely overlapping distributions of the Freeman-Tukey discrepancy statistics for the observed and simulated data, with a corresponding Bayesian p-value of 0.58 - indicating sufficient goodness of fit.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="quickstart.html#cb12-1" tabindex="-1"></a><span class="fu">get_FT_fit</span>(network_model)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="quickstart.html#cb11-1" tabindex="-1"></a><span class="fu">get_FT_fit</span>(network_model)</span></code></pre></div>
 <p><img src="images/p.fit.png" width="900" /></p>
 <p><strong>Uncertainty in the connectivity estimates</strong></p>
 <p>The network model output provides credible intervals in addition to the mean of the connectivity estimates. Uncertainty in the network connectivity estimates is characterized by the credible intervals provided in the network model output for the conn_g parameter. The mignette function <code>plot_network_CI()</code> plots the mean and 95% credible intervals for network connectivity which allows users to assess the uncertainty in the estimates.</p>
@@ -465,17 +424,17 @@ stage_colors = brnode_colors, overlap = TRUE)</code></pre>
 <p><img src="images/p.ci.png" width="900" /></p>
 <p><strong>Visualize network</strong></p>
 <p>The raw connectivity matrix is used to plot the network. We plot the migratory network with the provided <code>mignette</code> functions <code>net_create()</code> and <code>net_draw()</code>. We set <code>connected_tol = 0.01</code> which plots only the edges with connectivity values of greater than 0.01.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="quickstart.html#cb14-1" tabindex="-1"></a>amre_net <span class="ot">&lt;-</span> <span class="fu">net_create</span>(<span class="at">network_model =</span> network_model,</span>
-<span id="cb14-2"><a href="quickstart.html#cb14-2" tabindex="-1"></a>                       <span class="at">margin =</span> <span class="fl">0.05</span>)</span>
-<span id="cb14-3"><a href="quickstart.html#cb14-3" tabindex="-1"></a><span class="co">#set the display size range for nodes (min and max), default 1-10</span></span>
-<span id="cb14-4"><a href="quickstart.html#cb14-4" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>node_size_scale <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">8</span>,<span class="dv">25</span>)</span>
-<span id="cb14-5"><a href="quickstart.html#cb14-5" tabindex="-1"></a><span class="co">#set the display size range for edges (min and max), default 1-10</span></span>
-<span id="cb14-6"><a href="quickstart.html#cb14-6" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>edge_size_scale <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>)</span>
-<span id="cb14-7"><a href="quickstart.html#cb14-7" tabindex="-1"></a><span class="co"># change colors</span></span>
-<span id="cb14-8"><a href="quickstart.html#cb14-8" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>brnode_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;#009e73&quot;</span>, <span class="st">&quot;#cc79a7&quot;</span>, <span class="st">&quot;#56b4e9&quot;</span>, <span class="st">&quot;#e69f00&quot;</span>, <span class="st">&quot;#7979ff&quot;</span>)</span>
-<span id="cb14-9"><a href="quickstart.html#cb14-9" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>nbnode_colors <span class="ot">&lt;-</span> <span class="st">&quot;grey80&quot;</span></span>
-<span id="cb14-10"><a href="quickstart.html#cb14-10" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="quickstart.html#cb14-11" tabindex="-1"></a><span class="fu">net_draw</span>(amre_net)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="quickstart.html#cb13-1" tabindex="-1"></a>amre_net <span class="ot">&lt;-</span> <span class="fu">net_create</span>(<span class="at">network_model =</span> network_model,</span>
+<span id="cb13-2"><a href="quickstart.html#cb13-2" tabindex="-1"></a>                       <span class="at">margin =</span> <span class="fl">0.05</span>)</span>
+<span id="cb13-3"><a href="quickstart.html#cb13-3" tabindex="-1"></a><span class="co">#set the display size range for nodes (min and max), default 1-10</span></span>
+<span id="cb13-4"><a href="quickstart.html#cb13-4" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>node_size_scale <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">8</span>,<span class="dv">25</span>)</span>
+<span id="cb13-5"><a href="quickstart.html#cb13-5" tabindex="-1"></a><span class="co">#set the display size range for edges (min and max), default 1-10</span></span>
+<span id="cb13-6"><a href="quickstart.html#cb13-6" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>edge_size_scale <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>)</span>
+<span id="cb13-7"><a href="quickstart.html#cb13-7" tabindex="-1"></a><span class="co"># change colors</span></span>
+<span id="cb13-8"><a href="quickstart.html#cb13-8" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>brnode_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;#009e73&quot;</span>, <span class="st">&quot;#cc79a7&quot;</span>, <span class="st">&quot;#56b4e9&quot;</span>, <span class="st">&quot;#e69f00&quot;</span>, <span class="st">&quot;#7979ff&quot;</span>)</span>
+<span id="cb13-9"><a href="quickstart.html#cb13-9" tabindex="-1"></a>amre_net<span class="sc">$</span>display_par<span class="sc">$</span>nbnode_colors <span class="ot">&lt;-</span> <span class="st">&quot;grey80&quot;</span></span>
+<span id="cb13-10"><a href="quickstart.html#cb13-10" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="quickstart.html#cb13-11" tabindex="-1"></a><span class="fu">net_draw</span>(amre_net)</span></code></pre></div>
 <p><img src="images/p.amre.net.png" width="1050" /></p>
 <p>In this visualization, node size corresponds to the amount of connectivity with that population and edge size corresponds to the amount of connectivity between the populations. Breeding populations are in the top row, for which we provided custom colors, and nonbreeding populations are in the bottom row.</p>
 <p>This sums up the basics of creating and visualizing a migratory network. We encourage users to explore and build upon the visualization tools we provide (e.g. overlay the migratory networks on geographic ranges) - the options are endless, enjoy!</p>

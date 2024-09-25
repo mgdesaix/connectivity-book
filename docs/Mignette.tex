@@ -119,7 +119,7 @@
 
 \title{Creating Migratory Networks in R: mignette}
 \author{}
-\date{\vspace{-2.5em}2024-09-10}
+\date{\vspace{-2.5em}2024-09-25}
 
 \begin{document}
 \maketitle
@@ -216,17 +216,17 @@ We provide an example of these data in \texttt{mignette}, with migratory connect
 
 \begin{tabular}{l|r|r|r|r|r}
 \hline
-Breeding & CAR & AONU & ALM & HCA & LCA\\
+Breeding & CAR & AONU & ALM & LCA & HCA\\
 \hline
-BR & 2 & 0 & 0 & 0 & 0\\
+BR & 1 & 0 & 0 & 0 & 0\\
 \hline
 MP & 0 & 9 & 0 & 0 & 0\\
 \hline
-NT & 54 & 0 & 3 & 0 & 0\\
+NT & 58 & 0 & 3 & 1 & 0\\
 \hline
-ST & 12 & 12 & 0 & 4 & 1\\
+ST & 9 & 12 & 0 & 1 & 4\\
 \hline
-WB & 1 & 0 & 19 & 1 & 13\\
+WB & 1 & 0 & 20 & 15 & 1\\
 \hline
 \end{tabular}
 
@@ -300,40 +300,19 @@ The first component of the output, \texttt{{[}{[}“conn”{]}{]}}, is an R tibb
 \hline
 Breeding & ALM & LCA & HCA & CAR & AONU\\
 \hline
-WB & 0.14212 & 0.13901 & 0.01346 & 0.00507 & 0.00002\\
+WB & 0.14422 & 0.13388 & 0.01340 & 0.00508 & 0.00002\\
 \hline
-BR & 0.00010 & 0.00021 & 0.00008 & 0.02082 & 0.00004\\
+BR & 0.00014 & 0.00019 & 0.00009 & 0.01655 & 0.00006\\
 \hline
-NT & 0.05680 & 0.00041 & 0.00013 & 0.38276 & 0.00006\\
+NT & 0.05010 & 0.02698 & 0.00011 & 0.38497 & 0.00005\\
 \hline
-ST & 0.00003 & 0.01345 & 0.03618 & 0.03902 & 0.06453\\
+ST & 0.00002 & 0.01126 & 0.03642 & 0.02810 & 0.06308\\
 \hline
-MP & 0.00013 & 0.00036 & 0.00022 & 0.00002 & 0.08496\\
-\hline
-\end{tabular}
-
-The second component is the full output from \href{https://rdrr.io/cran/jagsUI/man/autojags.html}{\texttt{*jagsUI*\ autojags()}} and is accessed by \texttt{network\_model\$jags\_out}. Here, the raw connectivity matrix (i.e., mean \emph{conn\_g} estimates) can be accessed:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{amre\_conn }\OtherTok{\textless{}{-}}\NormalTok{ network\_model}\SpecialCharTok{$}\NormalTok{jags\_out}\SpecialCharTok{$}\NormalTok{mean}\SpecialCharTok{$}\NormalTok{conn\_g}
-\NormalTok{amre\_conn}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{tabular}{r|r|r|r|r}
-\hline
-0.14212 & 0.13901 & 0.01346 & 0.00507 & 0.00002\\
-\hline
-0.00010 & 0.00021 & 0.00008 & 0.02082 & 0.00004\\
-\hline
-0.05680 & 0.00041 & 0.00013 & 0.38276 & 0.00006\\
-\hline
-0.00003 & 0.01345 & 0.03618 & 0.03902 & 0.06453\\
-\hline
-0.00013 & 0.00036 & 0.00022 & 0.00002 & 0.08496\\
+MP & 0.00011 & 0.00020 & 0.00023 & 0.00002 & 0.08470\\
 \hline
 \end{tabular}
+
+The second component is the full output from \href{https://rdrr.io/cran/jagsUI/man/autojags.html}{\texttt{*jagsUI*\ autojags()}} and is accessed by \texttt{network\_model\$jags\_out}. Here, the raw connectivity matrix (i.e., mean \emph{conn\_g} estimates) can be accessed \texttt{network\_model\$jags\_out\$mean\$conn\_g}
 
 \textbf{Check parameter convergence}
 
@@ -436,7 +415,7 @@ Vector data can define nodes by representing geographic boundaries such as polit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-12-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-11-1.pdf}
 
 For defining a node, we are only interested in regions that we have data. It's straightforward with the spatial functions from \texttt{terra} to determine the sampled regions. Here, we find the conservation regions for which we have sampled American Redstart data from the nonbreeding range.
 
@@ -458,22 +437,20 @@ For defining a node, we are only interested in regions that we have data. It's s
 \begin{verbatim}
 ## 
 ## Amazon/Orinoco-Northern Uplands         Atlantic Lowland Mexico 
-##                              20                              15 
+##                              20                              16 
 ##                       Caribbean        Highland Central America 
-##                              51                               5 
-##        Highland/Interior Mexico         Lowland Central America 
-##                               1                              14 
-##                  Northern Andes 
-##                               3
+##                              52                               5 
+##         Lowland Central America 
+##                              17
 \end{verbatim}
 
-Downstream in the workflow, we need sufficiently sampling of individuals in (or inference to) a node. So, we'll only retain the conservation regions with more than 3 samples.
+Downstream in the workflow, we need sufficiently sampling of individuals in (or inference to) a node. So, we'll only retain the conservation regions with more than 3 samples\ldots here, that is all of them:
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# retain conservation region names with more than 3 samples}
-\NormalTok{retained\_IDs }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(sampled\_table[sampled\_table }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{])}
-\NormalTok{retained\_IDs}
+\NormalTok{retained\_regions }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(sampled\_table[sampled\_table }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{])}
+\NormalTok{retained\_regions}
 \end{Highlighting}
 \end{Shaded}
 
@@ -489,17 +466,17 @@ Thus, we've identified the 5 nonbreeding nodes for the American Redstart data: A
 \begin{Highlighting}[]
 \CommentTok{\# subset conservation regions file by retained regions}
 \NormalTok{conservation\_regions\_subset }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{subset}\NormalTok{(conservation\_regions, }
-\NormalTok{                                             conservation\_regions}\SpecialCharTok{$}\NormalTok{Region }\SpecialCharTok{\%in\%}\NormalTok{ retained\_IDs)}
-\CommentTok{\# subset sampled points by retained regions}
-\NormalTok{nonbreeding\_coords\_subset }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{subset}\NormalTok{(sampled\_conservation\_regions,}
-\NormalTok{                                           sampled\_conservation\_regions}\SpecialCharTok{$}\NormalTok{Region }\SpecialCharTok{\%in\%}\NormalTok{ retained\_IDs)}
+\NormalTok{                                             conservation\_regions}\SpecialCharTok{$}\NormalTok{Region }\SpecialCharTok{\%in\%}\NormalTok{ retained\_regions)}
+
 \CommentTok{\# plot}
-\NormalTok{terra}\SpecialCharTok{::}\FunctionTok{plot}\NormalTok{(conservation\_regions\_subset, }\AttributeTok{col =} \FunctionTok{rainbow}\NormalTok{(}\DecValTok{5}\NormalTok{))}
-\NormalTok{terra}\SpecialCharTok{::}\FunctionTok{points}\NormalTok{(nonbreeding\_coords\_subset, }\AttributeTok{cex =} \FloatTok{1.5}\NormalTok{)}
+\NormalTok{ggplot2}\SpecialCharTok{::}\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+\NormalTok{  tidyterra}\SpecialCharTok{::}\FunctionTok{geom\_spatvector}\NormalTok{(}\AttributeTok{data =}\NormalTok{ conservation\_regions\_subset, ggplot2}\SpecialCharTok{::}\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Region)) }\SpecialCharTok{+}
+\NormalTok{  tidyterra}\SpecialCharTok{::}\FunctionTok{geom\_spatvector}\NormalTok{(}\AttributeTok{data =}\NormalTok{ nonbreeding\_coords) }\SpecialCharTok{+}
+\NormalTok{  ggplot2}\SpecialCharTok{::}\FunctionTok{theme\_bw}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-15-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-14-1.pdf}
 
 \hypertarget{raster-data}{%
 \section{Raster data}\label{raster-data}}
@@ -514,7 +491,7 @@ Raster data is used when populations are defined by a continuous surface of prob
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-16-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-15-1.pdf}
 
 While it is outside the scope of \texttt{mignette} to perform the requisite population genetics analyses for producing these rasters, users with genetic data and expertise with genetic clustering analyses may be interested in the \protect\hyperlink{supplemental}{Supplementary information} that provide additional information and code.
 
@@ -589,17 +566,17 @@ The American Redstart assignment is all from genetic data \citep{desaix2023low}:
 
 \begin{tabular}{l|r|r|r|r|r}
 \hline
-Breeding & CAR & AONU & ALM & HCA & LCA\\
+Breeding & CAR & AONU & ALM & LCA & HCA\\
 \hline
-BR & 2 & 0 & 0 & 0 & 0\\
+BR & 1 & 0 & 0 & 0 & 0\\
 \hline
 MP & 0 & 9 & 0 & 0 & 0\\
 \hline
-NT & 54 & 0 & 3 & 0 & 0\\
+NT & 58 & 0 & 3 & 1 & 0\\
 \hline
-ST & 12 & 12 & 0 & 4 & 1\\
+ST & 9 & 12 & 0 & 1 & 4\\
 \hline
-WB & 1 & 0 & 19 & 1 & 13\\
+WB & 1 & 0 & 20 & 15 & 1\\
 \hline
 \end{tabular}
 
@@ -657,17 +634,17 @@ For the migratory connectivity data, the input data needs to correspond to the f
 
 \begin{tabular}{l|r|r|r|r|r}
 \hline
-Breeding & CAR & AONU & ALM & HCA & LCA\\
+Breeding & CAR & AONU & ALM & LCA & HCA\\
 \hline
-BR & 2 & 0 & 0 & 0 & 0\\
+BR & 1 & 0 & 0 & 0 & 0\\
 \hline
 MP & 0 & 9 & 0 & 0 & 0\\
 \hline
-NT & 54 & 0 & 3 & 0 & 0\\
+NT & 58 & 0 & 3 & 1 & 0\\
 \hline
-ST & 12 & 12 & 0 & 4 & 1\\
+ST & 9 & 12 & 0 & 1 & 4\\
 \hline
-WB & 1 & 0 & 19 & 1 & 13\\
+WB & 1 & 0 & 20 & 15 & 1\\
 \hline
 \end{tabular}
 
@@ -707,42 +684,21 @@ The \texttt{run\_network\_model()} function outputs a list object with four comp
 \hline
 Breeding & ALM & LCA & HCA & CAR & AONU\\
 \hline
-WB & 0.14212 & 0.13901 & 0.01346 & 0.00507 & 0.00002\\
+WB & 0.14422 & 0.13388 & 0.01340 & 0.00508 & 0.00002\\
 \hline
-BR & 0.00010 & 0.00021 & 0.00008 & 0.02082 & 0.00004\\
+BR & 0.00014 & 0.00019 & 0.00009 & 0.01655 & 0.00006\\
 \hline
-NT & 0.05680 & 0.00041 & 0.00013 & 0.38276 & 0.00006\\
+NT & 0.05010 & 0.02698 & 0.00011 & 0.38497 & 0.00005\\
 \hline
-ST & 0.00003 & 0.01345 & 0.03618 & 0.03902 & 0.06453\\
+ST & 0.00002 & 0.01126 & 0.03642 & 0.02810 & 0.06308\\
 \hline
-MP & 0.00013 & 0.00036 & 0.00022 & 0.00002 & 0.08496\\
-\hline
-\end{tabular}
-
-The second component is the full output from \href{https://rdrr.io/cran/jagsUI/man/autojags.html}{\texttt{*jagsUI*\ autojags()}} and is accessed by \texttt{network\_model\$jags\_out}. Here, the raw connectivity matrix can be accessed:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{amre\_conn }\OtherTok{\textless{}{-}}\NormalTok{ network\_model}\SpecialCharTok{$}\NormalTok{jags\_out}\SpecialCharTok{$}\NormalTok{mean}\SpecialCharTok{$}\NormalTok{conn\_g}
-\NormalTok{amre\_conn}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{tabular}{r|r|r|r|r}
-\hline
-0.14212 & 0.13901 & 0.01346 & 0.00507 & 0.00002\\
-\hline
-0.00010 & 0.00021 & 0.00008 & 0.02082 & 0.00004\\
-\hline
-0.05680 & 0.00041 & 0.00013 & 0.38276 & 0.00006\\
-\hline
-0.00003 & 0.01345 & 0.03618 & 0.03902 & 0.06453\\
-\hline
-0.00013 & 0.00036 & 0.00022 & 0.00002 & 0.08496\\
+MP & 0.00011 & 0.00020 & 0.00023 & 0.00002 & 0.08470\\
 \hline
 \end{tabular}
 
-The raw connectivity matrix is used to plot the network. We plot the migratory network with the provided \texttt{mignette} functions \texttt{net\_create()} and \texttt{net\_draw()}. We set \texttt{connected\_tol\ =\ 0.01} which plots only the edges with connectivity values of greater than 0.01. We also demonstrate below how to change parameters such as the colors and the node and edge scale size.
+The second component is the full output from \href{https://rdrr.io/cran/jagsUI/man/autojags.html}{\texttt{*jagsUI*\ autojags()}} and is accessed by \texttt{network\_model\$jags\_out}.
+
+We plot the migratory network with the provided \texttt{mignette} functions \texttt{net\_create()} and \texttt{net\_draw()}. We set \texttt{connected\_tol\ =\ 0.01} which plots only the edges with connectivity values of greater than 0.01. We also demonstrate below how to change parameters such as the colors and the node and edge scale size.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -814,7 +770,7 @@ Ok, we'll toss out another way to visualize these networks using the \href{https
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-25-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-23-1.pdf}
 
 \hypertarget{supplemental}{%
 \chapter{Supplement: Avian abundance data and genetic breeding nodes}\label{supplemental}}
@@ -944,7 +900,7 @@ Check out the resulting genoscape:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Mignette_files/figure-latex/unnamed-chunk-27-1.pdf}
+\includegraphics{Mignette_files/figure-latex/unnamed-chunk-25-1.pdf}
 
 \textbf{STOP}
 
@@ -977,7 +933,7 @@ Check out the polygons
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics[width=0.7\linewidth]{Mignette_files/figure-latex/unnamed-chunk-29-1}
+\includegraphics[width=0.7\linewidth]{Mignette_files/figure-latex/unnamed-chunk-27-1}
 
   \bibliography{book.bib,packages.bib}
 

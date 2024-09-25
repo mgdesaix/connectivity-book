@@ -48,29 +48,15 @@ network_model$conn
 ```
 
 ```{r, echo=FALSE}
-conn_ex <- mignette::amre_conn
-rownames(conn_ex) <- NULL
-conn_ex <- tibble::as_tibble(conn_ex) 
-conn_ex <- tibble::add_column(conn_ex, "Breeding" = brnode_names, .before = 1)
-knitr::kable(conn_ex)
-```
-
-
-The second component is the full output from [`*jagsUI* autojags()`](https://rdrr.io/cran/jagsUI/man/autojags.html) and is accessed by `network_model$jags_out`. Here, the raw connectivity matrix can be accessed:
-
-```r
-amre_conn <- network_model$jags_out$mean$conn_g
-amre_conn
-```
-
-```{r, echo = FALSE}
 amre_conn <- mignette::amre_conn
-rownames(amre_conn) <- NULL
-colnames(amre_conn) <- NULL
 knitr::kable(amre_conn)
 ```
 
-The raw connectivity matrix is used to plot the network. We plot the migratory network  with the provided `mignette` functions `net_create()` and `net_draw()`. We set `connected_tol = 0.01` which plots only the edges with connectivity values of greater than 0.01. We also demonstrate below how to change parameters such as the colors and the node and edge scale size.
+
+The second component is the full output from [`*jagsUI* autojags()`](https://rdrr.io/cran/jagsUI/man/autojags.html) and is accessed by `network_model$jags_out`. 
+
+
+We plot the migratory network  with the provided `mignette` functions `net_create()` and `net_draw()`. We set `connected_tol = 0.01` which plots only the edges with connectivity values of greater than 0.01. We also demonstrate below how to change parameters such as the colors and the node and edge scale size.
 
 ```r
 amre_net <- net_create(network_model = network_model,

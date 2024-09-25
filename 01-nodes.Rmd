@@ -36,12 +36,12 @@ sampled_table <- table(sampled_conservation_regions$Region)
 sampled_table
 ```
 
-Downstream in the workflow, we need sufficiently sampling of individuals in (or inference to) a node. So, we'll only retain the conservation regions with more than 3 samples.
+Downstream in the workflow, we need sufficiently sampling of individuals in (or inference to) a node. So, we'll only retain the conservation regions with more than 3 samples...here, that is all of them:
 
 ```{r}
 # retain conservation region names with more than 3 samples
-retained_IDs <- names(sampled_table[sampled_table > 3])
-retained_IDs
+retained_regions <- names(sampled_table[sampled_table > 3])
+retained_regions
 ```
 
 Thus, we've identified the 5 nonbreeding nodes for the American Redstart data: Amazon/Orinoco-Northern Uplands (AONU), Atlantic Lowland Mexico (ALM), Caribbean (CAR), Highland Central America (HCA), and Lowland Central America (LCA). We can plot these conservation regions along with the corresponding sampling points.
@@ -49,13 +49,13 @@ Thus, we've identified the 5 nonbreeding nodes for the American Redstart data: A
 ```{r}
 # subset conservation regions file by retained regions
 conservation_regions_subset <- terra::subset(conservation_regions, 
-                                             conservation_regions$Region %in% retained_IDs)
-# subset sampled points by retained regions
-nonbreeding_coords_subset <- terra::subset(sampled_conservation_regions,
-                                           sampled_conservation_regions$Region %in% retained_IDs)
+                                             conservation_regions$Region %in% retained_regions)
+
 # plot
-terra::plot(conservation_regions_subset, col = rainbow(5))
-terra::points(nonbreeding_coords_subset, cex = 1.5)
+ggplot2::ggplot() +
+  tidyterra::geom_spatvector(data = conservation_regions_subset, ggplot2::aes(fill = Region)) +
+  tidyterra::geom_spatvector(data = nonbreeding_coords) +
+  ggplot2::theme_bw()
 ```
 
 

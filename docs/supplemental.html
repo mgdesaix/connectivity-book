@@ -23,7 +23,7 @@
 <meta name="author" content="" />
 
 
-<meta name="date" content="2024-09-10" />
+<meta name="date" content="2024-09-25" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -226,10 +226,10 @@ div.csl-indent {
 <h3><span class="header-section-number">7.1.1</span> ebirdst<a href="supplemental.html#ebirdst" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>In our migratory network analyses, the <a href="https://science.ebird.org/en/status-and-trends">eBird Status and Trends</a> data is used to delineate the different stages of the annual cycle. Prior to doing anything with eBird Status and Trends data, you will need to download the <code>ebirdst</code> package, and then get access to the data. <strong>You will need to follow the most up-to-date instructions from the <code>ebirdst</code> developers for getting the abundance data. Currently, that information is here: <a href="https://ebird.github.io/ebirdst/">https://ebird.github.io/ebirdst/</a></strong></p>
 <p>To download the package:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="supplemental.html#cb31-1" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
-<span id="cb31-2"><a href="supplemental.html#cb31-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;CornellLabofOrnithology/ebirdst&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="supplemental.html#cb29-1" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
+<span id="cb29-2"><a href="supplemental.html#cb29-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;CornellLabofOrnithology/ebirdst&quot;</span>)</span></code></pre></div>
 <p>Then, get access to <code>ebirdst</code> data at <a href="https://ebird.org/st/request" class="uri">https://ebird.org/st/request</a>. You will receive a key to download <code>ebirdst</code> data and you can enter that key in R:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="supplemental.html#cb32-1" tabindex="-1"></a>ebirdst<span class="sc">::</span><span class="fu">set_ebirdst_access_key</span>(<span class="st">&quot;XXXXX&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="supplemental.html#cb30-1" tabindex="-1"></a>ebirdst<span class="sc">::</span><span class="fu">set_ebirdst_access_key</span>(<span class="st">&quot;XXXXX&quot;</span>)</span></code></pre></div>
 <p>where <code>"XXXXX"</code> is the key.</p>
 <p>By following instructions from the <code>ebirdst</code> developers, you can obtain polygons of the breeding and nonbreeding ranges of avian species (see <a href="https://ebird.github.io/ebirdst/">https://ebird.github.io/ebirdst/</a> for details).</p>
 </div>
@@ -244,49 +244,49 @@ div.csl-indent {
 </ul>
 <p>The Q-value matrix is obtained from individual admixture analyses (e.g. Structure, Admixture, <code>snmf</code> fuction from the LEA R-package). Latitude/longitude coordinates are for the individual samples used in the Q-value matrix. Breeding range polygons can be obtained from <code>ebirdst</code> (see previous section).</p>
 <p>The <code>amre_breeding_data</code> data set provides admixture results (Q-values) for five genetic clusters for American Redstart <span class="citation">(<a href="#ref-desaix2023low">DeSaix et al. 2023</a>)</span> and metadata for the sampled individuals.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="supplemental.html#cb33-1" tabindex="-1"></a><span class="fu">library</span>(mignette)</span>
-<span id="cb33-2"><a href="supplemental.html#cb33-2" tabindex="-1"></a>Q_matrix <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_breeding_data <span class="sc">%&gt;%</span></span>
-<span id="cb33-3"><a href="supplemental.html#cb33-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(WB, BR, NT, ST, MP) <span class="sc">%&gt;%</span></span>
-<span id="cb33-4"><a href="supplemental.html#cb33-4" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb33-5"><a href="supplemental.html#cb33-5" tabindex="-1"></a></span>
-<span id="cb33-6"><a href="supplemental.html#cb33-6" tabindex="-1"></a>coords <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_breeding_data <span class="sc">%&gt;%</span></span>
-<span id="cb33-7"><a href="supplemental.html#cb33-7" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Lon, Lat) <span class="sc">%&gt;%</span></span>
-<span id="cb33-8"><a href="supplemental.html#cb33-8" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="supplemental.html#cb31-1" tabindex="-1"></a><span class="fu">library</span>(mignette)</span>
+<span id="cb31-2"><a href="supplemental.html#cb31-2" tabindex="-1"></a>Q_matrix <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_breeding_data <span class="sc">%&gt;%</span></span>
+<span id="cb31-3"><a href="supplemental.html#cb31-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(WB, BR, NT, ST, MP) <span class="sc">%&gt;%</span></span>
+<span id="cb31-4"><a href="supplemental.html#cb31-4" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb31-5"><a href="supplemental.html#cb31-5" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="supplemental.html#cb31-6" tabindex="-1"></a>coords <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_breeding_data <span class="sc">%&gt;%</span></span>
+<span id="cb31-7"><a href="supplemental.html#cb31-7" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Lon, Lat) <span class="sc">%&gt;%</span></span>
+<span id="cb31-8"><a href="supplemental.html#cb31-8" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span></code></pre></div>
 <p>The larger data objects in <code>mignette</code> are stored in <code>extdata</code>:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="supplemental.html#cb34-1" tabindex="-1"></a>breeding_range <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;amre_breeding_range.Rds&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>)</span>
-<span id="cb34-2"><a href="supplemental.html#cb34-2" tabindex="-1"></a>breeding_range <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">vect</span>(breeding_range)</span>
-<span id="cb34-3"><a href="supplemental.html#cb34-3" tabindex="-1"></a>  </span>
-<span id="cb34-4"><a href="supplemental.html#cb34-4" tabindex="-1"></a>breeding_range_st <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_as_sf</span>(breeding_range) <span class="co"># tess3Q_map_rasters function requires sf objects, not terra</span></span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="supplemental.html#cb32-1" tabindex="-1"></a>breeding_range <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;amre_breeding_range.Rds&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mignette&quot;</span>)</span>
+<span id="cb32-2"><a href="supplemental.html#cb32-2" tabindex="-1"></a>breeding_range <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">vect</span>(breeding_range)</span>
+<span id="cb32-3"><a href="supplemental.html#cb32-3" tabindex="-1"></a>  </span>
+<span id="cb32-4"><a href="supplemental.html#cb32-4" tabindex="-1"></a>breeding_range_st <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_as_sf</span>(breeding_range) <span class="co"># tess3Q_map_rasters function requires sf objects, not terra</span></span></code></pre></div>
 <p>We will also specify custom colors to correspond to the published genoscape.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="supplemental.html#cb35-1" tabindex="-1"></a>cluster_colors <span class="ot">&lt;-</span>  <span class="fu">c</span>(</span>
-<span id="cb35-2"><a href="supplemental.html#cb35-2" tabindex="-1"></a>  <span class="st">`</span><span class="at">ST</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#e69f00&quot;</span>, <span class="co"># orange/Southern Temperate</span></span>
-<span id="cb35-3"><a href="supplemental.html#cb35-3" tabindex="-1"></a>  <span class="st">`</span><span class="at">BR</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#cc79a7&quot;</span>, <span class="co"># pink/Basin Rockies (BR)</span></span>
-<span id="cb35-4"><a href="supplemental.html#cb35-4" tabindex="-1"></a>  <span class="st">`</span><span class="at">NT</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#56b4e9&quot;</span>, <span class="co"># light blue/Northern Temperate (NT)</span></span>
-<span id="cb35-5"><a href="supplemental.html#cb35-5" tabindex="-1"></a>  <span class="st">`</span><span class="at">WB</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#009e73&quot;</span>, <span class="co"># green/Western Boreal (WB)</span></span>
-<span id="cb35-6"><a href="supplemental.html#cb35-6" tabindex="-1"></a>  <span class="st">`</span><span class="at">MP</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#7979ff&quot;</span> <span class="co"># dark blue/Maritime Provinces (MP)</span></span>
-<span id="cb35-7"><a href="supplemental.html#cb35-7" tabindex="-1"></a>) </span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="supplemental.html#cb33-1" tabindex="-1"></a>cluster_colors <span class="ot">&lt;-</span>  <span class="fu">c</span>(</span>
+<span id="cb33-2"><a href="supplemental.html#cb33-2" tabindex="-1"></a>  <span class="st">`</span><span class="at">ST</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#e69f00&quot;</span>, <span class="co"># orange/Southern Temperate</span></span>
+<span id="cb33-3"><a href="supplemental.html#cb33-3" tabindex="-1"></a>  <span class="st">`</span><span class="at">BR</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#cc79a7&quot;</span>, <span class="co"># pink/Basin Rockies (BR)</span></span>
+<span id="cb33-4"><a href="supplemental.html#cb33-4" tabindex="-1"></a>  <span class="st">`</span><span class="at">NT</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#56b4e9&quot;</span>, <span class="co"># light blue/Northern Temperate (NT)</span></span>
+<span id="cb33-5"><a href="supplemental.html#cb33-5" tabindex="-1"></a>  <span class="st">`</span><span class="at">WB</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#009e73&quot;</span>, <span class="co"># green/Western Boreal (WB)</span></span>
+<span id="cb33-6"><a href="supplemental.html#cb33-6" tabindex="-1"></a>  <span class="st">`</span><span class="at">MP</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;#7979ff&quot;</span> <span class="co"># dark blue/Maritime Provinces (MP)</span></span>
+<span id="cb33-7"><a href="supplemental.html#cb33-7" tabindex="-1"></a>) </span></code></pre></div>
 <p>We will use a <a href="https://github.com/eriqande/TESS3_encho_sen">modified version of the <code>tess3r</code> package</a> to create the genoscape rasters.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="supplemental.html#cb36-1" tabindex="-1"></a><span class="co"># remotes::install_github(&quot;eriqande/TESS3_encho_sen&quot;)</span></span>
-<span id="cb36-2"><a href="supplemental.html#cb36-2" tabindex="-1"></a>amre_genoscape <span class="ot">&lt;-</span> tess3r<span class="sc">::</span><span class="fu">tess3Q_map_rasters</span>(</span>
-<span id="cb36-3"><a href="supplemental.html#cb36-3" tabindex="-1"></a>  <span class="at">x =</span> Q_matrix,</span>
-<span id="cb36-4"><a href="supplemental.html#cb36-4" tabindex="-1"></a>  <span class="at">coord =</span> coords,</span>
-<span id="cb36-5"><a href="supplemental.html#cb36-5" tabindex="-1"></a>  <span class="at">map.polygon =</span> breeding_range_st,</span>
-<span id="cb36-6"><a href="supplemental.html#cb36-6" tabindex="-1"></a>  <span class="at">window =</span> sf<span class="sc">::</span><span class="fu">st_bbox</span>(breeding_range_st),</span>
-<span id="cb36-7"><a href="supplemental.html#cb36-7" tabindex="-1"></a>  <span class="at">resolution =</span> <span class="fu">c</span>(<span class="dv">300</span>,<span class="dv">300</span>), <span class="co"># if you want more cells in your raster, set higher</span></span>
-<span id="cb36-8"><a href="supplemental.html#cb36-8" tabindex="-1"></a>  <span class="at">col.palette =</span> tess3r<span class="sc">::</span><span class="fu">CreatePalette</span>(cluster_colors, <span class="fu">length</span>(cluster_colors)), </span>
-<span id="cb36-9"><a href="supplemental.html#cb36-9" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;map.max&quot;</span>, </span>
-<span id="cb36-10"><a href="supplemental.html#cb36-10" tabindex="-1"></a>  <span class="at">interpol =</span> tess3r<span class="sc">::</span><span class="fu">FieldsKrigModel</span>(<span class="dv">10</span>),  </span>
-<span id="cb36-11"><a href="supplemental.html#cb36-11" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Ancestry coefficients&quot;</span>,</span>
-<span id="cb36-12"><a href="supplemental.html#cb36-12" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Longitude&quot;</span>, </span>
-<span id="cb36-13"><a href="supplemental.html#cb36-13" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Latitude&quot;</span>, </span>
-<span id="cb36-14"><a href="supplemental.html#cb36-14" tabindex="-1"></a>  <span class="at">cex =</span> .<span class="dv">4</span></span>
-<span id="cb36-15"><a href="supplemental.html#cb36-15" tabindex="-1"></a>)</span>
-<span id="cb36-16"><a href="supplemental.html#cb36-16" tabindex="-1"></a><span class="fu">names</span>(amre_genoscape) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(Q_matrix)</span>
-<span id="cb36-17"><a href="supplemental.html#cb36-17" tabindex="-1"></a>amre_genoscape <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rast</span>(amre_genoscape) <span class="co"># convert from rasterbrick to spatRaster</span></span>
-<span id="cb36-18"><a href="supplemental.html#cb36-18" tabindex="-1"></a><span class="fu">crs</span>(amre_genoscape) <span class="ot">&lt;-</span> <span class="st">&quot;EPSG:4326&quot;</span> <span class="co"># Set CRS projection</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="supplemental.html#cb34-1" tabindex="-1"></a><span class="co"># remotes::install_github(&quot;eriqande/TESS3_encho_sen&quot;)</span></span>
+<span id="cb34-2"><a href="supplemental.html#cb34-2" tabindex="-1"></a>amre_genoscape <span class="ot">&lt;-</span> tess3r<span class="sc">::</span><span class="fu">tess3Q_map_rasters</span>(</span>
+<span id="cb34-3"><a href="supplemental.html#cb34-3" tabindex="-1"></a>  <span class="at">x =</span> Q_matrix,</span>
+<span id="cb34-4"><a href="supplemental.html#cb34-4" tabindex="-1"></a>  <span class="at">coord =</span> coords,</span>
+<span id="cb34-5"><a href="supplemental.html#cb34-5" tabindex="-1"></a>  <span class="at">map.polygon =</span> breeding_range_st,</span>
+<span id="cb34-6"><a href="supplemental.html#cb34-6" tabindex="-1"></a>  <span class="at">window =</span> sf<span class="sc">::</span><span class="fu">st_bbox</span>(breeding_range_st),</span>
+<span id="cb34-7"><a href="supplemental.html#cb34-7" tabindex="-1"></a>  <span class="at">resolution =</span> <span class="fu">c</span>(<span class="dv">300</span>,<span class="dv">300</span>), <span class="co"># if you want more cells in your raster, set higher</span></span>
+<span id="cb34-8"><a href="supplemental.html#cb34-8" tabindex="-1"></a>  <span class="at">col.palette =</span> tess3r<span class="sc">::</span><span class="fu">CreatePalette</span>(cluster_colors, <span class="fu">length</span>(cluster_colors)), </span>
+<span id="cb34-9"><a href="supplemental.html#cb34-9" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;map.max&quot;</span>, </span>
+<span id="cb34-10"><a href="supplemental.html#cb34-10" tabindex="-1"></a>  <span class="at">interpol =</span> tess3r<span class="sc">::</span><span class="fu">FieldsKrigModel</span>(<span class="dv">10</span>),  </span>
+<span id="cb34-11"><a href="supplemental.html#cb34-11" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Ancestry coefficients&quot;</span>,</span>
+<span id="cb34-12"><a href="supplemental.html#cb34-12" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Longitude&quot;</span>, </span>
+<span id="cb34-13"><a href="supplemental.html#cb34-13" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Latitude&quot;</span>, </span>
+<span id="cb34-14"><a href="supplemental.html#cb34-14" tabindex="-1"></a>  <span class="at">cex =</span> .<span class="dv">4</span></span>
+<span id="cb34-15"><a href="supplemental.html#cb34-15" tabindex="-1"></a>)</span>
+<span id="cb34-16"><a href="supplemental.html#cb34-16" tabindex="-1"></a><span class="fu">names</span>(amre_genoscape) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(Q_matrix)</span>
+<span id="cb34-17"><a href="supplemental.html#cb34-17" tabindex="-1"></a>amre_genoscape <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rast</span>(amre_genoscape) <span class="co"># convert from rasterbrick to spatRaster</span></span>
+<span id="cb34-18"><a href="supplemental.html#cb34-18" tabindex="-1"></a><span class="fu">crs</span>(amre_genoscape) <span class="ot">&lt;-</span> <span class="st">&quot;EPSG:4326&quot;</span> <span class="co"># Set CRS projection</span></span></code></pre></div>
 <p>Check out the resulting genoscape:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="supplemental.html#cb37-1" tabindex="-1"></a><span class="fu">plot</span>(amre_genoscape)</span></code></pre></div>
-<p><img src="Mignette_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="supplemental.html#cb35-1" tabindex="-1"></a><span class="fu">plot</span>(amre_genoscape)</span></code></pre></div>
+<p><img src="Mignette_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p><strong>STOP</strong></p>
 <p>The rasters for the genoscape are all that are needed for obtaining information on relative abundance for the different populations. You can continue on to the <a href="#abundance">relative abundance chapter</a> if you are ready to do that with the genoscape. Or if you still need to create the wintering nodes, check out the next chapter on <a href="#wintering">wintering nodes</a>. The following section is not necessary for the migratory network but details how to covert genoscape rasters to polygons if the <code>mignette</code> user is interested in doing so.</p>
 </div>
@@ -294,14 +294,14 @@ div.csl-indent {
 <h3><span class="header-section-number">7.1.3</span> Genoscape polygons<a href="supplemental.html#genoscape-polygons" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Using the genoscape rasters we will convert them to polygons, using the handy <code>scape_to_shape()</code> function. The <code>prob_threshold</code> parameter specifies the value to determine if a raster cell is included in the polygon for that genoscape. This value should be customized for different species to check for overlap of genoscape polygons, which is not desirable. Setting too high of a threshold will create very small breeding nodes, while too low of a threshold will result in large, overlapping breeding nodes.</p>
 <p>Check out the polygons</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="supplemental.html#cb38-1" tabindex="-1"></a>genoscape_polygons <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">scape_to_shape</span>(<span class="at">x =</span> amre_genoscape, </span>
-<span id="cb38-2"><a href="supplemental.html#cb38-2" tabindex="-1"></a>                                               <span class="at">prob_threshold =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="supplemental.html#cb36-1" tabindex="-1"></a>genoscape_polygons <span class="ot">&lt;-</span> mignette<span class="sc">::</span><span class="fu">scape_to_shape</span>(<span class="at">x =</span> amre_genoscape, </span>
+<span id="cb36-2"><a href="supplemental.html#cb36-2" tabindex="-1"></a>                                               <span class="at">prob_threshold =</span> <span class="fl">0.5</span>)</span></code></pre></div>
 <pre><code>## Spherical geometry (s2) switched off</code></pre>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="supplemental.html#cb40-1" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb40-2"><a href="supplemental.html#cb40-2" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> genoscape_polygons,<span class="at">alpha =</span> <span class="fl">0.75</span>, <span class="fu">aes</span>(<span class="at">fill =</span> Cluster)) <span class="sc">+</span></span>
-<span id="cb40-3"><a href="supplemental.html#cb40-3" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cluster_colors) <span class="sc">+</span></span>
-<span id="cb40-4"><a href="supplemental.html#cb40-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
-<p><img src="Mignette_files/figure-html/unnamed-chunk-29-1.png" width="70%" /></p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="supplemental.html#cb38-1" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb38-2"><a href="supplemental.html#cb38-2" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> genoscape_polygons,<span class="at">alpha =</span> <span class="fl">0.75</span>, <span class="fu">aes</span>(<span class="at">fill =</span> Cluster)) <span class="sc">+</span></span>
+<span id="cb38-3"><a href="supplemental.html#cb38-3" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cluster_colors) <span class="sc">+</span></span>
+<span id="cb38-4"><a href="supplemental.html#cb38-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<p><img src="Mignette_files/figure-html/unnamed-chunk-27-1.png" width="70%" /></p>
 
 </div>
 </div>
