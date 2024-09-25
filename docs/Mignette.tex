@@ -426,8 +426,17 @@ For defining a node, we are only interested in regions that we have data. It's s
                              \AttributeTok{geom=}\FunctionTok{c}\NormalTok{(}\StringTok{"Lon"}\NormalTok{, }\StringTok{"Lat"}\NormalTok{),}
                              \AttributeTok{crs =} \StringTok{"EPSG:4326"}\NormalTok{)}
 \CommentTok{\# find spatial intersection of points with conservation regions}
-\NormalTok{sampled\_conservation\_regions }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{intersect}\NormalTok{(nonbreeding\_coords,}
-\NormalTok{                                        conservation\_regions)}
+\NormalTok{region.ids }\OtherTok{\textless{}{-}}\NormalTok{ conservation\_regions }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Region) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{add\_column}\NormalTok{(}\StringTok{"Index"} \OtherTok{=} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(conservation\_regions))}
+
+\NormalTok{sampled\_conservation\_regions }\OtherTok{\textless{}{-}}\NormalTok{ terra}\SpecialCharTok{::}\FunctionTok{nearby}\NormalTok{(nonbreeding\_coords,}
+\NormalTok{                                              conservation\_regions,}
+                                              \AttributeTok{centroids =} \ConstantTok{FALSE}\NormalTok{,}
+                                              \AttributeTok{k=}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{left\_join}\NormalTok{(region.ids, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"k1"} \OtherTok{=} \StringTok{"Index"}\NormalTok{))}
 \CommentTok{\# count the number of sampled individuals associated with each conservation region}
 \NormalTok{sampled\_table }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(sampled\_conservation\_regions}\SpecialCharTok{$}\NormalTok{Region)}
 \NormalTok{sampled\_table}
@@ -437,9 +446,9 @@ For defining a node, we are only interested in regions that we have data. It's s
 \begin{verbatim}
 ## 
 ## Amazon/Orinoco-Northern Uplands         Atlantic Lowland Mexico 
-##                              20                              16 
+##                              21                              23 
 ##                       Caribbean        Highland Central America 
-##                              52                               5 
+##                              69                               5 
 ##         Lowland Central America 
 ##                              17
 \end{verbatim}

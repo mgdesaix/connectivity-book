@@ -238,16 +238,25 @@ div.csl-indent {
 <span id="cb16-3"><a href="nodes.html#cb16-3" tabindex="-1"></a>                             <span class="at">geom=</span><span class="fu">c</span>(<span class="st">&quot;Lon&quot;</span>, <span class="st">&quot;Lat&quot;</span>),</span>
 <span id="cb16-4"><a href="nodes.html#cb16-4" tabindex="-1"></a>                             <span class="at">crs =</span> <span class="st">&quot;EPSG:4326&quot;</span>)</span>
 <span id="cb16-5"><a href="nodes.html#cb16-5" tabindex="-1"></a><span class="co"># find spatial intersection of points with conservation regions</span></span>
-<span id="cb16-6"><a href="nodes.html#cb16-6" tabindex="-1"></a>sampled_conservation_regions <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">intersect</span>(nonbreeding_coords,</span>
-<span id="cb16-7"><a href="nodes.html#cb16-7" tabindex="-1"></a>                                        conservation_regions)</span>
-<span id="cb16-8"><a href="nodes.html#cb16-8" tabindex="-1"></a><span class="co"># count the number of sampled individuals associated with each conservation region</span></span>
-<span id="cb16-9"><a href="nodes.html#cb16-9" tabindex="-1"></a>sampled_table <span class="ot">&lt;-</span> <span class="fu">table</span>(sampled_conservation_regions<span class="sc">$</span>Region)</span>
-<span id="cb16-10"><a href="nodes.html#cb16-10" tabindex="-1"></a>sampled_table</span></code></pre></div>
+<span id="cb16-6"><a href="nodes.html#cb16-6" tabindex="-1"></a>region.ids <span class="ot">&lt;-</span> conservation_regions <span class="sc">%&gt;%</span></span>
+<span id="cb16-7"><a href="nodes.html#cb16-7" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb16-8"><a href="nodes.html#cb16-8" tabindex="-1"></a>  <span class="fu">select</span>(Region) <span class="sc">%&gt;%</span></span>
+<span id="cb16-9"><a href="nodes.html#cb16-9" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="st">&quot;Index&quot;</span> <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(conservation_regions))</span>
+<span id="cb16-10"><a href="nodes.html#cb16-10" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="nodes.html#cb16-11" tabindex="-1"></a>sampled_conservation_regions <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">nearby</span>(nonbreeding_coords,</span>
+<span id="cb16-12"><a href="nodes.html#cb16-12" tabindex="-1"></a>                                              conservation_regions,</span>
+<span id="cb16-13"><a href="nodes.html#cb16-13" tabindex="-1"></a>                                              <span class="at">centroids =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb16-14"><a href="nodes.html#cb16-14" tabindex="-1"></a>                                              <span class="at">k=</span><span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-15"><a href="nodes.html#cb16-15" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb16-16"><a href="nodes.html#cb16-16" tabindex="-1"></a>  <span class="fu">left_join</span>(region.ids, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;k1&quot;</span> <span class="ot">=</span> <span class="st">&quot;Index&quot;</span>))</span>
+<span id="cb16-17"><a href="nodes.html#cb16-17" tabindex="-1"></a><span class="co"># count the number of sampled individuals associated with each conservation region</span></span>
+<span id="cb16-18"><a href="nodes.html#cb16-18" tabindex="-1"></a>sampled_table <span class="ot">&lt;-</span> <span class="fu">table</span>(sampled_conservation_regions<span class="sc">$</span>Region)</span>
+<span id="cb16-19"><a href="nodes.html#cb16-19" tabindex="-1"></a>sampled_table</span></code></pre></div>
 <pre><code>## 
 ## Amazon/Orinoco-Northern Uplands         Atlantic Lowland Mexico 
-##                              20                              16 
+##                              21                              23 
 ##                       Caribbean        Highland Central America 
-##                              52                               5 
+##                              69                               5 
 ##         Lowland Central America 
 ##                              17</code></pre>
 <p>Downstream in the workflow, we need sufficiently sampling of individuals in (or inference to) a node. So, we’ll only retain the conservation regions with more than 3 samples…here, that is all of them:</p>

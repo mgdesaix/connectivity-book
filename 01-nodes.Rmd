@@ -29,8 +29,17 @@ nonbreeding_coords <- terra::vect(mignette::amre_nonbreeding_data,
                              geom=c("Lon", "Lat"),
                              crs = "EPSG:4326")
 # find spatial intersection of points with conservation regions
-sampled_conservation_regions <- terra::intersect(nonbreeding_coords,
-                                        conservation_regions)
+region.ids <- conservation_regions %>%
+  as_tibble() %>%
+  select(Region) %>%
+  add_column("Index" = 1:nrow(conservation_regions))
+
+sampled_conservation_regions <- terra::nearby(nonbreeding_coords,
+                                              conservation_regions,
+                                              centroids = FALSE,
+                                              k=1) %>%
+  as_tibble() %>%
+  left_join(region.ids, by = c("k1" = "Index"))
 # count the number of sampled individuals associated with each conservation region
 sampled_table <- table(sampled_conservation_regions$Region)
 sampled_table
