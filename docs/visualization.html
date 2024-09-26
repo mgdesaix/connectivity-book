@@ -23,7 +23,7 @@
 <meta name="author" content="" />
 
 
-<meta name="date" content="2024-09-25" />
+<meta name="date" content="2024-09-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -237,25 +237,24 @@ div.csl-indent {
 <span id="cb28-14"><a href="visualization.html#cb28-14" tabindex="-1"></a>) </span>
 <span id="cb28-15"><a href="visualization.html#cb28-15" tabindex="-1"></a></span>
 <span id="cb28-16"><a href="visualization.html#cb28-16" tabindex="-1"></a>amre_conn_df <span class="ot">&lt;-</span> mignette<span class="sc">::</span>amre_conn <span class="sc">%&gt;%</span></span>
-<span id="cb28-17"><a href="visualization.html#cb28-17" tabindex="-1"></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">&quot;Breeding&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb28-18"><a href="visualization.html#cb28-18" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> ALM<span class="sc">:</span>AONU, <span class="at">names_to =</span> <span class="st">&quot;Nonbreeding&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;Connectivity&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb28-19"><a href="visualization.html#cb28-19" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Connectivity =</span> <span class="fu">ifelse</span>(Connectivity <span class="sc">&lt;</span> <span class="fl">0.01</span>, <span class="dv">0</span>, Connectivity)) <span class="sc">%&gt;%</span></span>
-<span id="cb28-20"><a href="visualization.html#cb28-20" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Breeding =</span> <span class="fu">factor</span>(Breeding, <span class="at">levels =</span> <span class="fu">rev</span>(brnode_names)),</span>
-<span id="cb28-21"><a href="visualization.html#cb28-21" tabindex="-1"></a>         <span class="at">Nonbreeding =</span> <span class="fu">factor</span>(Nonbreeding, <span class="at">levels =</span> <span class="fu">rev</span>(nbnode_names)))</span>
-<span id="cb28-22"><a href="visualization.html#cb28-22" tabindex="-1"></a></span>
-<span id="cb28-23"><a href="visualization.html#cb28-23" tabindex="-1"></a>p.alluvial <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(amre_conn_df,</span>
-<span id="cb28-24"><a href="visualization.html#cb28-24" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">y =</span> Connectivity, <span class="at">axis1 =</span> Nonbreeding, <span class="at">axis2 =</span> Breeding)) <span class="sc">+</span></span>
-<span id="cb28-25"><a href="visualization.html#cb28-25" tabindex="-1"></a>  <span class="fu">geom_alluvium</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Breeding), <span class="at">width =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb28-26"><a href="visualization.html#cb28-26" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cluster_colors) <span class="sc">+</span></span>
-<span id="cb28-27"><a href="visualization.html#cb28-27" tabindex="-1"></a>  <span class="fu">geom_stratum</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">width =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb28-28"><a href="visualization.html#cb28-28" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">stat =</span> <span class="st">&quot;stratum&quot;</span>, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(stratum))) <span class="sc">+</span></span>
-<span id="cb28-29"><a href="visualization.html#cb28-29" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="st">&quot;Nonbreeding&quot;</span>, <span class="st">&quot;Breeding&quot;</span>),</span>
-<span id="cb28-30"><a href="visualization.html#cb28-30" tabindex="-1"></a>                   <span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.05</span>)) <span class="sc">+</span> </span>
-<span id="cb28-31"><a href="visualization.html#cb28-31" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb28-32"><a href="visualization.html#cb28-32" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
-<span id="cb28-33"><a href="visualization.html#cb28-33" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;white&quot;</span>))</span>
-<span id="cb28-34"><a href="visualization.html#cb28-34" tabindex="-1"></a></span>
-<span id="cb28-35"><a href="visualization.html#cb28-35" tabindex="-1"></a>p.alluvial</span></code></pre></div>
+<span id="cb28-17"><a href="visualization.html#cb28-17" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> ALM<span class="sc">:</span>AONU, <span class="at">names_to =</span> <span class="st">&quot;Nonbreeding&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;Connectivity&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-18"><a href="visualization.html#cb28-18" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Connectivity =</span> <span class="fu">ifelse</span>(Connectivity <span class="sc">&lt;</span> <span class="fl">0.01</span>, <span class="dv">0</span>, Connectivity)) <span class="sc">%&gt;%</span></span>
+<span id="cb28-19"><a href="visualization.html#cb28-19" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Breeding =</span> <span class="fu">factor</span>(Breeding, <span class="at">levels =</span> <span class="fu">rev</span>(brnode_names)),</span>
+<span id="cb28-20"><a href="visualization.html#cb28-20" tabindex="-1"></a>         <span class="at">Nonbreeding =</span> <span class="fu">factor</span>(Nonbreeding, <span class="at">levels =</span> <span class="fu">rev</span>(nbnode_names)))</span>
+<span id="cb28-21"><a href="visualization.html#cb28-21" tabindex="-1"></a></span>
+<span id="cb28-22"><a href="visualization.html#cb28-22" tabindex="-1"></a>p.alluvial <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(amre_conn_df,</span>
+<span id="cb28-23"><a href="visualization.html#cb28-23" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">y =</span> Connectivity, <span class="at">axis1 =</span> Nonbreeding, <span class="at">axis2 =</span> Breeding)) <span class="sc">+</span></span>
+<span id="cb28-24"><a href="visualization.html#cb28-24" tabindex="-1"></a>  <span class="fu">geom_alluvium</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Breeding), <span class="at">width =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb28-25"><a href="visualization.html#cb28-25" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cluster_colors) <span class="sc">+</span></span>
+<span id="cb28-26"><a href="visualization.html#cb28-26" tabindex="-1"></a>  <span class="fu">geom_stratum</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">width =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb28-27"><a href="visualization.html#cb28-27" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">stat =</span> <span class="st">&quot;stratum&quot;</span>, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(stratum))) <span class="sc">+</span></span>
+<span id="cb28-28"><a href="visualization.html#cb28-28" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="st">&quot;Nonbreeding&quot;</span>, <span class="st">&quot;Breeding&quot;</span>),</span>
+<span id="cb28-29"><a href="visualization.html#cb28-29" tabindex="-1"></a>                   <span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.05</span>)) <span class="sc">+</span> </span>
+<span id="cb28-30"><a href="visualization.html#cb28-30" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb28-31"><a href="visualization.html#cb28-31" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
+<span id="cb28-32"><a href="visualization.html#cb28-32" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;white&quot;</span>))</span>
+<span id="cb28-33"><a href="visualization.html#cb28-33" tabindex="-1"></a></span>
+<span id="cb28-34"><a href="visualization.html#cb28-34" tabindex="-1"></a>p.alluvial</span></code></pre></div>
 <p><img src="Mignette_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 
 </div>

@@ -22,7 +22,6 @@ cluster_colors <-  c(
 ) 
 
 amre_conn_df <- mignette::amre_conn %>%
-  as_tibble(rownames = "Breeding") %>%
   pivot_longer(cols = ALM:AONU, names_to = "Nonbreeding", values_to = "Connectivity") %>%
   mutate(Connectivity = ifelse(Connectivity < 0.01, 0, Connectivity)) %>%
   mutate(Breeding = factor(Breeding, levels = rev(brnode_names)),

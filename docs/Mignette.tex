@@ -119,7 +119,7 @@
 
 \title{Creating Migratory Networks in R: mignette}
 \author{}
-\date{\vspace{-2.5em}2024-09-25}
+\date{\vspace{-2.5em}2024-09-26}
 
 \begin{document}
 \maketitle
@@ -757,7 +757,6 @@ Ok, we'll toss out another way to visualize these networks using the \href{https
 \NormalTok{) }
 
 \NormalTok{amre\_conn\_df }\OtherTok{\textless{}{-}}\NormalTok{ mignette}\SpecialCharTok{::}\NormalTok{amre\_conn }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{as\_tibble}\NormalTok{(}\AttributeTok{rownames =} \StringTok{"Breeding"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =}\NormalTok{ ALM}\SpecialCharTok{:}\NormalTok{AONU, }\AttributeTok{names\_to =} \StringTok{"Nonbreeding"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"Connectivity"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Connectivity =} \FunctionTok{ifelse}\NormalTok{(Connectivity }\SpecialCharTok{\textless{}} \FloatTok{0.01}\NormalTok{, }\DecValTok{0}\NormalTok{, Connectivity)) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Breeding =} \FunctionTok{factor}\NormalTok{(Breeding, }\AttributeTok{levels =} \FunctionTok{rev}\NormalTok{(brnode\_names)),}
